@@ -12,8 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // 빌더 사용
-@Builder
 @Table(name = "users")
 public class User extends Timestamped {
 
@@ -49,6 +47,19 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy = "seller")
     private List<Chatroom> sellerChats = new ArrayList<>(); // 판매 채팅 리스트
+
+    @Builder
+    public User(String nickname, Long socialId, String email, String profileImgUrl,
+                String address1, String address2, String address3, LoginType loginType) {
+        this.nickname = nickname;
+        this.socialId = socialId;
+        this.email = email;
+        this.profileImgUrl = profileImgUrl;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.address3 = address3;
+        this.loginType = loginType;
+    }
 
     public void addPurchase(Item item) {
         this.purchases.add(item);
