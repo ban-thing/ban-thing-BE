@@ -8,8 +8,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Table(name = "chat_messages")
 public class ChatMessage extends Timestamped {
 
@@ -31,4 +29,19 @@ public class ChatMessage extends Timestamped {
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
+    @Builder
+    public ChatMessage(String content, String imgUrl, boolean isRead, Chatroom chatroom, User sender) {
+        this.content = content;
+        this.imgUrl = imgUrl;
+        this.isRead = isRead;
+        this.sender = sender;
+
+        if (chatroom != null) {
+            chatroom.addChatMessage(this); // Chatroom에 메시지를 추가
+        }
+    }
+
+    public void setChatroom(Chatroom chatroom) {
+        this.chatroom = chatroom;
+    }
 }

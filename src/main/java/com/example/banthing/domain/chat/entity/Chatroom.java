@@ -12,8 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Table(name = "chatrooms")
 public class Chatroom extends Timestamped {
 
@@ -36,11 +34,23 @@ public class Chatroom extends Timestamped {
     @OneToMany(mappedBy = "chatroom")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
+    @Builder
+    public Chatroom(User buyer, User seller, Item item) {
+        this.buyer = buyer;
+        this.seller = seller;
+        this.item = item;
+    }
+
     public void setBuyer(User buyer) {
         this.buyer = buyer;
     }
 
     public void setSeller(User seller) {
         this.seller = seller;
+    }
+
+    public void addChatMessage(ChatMessage chatMessage) {
+        this.chatMessages.add(chatMessage);
+        chatMessage.setChatroom(this);
     }
 }
