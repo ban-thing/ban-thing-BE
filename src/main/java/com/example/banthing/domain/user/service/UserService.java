@@ -2,6 +2,7 @@ package com.example.banthing.domain.user.service;
 
 import com.example.banthing.domain.user.dto.ProfileResponseDto;
 import com.example.banthing.domain.user.dto.PurchaseResponseDto;
+import com.example.banthing.domain.user.dto.SalesResponseDto;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,11 @@ public class UserService {
     public List<PurchaseResponseDto> findPurchasesById(Long userId) {
         User user = findById(userId);
         return user.getPurchases().stream().map(PurchaseResponseDto::new).toList();
+    }
+
+    public List<SalesResponseDto> findSalesById(Long userId) {
+        User user = findById(userId);
+        return user.getSales().stream().map(SalesResponseDto::new).toList();
     }
 
     private User findById(Long userId) {
