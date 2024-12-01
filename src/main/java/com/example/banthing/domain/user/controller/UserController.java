@@ -1,14 +1,19 @@
 package com.example.banthing.domain.user.controller;
 
 import com.example.banthing.domain.user.dto.ProfileResponseDto;
+import com.example.banthing.domain.user.dto.PurchaseResponseDto;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.banthing.global.common.ApiResponse.*;
+import java.util.List;
+
+import static com.example.banthing.global.common.ApiResponse.successResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +24,11 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<ProfileResponseDto>> findMyProfile(@AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok().body(successResponse(userService.findById(Long.valueOf(userId))));
+        return ResponseEntity.ok().body(successResponse(userService.findMyProfile(Long.valueOf(userId))));
     }
 
+    @GetMapping("/purchases")
+    public ResponseEntity<ApiResponse<List<PurchaseResponseDto>>> findMyPurchases(@AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok().body(successResponse(userService.findPurchasesById(Long.valueOf(userId))));
+    }
 }
