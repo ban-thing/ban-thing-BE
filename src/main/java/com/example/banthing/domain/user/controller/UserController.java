@@ -2,6 +2,7 @@ package com.example.banthing.domain.user.controller;
 
 import com.example.banthing.domain.user.dto.ProfileResponseDto;
 import com.example.banthing.domain.user.dto.PurchaseResponseDto;
+import com.example.banthing.domain.user.dto.SalesResponseDto;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,10 @@ public class UserController {
     @GetMapping("/purchases")
     public ResponseEntity<ApiResponse<List<PurchaseResponseDto>>> findMyPurchases(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findPurchasesById(Long.valueOf(userId))));
+    }
+
+    @GetMapping("/sales")
+    public ResponseEntity<ApiResponse<List<SalesResponseDto>>> findMySales(@AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok().body(successResponse(userService.findSalesById(Long.valueOf(userId))));
     }
 }
