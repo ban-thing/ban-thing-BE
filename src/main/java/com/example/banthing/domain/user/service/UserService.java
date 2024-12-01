@@ -1,12 +1,11 @@
 package com.example.banthing.domain.user.service;
 
-import com.example.banthing.domain.user.dto.ProfileResponseDto;
-import com.example.banthing.domain.user.dto.PurchaseResponseDto;
-import com.example.banthing.domain.user.dto.SalesResponseDto;
+import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +27,16 @@ public class UserService {
     public List<SalesResponseDto> findSalesById(Long userId) {
         User user = findById(userId);
         return user.getSales().stream().map(SalesResponseDto::new).toList();
+    }
+
+    @Transactional
+    public UpdateAddressResponseDto updateAddress(Long userId, UpdateAddressRequestDto request) {
+        User user = findById(userId);
+        UpdateAddressResponseDto response = new UpdateAddressResponseDto(user);
+
+        user.updateAddress(request);
+        response.updateAddress(user);
+        return response;
     }
 
     private User findById(Long userId) {

@@ -1,16 +1,12 @@
 package com.example.banthing.domain.user.controller;
 
-import com.example.banthing.domain.user.dto.ProfileResponseDto;
-import com.example.banthing.domain.user.dto.PurchaseResponseDto;
-import com.example.banthing.domain.user.dto.SalesResponseDto;
+import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,5 +32,11 @@ public class UserController {
     @GetMapping("/sales")
     public ResponseEntity<ApiResponse<List<SalesResponseDto>>> findMySales(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findSalesById(Long.valueOf(userId))));
+    }
+
+    @PatchMapping("/address")
+    public ResponseEntity<ApiResponse<UpdateAddressResponseDto>> updateMyAddress(@AuthenticationPrincipal String userId,
+                                                                                 @RequestBody UpdateAddressRequestDto request) {
+        return ResponseEntity.ok().body(successResponse(userService.updateAddress(Long.valueOf(userId), request)));
     }
 }

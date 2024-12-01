@@ -2,6 +2,7 @@ package com.example.banthing.domain.user.entity;
 
 import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.user.dto.UpdateAddressRequestDto;
 import com.example.banthing.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.*;
@@ -79,5 +80,11 @@ public class User extends Timestamped {
     public void addSellerChat(Chatroom chatroom) {
         this.sellerChats.add(chatroom);
         chatroom.setSeller(this);
+    }
+
+    public void updateAddress(UpdateAddressRequestDto request) {
+        if (request.getAddress1() != null) this.address1 = request.getAddress1();
+        if (request.getAddress2() != null) this.address2 = request.getAddress2();
+        if (request.getAddress3() != null) this.address3 = request.getAddress3();
     }
 }
