@@ -16,7 +16,7 @@ import static com.example.banthing.global.common.ApiResponse.successWithNoConten
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class KakaoController {
 
     private final KakaoService kakaoService;
 
