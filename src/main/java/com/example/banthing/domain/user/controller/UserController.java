@@ -1,35 +1,51 @@
 package com.example.banthing.domain.user.controller;
 
-import com.example.banthing.domain.user.service.KakaoService;
+import com.example.banthing.domain.user.dto.*;
+import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
-import com.example.banthing.global.security.JwtUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import static com.example.banthing.global.common.ApiResponse.successWithNoContent;
+import java.io.IOException;
+import java.util.List;
+
+import static com.example.banthing.global.common.ApiResponse.successResponse;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/my")
 public class UserController {
 
-    private final KakaoService kakaoService;
+    private final UserService userService;
 
-    @GetMapping("/user/kakao/callback")
-    public ResponseEntity<ApiResponse<?>> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<ProfileResponseDto>> findMyProfile(@AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok().body(successResponse(userService.findMyProfile(Long.valueOf(userId))));
+    }
 
-        String token = kakaoService.kakaoLogin(code);
+    @PatchMapping("/profile")
+    public ResponseEntity<ApiResponse<UpdateProfileResponseDto>> updateMyProfile(@AuthenticationPrincipal String userId,
+                                                                                 @RequestPart(required = false, name = "profileImg") MultipartFile file,
+                                                                                 @RequestPart(required = false, name = "nickname") UpdateNicknameRequestDto req)  throws IOException {
+        return ResponseEntity.ok().body(successResponse(userService.updateMyProfile(Long.valueOf(userId), file, req)));
+    }
 
-        // Cookie 생성 및 직접 브라우저에 Set
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
+    @GetMapping("/purchases")
+    public ResponseEntity<ApiResponse<List<PurchaseResponseDto>>> findMyPurchases(@AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok().body(successResponse(userService.findPurchasesById(Long.valueOf(userId))));
+    }
 
-        return ResponseEntity.ok().body(successWithNoContent());
+    @GetMapping("/sales")
+    public ResponseEntity<ApiResponse<List<SalesResponseDto>>> findMySales(@AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok().body(successResponse(userService.findSalesById(Long.valueOf(userId))));
+    }
+
+    @PatchMapping("/address")
+    public ResponseEntity<ApiResponse<UpdateAddressResponseDto>> updateMyAddress(@AuthenticationPrincipal String userId,
+                                                                                 @RequestBody UpdateAddressRequestDto request) {
+        return ResponseEntity.ok().body(successResponse(userService.updateAddress(Long.valueOf(userId), request)));
     }
 }
