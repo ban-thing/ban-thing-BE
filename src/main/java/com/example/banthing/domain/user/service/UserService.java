@@ -34,6 +34,7 @@ public class UserService {
 
             ProfileImage image = profileRepository.save(ProfileImage.builder()
                     .data(file.getBytes())
+                    .type("set")
                     .build());
             user.updateProfileImg(image);
         }
