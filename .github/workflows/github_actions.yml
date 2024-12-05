@@ -1,6 +1,9 @@
 name: Execute python, Spring, MySQL server
 
-on: [push]
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   build:
