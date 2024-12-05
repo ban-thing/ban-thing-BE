@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
@@ -22,6 +24,13 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<ProfileResponseDto>> findMyProfile(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findMyProfile(Long.valueOf(userId))));
+    }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<ApiResponse<UpdateProfileResponseDto>> updateMyProfile(@AuthenticationPrincipal String userId,
+                                                                                 @RequestPart(required = false, name = "profileImg") MultipartFile file,
+                                                                                 @RequestPart(required = false, name = "nickname") UpdateNicknameRequestDto req)  throws IOException {
+        return ResponseEntity.ok().body(successResponse(userService.updateMyProfile(Long.valueOf(userId), file, req)));
     }
 
     @GetMapping("/purchases")
