@@ -10,7 +10,7 @@ public class ProfileResponseDto {
     private final Long userId;
     private final String nickname;
     private final String email;
-    private final String profileImgUrl;
+    private final String profileImg;
     private final String address1;
     private final String address2;
     private final String address3;
@@ -19,7 +19,7 @@ public class ProfileResponseDto {
         this.userId = user.getId();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
-        this.profileImgUrl = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
+        this.profileImg = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
         this.address1 = user.getAddress1();
         this.address2 = user.getAddress2();
         this.address3 = user.getAddress3();

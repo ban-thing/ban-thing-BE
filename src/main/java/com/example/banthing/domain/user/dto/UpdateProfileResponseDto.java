@@ -9,10 +9,10 @@ import java.util.Base64;
 public class UpdateProfileResponseDto {
 
     private final String nickname;
-    private final String profileImgUrl;
+    private final String profileImg;
 
     public UpdateProfileResponseDto(User user) {
         this.nickname = user.getNickname();
-        this.profileImgUrl = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
+        this.profileImg = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
     }
 }
