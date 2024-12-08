@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "items")
 public class Item extends Timestamped {
@@ -34,7 +35,7 @@ public class Item extends Timestamped {
 
     private String directLocation;
 
-    private boolean isDirect;
+    private Boolean isDirect;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
@@ -45,17 +46,16 @@ public class Item extends Timestamped {
     private User seller;
 
     @OneToMany(mappedBy = "item")
-    private List<ItemImg> images = new ArrayList<>(); ;
+    private List<ItemImgs> images = new ArrayList<>(); ;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cleaning_detail_id")
     private CleaningDetail cleaningDetail;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hashtag_id")
-    private Hashtag hashtag;
+    @OneToMany(mappedBy = "item")
+    private List<Hashtag> hashtags = new ArrayList<>();
 
-    @Builder
+    @Builder(toBuilder = true)
     public Item(String title, String content, Integer price, ItemType type, ItemStatus status, String address,
                 String directLocation, boolean isDirect, User buyer, User seller,
                 CleaningDetail cleaningDetail, Hashtag hashtag) {
@@ -70,19 +70,11 @@ public class Item extends Timestamped {
         this.buyer = buyer;
         this.seller = seller;
         this.cleaningDetail = cleaningDetail;
-        this.hashtag = hashtag;
     }
 
-    public void setBuyer(User buyer) {
-        this.buyer = buyer;
-    }
-
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
-
-    public void addImage(ItemImg image) {
+    public void addImage(ItemImgs image) {
         this.images.add(image);
         image.setItem(this); // 양방향 연관관계 설정
     }
+
 }
