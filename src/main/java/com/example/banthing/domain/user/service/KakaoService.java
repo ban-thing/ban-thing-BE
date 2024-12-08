@@ -131,6 +131,7 @@ public class KakaoService {
             kakaoUser = User.builder()
                     .nickname("반띵#" + kakaoUserInfo.getId())
                     .email(email)
+                    .socialId(kakaoId)
                     .profileImg(getRandomDefaultProfileImage())
                     .loginType(LoginType.kakao)
                     .build();

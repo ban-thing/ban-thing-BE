@@ -22,8 +22,10 @@ public class User extends Timestamped {
 
     private String nickname;
 
+    @Column(unique = true, nullable = false)
     private Long socialId;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     @OneToOne
