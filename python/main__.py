@@ -15,12 +15,11 @@ from sentence_transformers import SentenceTransformer
 
 app = Flask(__name__)
 
-def adv_search(question_list):
+def adv_search(question, trait_data):
 
     # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    trait_data = pd.read_csv(r"advanced_search_test_file.csv")
     trait_data.head()
 
     # 모든 텍스트 소문자로 전환하기
@@ -29,7 +28,7 @@ def adv_search(question_list):
         return " ".join([word.lower() for word in text.split()]) # 입력받은 텍스트를 소문자화합니다
 
     # 행동 특성의 이름과 질문 텍스트 소문자화
-    trait_data['Processed_Hashtag'] = trait_data['해시태그'].apply(preprocess_text)
+    trait_data['Processed_Hashtag'] = trait_data['hashtag'].apply(preprocess_text)
 
     # 질문 텍스트 vectorization
 
@@ -65,16 +64,15 @@ def adv_search(question_list):
 
     # Find the best matches for each question with detailed information
     question_matches_detailed_ranked = {}
-    for idx, question in enumerate(question_list['해시태그']):
-        matched_data = match_question_to_data_detailed(question, trait_data) # 각각의 질문 내용과 행동 특성들을 비교
+    for idx, q in enumerate([question]):
+        matched_data = match_question_to_data_detailed(q, trait_data) # 각각의 질문 내용과 행동 특성들을 비교
         question_matches_detailed_ranked[f"advanced_search_result {idx}"] = matched_data
 
     #output_filepath_questions_detailed_ranked = r"advanced_search_result.xlsx"
     #writer = pd.ExcelWriter(output_filepath_questions_detailed_ranked, engine='xlsxwriter')
     for q_key, matched_data in question_matches_detailed_ranked.items():
         # Add the question as a separate row before the matches
-        dataframe = pd.DataFrame([[None, None, None, None, None]], columns=['이름', '해시태그', 'Processed_Hashtag', 'Question',
-        'Matching Rank/Probability'])
+        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None, None]], columns=['id', '제목', 'img', 'price', 'type', 'address', 'hashtag', 'updatedAt', 'Matching Rank/Probability'])
         dataframe = pd.concat([dataframe, matched_data], ignore_index=True)
         #dataframe.to_excel(writer, sheet_name=q_key, index=False)
 
@@ -86,12 +84,16 @@ def adv_search(question_list):
 @app.route("/post", methods=['POST'])
 def advanced_search():
     # get the data from dataset with label '해시태그'
-    params = request.form.get('해시태그')
+    body = request.json
+    hashtag = body['input_hashtag']
+    items = body['items']
     
-    df = adv_search({'해시태그': params})
+    response_df = pd.DataFrame(items)
 
-    return df.to_dict()
-    #return params
+    #df = adv_search(hashtag, response_df)
+    print(response_df)
+    #return df.to_dict()
+    return jsonify(response_df.to_dict())
 
 if __name__ == '__main__':
     app.run(port=7000, debug = True)
