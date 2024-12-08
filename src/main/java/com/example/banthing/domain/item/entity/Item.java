@@ -46,7 +46,7 @@ public class Item extends Timestamped {
     private User seller;
 
     @OneToMany(mappedBy = "item")
-    private List<ItemImgs> images = new ArrayList<>(); ;
+    private List<ItemImg> images = new ArrayList<>(); ;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cleaning_detail_id")
@@ -58,7 +58,7 @@ public class Item extends Timestamped {
     @Builder(toBuilder = true)
     public Item(String title, String content, Integer price, ItemType type, ItemStatus status, String address,
                 String directLocation, boolean isDirect, User buyer, User seller,
-                CleaningDetail cleaningDetail, Hashtag hashtag) {
+                CleaningDetail cleaningDetail) {
         this.title = title;
         this.content = content;
         this.price = price;
@@ -72,7 +72,7 @@ public class Item extends Timestamped {
         this.cleaningDetail = cleaningDetail;
     }
 
-    public void addImage(ItemImgs image) {
+    public void addImage(ItemImg image) {
         this.images.add(image);
         image.setItem(this); // 양방향 연관관계 설정
     }

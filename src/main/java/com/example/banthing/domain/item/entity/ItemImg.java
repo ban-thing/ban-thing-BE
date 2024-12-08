@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -15,11 +16,11 @@ public class ItemImg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String imgUrl;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id")
     private Item item;
 
     @Builder
@@ -29,7 +30,4 @@ public class ItemImg {
         item.addImage(this); // 양방향 연관관계 설정
     }
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
 }
