@@ -1,5 +1,5 @@
 package com.example.banthing.global.config;
-;
+
 import com.example.banthing.global.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,8 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/",
             "/user/kakao/callback",
-            "/image/upload"
+            "/image/upload",
+            "/ws/chat/**"
     };
 
     @Bean
