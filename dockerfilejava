@@ -1,7 +1,7 @@
 # Use the official Gradle image as the builder
 FROM gradle:7.6.4-jdk17 AS build
 
-MKDIR /images
+MKDIR ./images
 
 COPY /build/libs/*-SNAPSHOT.jar app.jar
 EXPOSE 8080
