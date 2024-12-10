@@ -118,22 +118,5 @@ public class ItemController {
         //return ResponseEntity.ok(itemService.listItems(page, keyword, filter_low, filter_high));
         
     }
-
-    
-    @GetMapping("a")
-    public ResponseEntity<ApiResponse<ItemDto>> testItems(@RequestBody(required = true ) ItemSearchRequestDto request) {
-        String keyword = request.getKeyword();
-        String hashtags = request.getHashtags();
-        int filter_low = request.getFilter_low();
-        int filter_high = request.getFilter_high();
-        String address = request.getAddress();
-
-        int test = 13;
-        long longvalue = (long) test;
-
-
-        return ResponseEntity.ok().body(successResponse(itemService.get(Long.valueOf(longvalue))));
-    
-    }
     
 }
