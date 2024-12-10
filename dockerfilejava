@@ -2,7 +2,6 @@
 FROM gradle:7.6.4-jdk17 AS build
 
 MKDIR ./images
-RUN chmod 777 ./images
 
 COPY /build/libs/*-SNAPSHOT.jar app.jar
 EXPOSE 8080
