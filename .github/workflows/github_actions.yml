@@ -27,6 +27,7 @@ jobs:
 
     - name: Make application.properties
       run: |
+        mkdir -p ./images
         mkdir -p ./src/main/resources
         cd ./src/main/resources
         touch ./application.properties
@@ -72,7 +73,7 @@ jobs:
           sudo docker stop spring-container
           sudo docker rm spring-container
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
-          sudo docker run -v /root/images:/image -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+          sudo docker run -v /root/images:/images -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
           sudo docker stop python-container
           sudo docker rm python-container
