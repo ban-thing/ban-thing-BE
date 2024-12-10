@@ -8,7 +8,7 @@ EXPOSE 8080
 RUN ls
 MKDIR ./images
 RUN cd ..
-WORKDIR ./
+WORKDIR ..
 
 ENTRYPOINT ["java", "-jar", "./app.jar"]
 
