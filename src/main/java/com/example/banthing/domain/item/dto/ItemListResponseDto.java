@@ -10,11 +10,10 @@ import com.example.banthing.domain.item.entity.Item;
 @Getter
 public class ItemListResponseDto {
     
-    private int totalPages;
-    private List<ItemResponseDto> items;
+    private List<ItemSearchResponseDto> items;
 
     // Constructors
-    public ItemListResponseDto(List<ItemResponseDto> items) {
+    public ItemListResponseDto(List<ItemSearchResponseDto> items) {
         this.items = items;
     }   
 

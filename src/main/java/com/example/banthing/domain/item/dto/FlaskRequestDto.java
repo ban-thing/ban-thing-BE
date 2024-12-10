@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 public class FlaskRequestDto {
     private String input_hashtag;
-    List<ItemResponseDto> items;
+    List<ItemSearchResponseDto> items;
 
     // Constructors
-    public FlaskRequestDto(List<ItemResponseDto> items) {
+    public FlaskRequestDto(List<ItemSearchResponseDto> items) {
         this.items = items;
     }   
 

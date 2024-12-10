@@ -24,11 +24,9 @@ def adv_search(question, trait_data):
 
     # 모든 텍스트 소문자로 전환하기
 
-    def preprocess_text(text):
-        return " ".join([word.lower() for word in text.split()]) # 입력받은 텍스트를 소문자화합니다
 
     # 행동 특성의 이름과 질문 텍스트 소문자화
-    trait_data['Processed_Hashtag'] = trait_data['hashtag'].apply(preprocess_text)
+    trait_data['Processed_Hashtag'] = trait_data['hashtag']
 
     # 질문 텍스트 vectorization
 
@@ -72,7 +70,7 @@ def adv_search(question, trait_data):
     #writer = pd.ExcelWriter(output_filepath_questions_detailed_ranked, engine='xlsxwriter')
     for q_key, matched_data in question_matches_detailed_ranked.items():
         # Add the question as a separate row before the matches
-        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None, None]], columns=['id', '제목', 'img', 'price', 'type', 'address', 'hashtag', 'updatedAt', 'Matching Rank/Probability'])
+        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None]], columns=['id', 'updated_at', 'address', 'price', 'title', 'type', 'hashtag', 'images', 'Matching Rank/Probability'])
         dataframe = pd.concat([dataframe, matched_data], ignore_index=True)
         #dataframe.to_excel(writer, sheet_name=q_key, index=False)
 
@@ -80,6 +78,9 @@ def adv_search(question, trait_data):
     #writer.close()
 
     return dataframe
+
+def dict_to_String(hashtag_list):
+    return ", ".join(hashtag_list)
 
 @app.route("/post", methods=['POST'])
 def advanced_search():
@@ -89,11 +90,28 @@ def advanced_search():
     items = body['items']
     
     response_df = pd.DataFrame(items)
-
-    #df = adv_search(hashtag, response_df)
     print(response_df)
-    #return df.to_dict()
-    return jsonify(response_df.to_dict())
+    print("---------------------------------")
+    print(response_df.columns)
+    print(response_df)
+    response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
+
+    df = adv_search(hashtag, response_df)
+    
+    print("---------------------------------")
+    print(response_df.columns)
+    print(response_df)
+    print("---------------------------------")
+    print(df.columns)
+    print(df)
+    print("---------------------------------")
+
+    df = df[df['Matching Rank/Probability'] > 0.1]
+    df = df[['id', 'updated_at', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
+    print(df.to_dict(orient='records'))
+    
+
+    return jsonify(df.to_dict(orient='records'))
 
 if __name__ == '__main__':
     app.run(port=7000, debug = True)
