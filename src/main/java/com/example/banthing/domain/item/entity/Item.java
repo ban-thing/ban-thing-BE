@@ -31,6 +31,7 @@ public class Item extends Timestamped {
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
 
+    @Column(name = "address")
     private String address;
 
     private String directLocation;
