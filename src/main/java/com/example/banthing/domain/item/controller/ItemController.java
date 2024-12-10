@@ -100,19 +100,19 @@ public class ItemController {
         
         String keyword = request.getKeyword();
         String hashtags = request.getHashtags();
-        int filter_low = request.getFilter_low();
-        int filter_high = request.getFilter_high();
+        int minPrice = request.getFilter_low();
+        int maxPrice = request.getFilter_high();
         String address = request.getAddress();
 
         if (hashtags.length() != 0) {
             
             //logger.atError();
             // output ItemListResponseDto로 받는 방법 찾기
-            return ResponseEntity.ok(itemService.advancedListItems(keyword, hashtags, filter_low, filter_high, address)); 
+            return ResponseEntity.ok(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)); 
         }else {
             // or output FlaskResponseDto로 받는 방법 찾기
             
-            return ResponseEntity.ok(itemService.listItems(keyword, filter_low, filter_high, address));
+            return ResponseEntity.ok(itemService.listItems(keyword, minPrice, maxPrice, address));
         }
         
         //return ResponseEntity.ok(itemService.listItems(page, keyword, filter_low, filter_high));

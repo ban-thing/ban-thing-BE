@@ -45,15 +45,22 @@ public interface ItemMapper {
         @Result(column = "type", property = "type"),
         @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class)
     })
-    List<ItemSearchResponseDto> listItems(@Param("keyword") String keyword, @Param("low") int filter_low, @Param("high") int filter_high, @Param("address") String address);
+    List<ItemSearchResponseDto> listItems(@Param("keyword") String keyword, @Param("minPrice") int minPrice, @Param("maxPrice") int maxPrice, @Param("address") String address);
+        
 
-
-    @Query("""
-        SELECT i 
+    @Select("""
+        SELECT i.id AS id,
+               i.updated_at AS updated_at,
+               i.address AS address,
+               i.price AS price,
+               i.title AS title,
+               i.type AS type,
+               GROUP_CONCAT(h.hashtag) AS hashtags
         FROM items i
-        LEFT JOIN FETCH i.hashtags h
-        WHERE title LIKE CONCAT('%', :keyword, '%')
-        AND i.price BETWEEN :filter_low AND :filter_high
+        LEFT JOIN hashtags h ON i.id = h.item_id
+        WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
+        GROUP BY i.id, i.updated_at, i.address, i.price, i.title, i.type
+        AND i.price BETWEEN #{minPrice} AND #{maxPrice}
         """)
     @Results({
         @Result(column = "id", property = "id"),
@@ -62,7 +69,8 @@ public interface ItemMapper {
         @Result(column = "price", property = "price"),
         @Result(column = "title", property = "title"),
         @Result(column = "type", property = "type"),
-        @Result(column = "hashtags", property = "hashtag") //, javaType = List.class, typeHandler = MyBatisListHandler.class)
+        @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class)
     })
-    List<ItemSearchResponseDto> listFilteredItems(@Param("keyword") String keyword, @Param("low") int filter_low, @Param("high") int filter_high, @Param("address") String address);
+    List<ItemSearchResponseDto> listFilteredItems(@Param("keyword") String keyword, @Param("minPrice") int minPrice, @Param("maxPrice") int maxPrice, @Param("address") String address);
+
 }

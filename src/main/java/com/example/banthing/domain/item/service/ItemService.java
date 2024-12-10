@@ -160,8 +160,14 @@ public class ItemService {
 
     // 상세 검색 메소드
     public ItemListResponseDto advancedListItems(String keyword, String hashtags, int filter_low, int filter_high, String address) {
-    
-        List<ItemSearchResponseDto> body = itemMapper.listItems(keyword, filter_low, filter_high, address);
+        
+        List<ItemSearchResponseDto> body;
+        if( filter_low == -1 && filter_high == -1){
+            body = itemMapper.listItems(keyword, filter_low, filter_high, address);
+        } else {
+            body = itemMapper.listFilteredItems(keyword, filter_low, filter_high, address);
+        }
+        
         
         try {
             logger.info("JSON Body2: {}", objectMapper.writeValueAsString(body));
