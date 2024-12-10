@@ -24,7 +24,7 @@ public class ItemDto {
     private String directLocation;
     private String address;
     private List<String> itemImgs;
-    private HashtagDto hashtag;
+    private List<HashtagDto> hashtags;
     private CleaningDetailDto cleaningDetail;
     private boolean isDirect;
     private LocalDateTime updateTime;
@@ -42,7 +42,7 @@ public class ItemDto {
                 item.getImages().stream()
                         .map(ItemImg::getImgUrl)
                         .collect(Collectors.toList()),
-                (HashtagDto) item.getHashtags().stream()
+                item.getHashtags().stream()
                         .map(HashtagDto::fromEntity)
                         .collect(Collectors.toList()),
                 item.getCleaningDetail() != null ? CleaningDetailDto.fromEntity(item.getCleaningDetail()) : null,
@@ -50,6 +50,5 @@ public class ItemDto {
                 item.getUpdatedAt()
         );
     }
-
 }
 

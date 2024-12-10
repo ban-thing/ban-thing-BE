@@ -88,13 +88,12 @@ public class ItemService {
         item.setPrice((Integer) requestData.get("price"));
         item.setDirectLocation((String) requestData.get("directLocation"));
         item.setAddress((String) requestData.get("address"));
-//        item.setStatus(ItemStatus.valueOf((String) requestData.get("status")));
+        item.setStatus(ItemStatus.valueOf((String) requestData.get("status")));
         item.setSeller(seller);
         item.setCleaningDetail(cleaningDetail);
         item.setIsDirect((Boolean) requestData.get("isDirect"));
 
         itemRepository.save(item);
-
         itemImgsService.update(images, item.getId());
 
         return new ItemResponseDto(item);
@@ -107,5 +106,9 @@ public class ItemService {
 
     public void delete(Long id) {
         itemImgsService.delete(id);
+        cleaningDetailRepository.delete(cleaningDetailRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
+        hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
+        itemRepository.deleteById(id);
     }
 }
