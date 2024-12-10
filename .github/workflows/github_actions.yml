@@ -1,0 +1,80 @@
+name: Execute python, Spring, MySQL server
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Make application.properties
+      run: |
+        mkdir -p ./src/main/resources
+        cd ./src/main/resources
+        touch ./application.properties
+        echo "${{ secrets.Application }}" > ./application.properties
+
+      # gradle을 통해 소스를 빌드.
+      
+    - name: Build with Gradle
+      run: |
+        chmod +x ./gradlew
+        ./gradlew clean build -x test
+    
+    - name: Spring-Docker build & push to prod
+      if: contains(github.ref, 'main')
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PWD }}
+        docker build -f ./dockerfilejava -t ${{ secrets.DOCKER_USERNAME }}/cicdtestjava .
+        docker push ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+        
+    - name: Python-Docker build & push to prod
+      if: contains(github.ref, 'main')
+      run: |
+        docker build -f ./dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cicdtest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/cicdtest
+    
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Deploy to prod
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_PROD }}
+        username: root
+        password: ${{ secrets.HOST_PWD }}
+        envs:
+          GITHUB_SHA
+        script: |
+          sudo docker stop spring-container
+          sudo docker rm spring-container
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+          sudo docker run -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          sudo docker stop python-container
+          sudo docker rm python-container
+          sudo docker run -d --name python-container --network docker-network -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          sudo docker image prune -f
