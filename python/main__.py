@@ -12,6 +12,7 @@ import torch
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -70,7 +71,7 @@ def adv_search(question, trait_data):
     #writer = pd.ExcelWriter(output_filepath_questions_detailed_ranked, engine='xlsxwriter')
     for q_key, matched_data in question_matches_detailed_ranked.items():
         # Add the question as a separate row before the matches
-        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None]], columns=['id', 'updated_at', 'address', 'price', 'title', 'type', 'hashtag', 'images', 'Matching Rank/Probability'])
+        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None]], columns=['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images', 'Matching Rank/Probability'])
         dataframe = pd.concat([dataframe, matched_data], ignore_index=True)
         #dataframe.to_excel(writer, sheet_name=q_key, index=False)
 
@@ -107,7 +108,7 @@ def advanced_search():
     print("---------------------------------")
 
     df = df[df['Matching Rank/Probability'] > 0.1]
-    df = df[['id', 'updated_at', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
+    df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
     print(df.to_dict(orient='records'))
     
 

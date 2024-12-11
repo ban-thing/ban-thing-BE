@@ -97,7 +97,7 @@ public class ItemController {
      * 
      */
     @GetMapping("")
-    public ResponseEntity<ItemListResponseDto> listItems(@RequestBody(required = true ) ItemSearchRequestDto request) {
+    public ResponseEntity<ApiResponse<ItemListResponseDto>> listItems(@RequestBody(required = true ) ItemSearchRequestDto request) {
         
         String keyword = request.getKeyword();
         String hashtags = request.getHashtags();
@@ -109,11 +109,11 @@ public class ItemController {
             
             //logger.atError();
             // output ItemListResponseDto로 받는 방법 찾기
-            return ResponseEntity.ok(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)); 
+            return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address))); 
         }else {
             // or output FlaskResponseDto로 받는 방법 찾기
             
-            return ResponseEntity.ok(itemService.listItems(keyword, minPrice, maxPrice, address));
+            return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         }
         
         //return ResponseEntity.ok(itemService.listItems(page, keyword, filter_low, filter_high));

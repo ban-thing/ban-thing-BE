@@ -1,9 +1,6 @@
 package com.example.banthing.domain.item.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.example.banthing.domain.item.entity.Hashtag;
 import com.example.banthing.domain.item.entity.ItemType;
 
 import lombok.Getter;
@@ -11,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class FlaskItemResponseDto {
     private final Long id;
-    private final LocalDateTime updated_at;
+    private final LocalDateTime updatedAt;
     private final String address;
     private final Integer price;
     private final String title;
@@ -21,7 +18,7 @@ public class FlaskItemResponseDto {
 
     public FlaskItemResponseDto(
         Long id, 
-        LocalDateTime updated_at,
+        LocalDateTime updatedAt,
         String address,
         Integer price,
         String title,
@@ -30,7 +27,7 @@ public class FlaskItemResponseDto {
         String images
     ) {
             this.id = id;
-            this.updated_at = updated_at;
+            this.updatedAt = updatedAt;
             this.address = address;
             this.price = price;
             this.title = title;
