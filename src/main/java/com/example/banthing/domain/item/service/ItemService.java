@@ -152,7 +152,8 @@ public class ItemService {
         Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
         item.setStatus(판매완료);
         itemRepository.save(item);
-  
+    }
+    
     // 일반 & 필터 검색 메소드
     public ItemListResponseDto listItems(String keyword, Long minPrice, Long maxPrice, String address) {
         
