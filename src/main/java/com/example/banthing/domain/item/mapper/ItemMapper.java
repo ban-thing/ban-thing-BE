@@ -1,6 +1,5 @@
 package com.example.banthing.domain.item.mapper;
 
-import com.example.banthing.domain.item.dto.ItemSearchRequestDto;
 import com.example.banthing.domain.item.dto.ItemSearchResponseDto;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -8,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -39,7 +37,7 @@ public interface ItemMapper {
         """)
     @Results({
         @Result(column = "id", property = "id"),
-        @Result(column = "updatedAt", property = "updated_at"),
+        @Result(column = "updated_at", property = "updatedAt"),
         @Result(column = "address", property = "address"),
         @Result(column = "price", property = "price"),
         @Result(column = "title", property = "title"),
@@ -66,7 +64,7 @@ public interface ItemMapper {
         """)
     @Results({
         @Result(column = "id", property = "id"),
-        @Result(column = "updatedAt", property = "updated_at"),
+        @Result(column = "updated_at", property = "updatedAt"),
         @Result(column = "address", property = "address"),
         @Result(column = "price", property = "price"),
         @Result(column = "title", property = "title"),

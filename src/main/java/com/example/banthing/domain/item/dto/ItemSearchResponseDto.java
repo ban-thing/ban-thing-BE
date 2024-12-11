@@ -1,13 +1,11 @@
 package com.example.banthing.domain.item.dto;
 
-import com.example.banthing.domain.item.entity.Hashtag;
 import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.entity.ItemType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemSearchResponseDto {
     private Long id;
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
     private String address;
     private Integer price;
     private String title;
@@ -30,7 +28,7 @@ public class ItemSearchResponseDto {
 
     public ItemSearchResponseDto(ItemSearchResponseDto item) {
         this.id = item.getId();
-        this.updated_at = item.getUpdated_at();
+        this.updatedAt = item.getUpdatedAt();
         this.address = item.getAddress();
         this.price = item.getPrice();
         this.title = item.getTitle();
@@ -61,7 +59,7 @@ public class ItemSearchResponseDto {
         
         ItemSearchResponseDto newResponse = new ItemSearchResponseDto(
             item.getId(),
-            item.getUpdated_at(),
+            item.getUpdatedAt(),
             item.getAddress(),
             item.getPrice(),
             item.getTitle(),
@@ -71,8 +69,6 @@ public class ItemSearchResponseDto {
         );
         
         List<HashtagDto> list_temp = new ArrayList<>();
-        
-
         for (String text : item.getHashtag().split(", ")) {
 
             HashtagDto item_temp = new HashtagDto(null, text);
@@ -81,10 +77,7 @@ public class ItemSearchResponseDto {
         }
 
         newResponse.setHashtag(list_temp);
-
-        return new ItemSearchResponseDto(
-            newResponse
-        );
+        return new ItemSearchResponseDto(newResponse);
         
     }
 

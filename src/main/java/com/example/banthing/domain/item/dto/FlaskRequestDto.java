@@ -1,8 +1,6 @@
 package com.example.banthing.domain.item.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
 import lombok.Getter;
 
 @Getter
