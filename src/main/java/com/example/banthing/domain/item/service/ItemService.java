@@ -147,28 +147,32 @@ public class ItemService {
     }
 
     // 일반 & 필터 검색 메소드
-    public ItemListResponseDto listItems(String keyword, int filter_low, int filter_high, String address) {
+    public ItemListResponseDto listItems(String keyword, Long minPrice, Long maxPrice, String address) {
         
         try {
-            logger.info("JSON Body1: {}", objectMapper.writeValueAsString(itemMapper.listItems(keyword, filter_low, filter_high, address)));
+            logger.info("JSON Body1: {}", objectMapper.writeValueAsString(itemMapper.listItems(keyword, minPrice, maxPrice, address)));
             logger.info("JSON request Body1: {}", objectMapper.writeValueAsString(keyword));
-            
+            logger.info("filter low Body1: {}", objectMapper.writeValueAsString(minPrice));
+            logger.info("filter high Body1: {}", objectMapper.writeValueAsString(maxPrice));
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
             logger.error("Failed to serialize items to JSON", e);
         }
 
-        return new ItemListResponseDto(itemMapper.listItems(keyword, filter_low, filter_high, address));
+        if( minPrice == 0 && maxPrice == 0){
+            return new ItemListResponseDto(itemMapper.listItems(keyword, minPrice, maxPrice, address));
+        } else {
+            return new ItemListResponseDto(itemMapper.listFilteredItems(keyword, minPrice, maxPrice, address));
+        }
     }
 
     // 상세 검색 메소드
-    public ItemListResponseDto advancedListItems(String keyword, String hashtags, int filter_low, int filter_high, String address) {
+    public ItemListResponseDto advancedListItems(String keyword, String hashtags, Long minPrice, Long maxPrice, String address) {
         
         List<ItemSearchResponseDto> body;
-        if( filter_low == -1 && filter_high == -1){
-            body = itemMapper.listItems(keyword, filter_low, filter_high, address);
+        if( minPrice == 0 && maxPrice == 0){
+            body = itemMapper.listItems(keyword, minPrice, maxPrice, address);
         } else {
-            body = itemMapper.listFilteredItems(keyword, filter_low, filter_high, address);
+            body = itemMapper.listFilteredItems(keyword, minPrice, maxPrice, address);
         }
         
         

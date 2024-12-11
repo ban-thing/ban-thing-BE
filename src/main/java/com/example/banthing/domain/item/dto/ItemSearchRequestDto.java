@@ -9,16 +9,16 @@ public class ItemSearchRequestDto {
 
     private final String keyword;
     private final String hashtags;
-    private final int filter_low;
-    private final int filter_high;
+    private final Long minPrice;
+    private final Long maxPrice;
     private final String address;
 
-    public ItemSearchRequestDto(String keyword, List<String> hashtags, int filter_low, int filter_high, String address){
+    public ItemSearchRequestDto(String keyword, List<String> hashtags, Long minPrice, Long maxPrice, String address){
 
         this.keyword = keyword;
         this.hashtags = String.join(", ", hashtags);
-        this.filter_low = filter_low;
-        this.filter_high = filter_high;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
         this.address = address;
 
     }

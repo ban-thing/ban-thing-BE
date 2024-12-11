@@ -34,7 +34,8 @@ public interface ItemMapper {
         FROM items i
         LEFT JOIN hashtags h ON i.id = h.item_id
         WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
-        GROUP BY i.id, i.updated_at, i.address, i.price, i.title, i.type
+        AND i.address LIKE CONCAT(#{address}, '%')
+        GROUP BY i.id
         """)
     @Results({
         @Result(column = "id", property = "id"),
@@ -45,7 +46,7 @@ public interface ItemMapper {
         @Result(column = "type", property = "type"),
         @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class)
     })
-    List<ItemSearchResponseDto> listItems(@Param("keyword") String keyword, @Param("minPrice") int minPrice, @Param("maxPrice") int maxPrice, @Param("address") String address);
+    List<ItemSearchResponseDto> listItems(@Param("keyword") String keyword, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice, @Param("address") String address);
         
 
     @Select("""
@@ -59,8 +60,9 @@ public interface ItemMapper {
         FROM items i
         LEFT JOIN hashtags h ON i.id = h.item_id
         WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
-        GROUP BY i.id, i.updated_at, i.address, i.price, i.title, i.type
         AND i.price BETWEEN #{minPrice} AND #{maxPrice}
+        AND i.address LIKE CONCAT(#{address}, '%')
+        GROUP BY i.id
         """)
     @Results({
         @Result(column = "id", property = "id"),
@@ -71,6 +73,6 @@ public interface ItemMapper {
         @Result(column = "type", property = "type"),
         @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class)
     })
-    List<ItemSearchResponseDto> listFilteredItems(@Param("keyword") String keyword, @Param("minPrice") int minPrice, @Param("maxPrice") int maxPrice, @Param("address") String address);
+    List<ItemSearchResponseDto> listFilteredItems(@Param("keyword") String keyword, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice, @Param("address") String address);
 
 }

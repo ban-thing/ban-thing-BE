@@ -41,6 +41,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    
     /***
      *
      * 상품 등록
@@ -89,7 +90,7 @@ public class ItemController {
     public void deleteItem(@PathVariable Long id) {
         itemService.delete(id);
     }
-
+    
     /**
      * 
      * 상품 검색
@@ -100,8 +101,8 @@ public class ItemController {
         
         String keyword = request.getKeyword();
         String hashtags = request.getHashtags();
-        int minPrice = request.getFilter_low();
-        int maxPrice = request.getFilter_high();
+        Long minPrice = request.getMinPrice();
+        Long maxPrice = request.getMaxPrice();
         String address = request.getAddress();
 
         if (hashtags.length() != 0) {
