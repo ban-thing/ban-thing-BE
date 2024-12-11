@@ -48,6 +48,8 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -122,7 +124,6 @@ public class ItemService {
         item.setPrice((Integer) requestData.get("price"));
         item.setDirectLocation((String) requestData.get("directLocation"));
         item.setAddress((String) requestData.get("address"));
-        item.setStatus(ItemStatus.valueOf((String) requestData.get("status")));
         item.setSeller(seller);
         item.setCleaningDetail(cleaningDetail);
         item.setIsDirect((Boolean) requestData.get("isDirect"));
@@ -146,6 +147,13 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
+
+    public void sell(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
+        item.setStatus(판매완료);
+        itemRepository.save(item);
+    }
+    
     // 일반 & 필터 검색 메소드
     public ItemListResponseDto listItems(String keyword, Long minPrice, Long maxPrice, String address) {
         
@@ -211,5 +219,6 @@ public class ItemService {
         .collect(Collectors.toList());
         
         return new ItemListResponseDto(result);
+
     }
 }
