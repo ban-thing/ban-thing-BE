@@ -1,8 +1,18 @@
 package com.example.banthing.domain.item.service;
 
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,7 +33,33 @@ public class ItemImgService {
     private final ItemRepository itemRepository;
 
     @Value("${file.upload-dir}") //이미지 저장 경로
-    private String uploadDir;
+    private String folderName;
+
+    @Value("${spring.s3.endpoint}")
+    private String endPoint;
+
+    @Value("${spring.s3.region}")
+    private String region;
+
+    @Value("${spring.s3.accessKey}")
+    private String accessKey;
+
+    @Value("${spring.s3.secretKey}")
+    private String secretKey;
+
+    @Value("${spring.s3.bucket}")
+    private String bucketName;
+
+    private AmazonS3 s3;
+
+    @PostConstruct
+    public void init() {
+        // NCP S3 클라이언트 초기화
+        this.s3 = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, region))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
+    }
 
     public void save(List<MultipartFile> images, Long itemId) throws IOException {
         List<ItemImg> itemImgs = new ArrayList<>();
@@ -43,21 +79,32 @@ public class ItemImgService {
         String originalFilename = image.getOriginalFilename();
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-        File itemDir = new File(uploadDir + File.separator + itemId);
+        String newFileName = System.currentTimeMillis() + fileExtension;
+        String savePath = folderName + "/" +itemId +  "/" + newFileName;
 
-        if (!itemDir.exists()) {
-            itemDir.mkdirs();
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(image.getSize());
+        objectMetadata.setContentType(image.getContentType());
+
+
+        try {
+
+            File[] files = itemDir.listFiles(); // getlist
+            int imageCount = (files != null) ? files.length + 1 : 1; // 기존 이미지 파일 개수 + 1
+            String newFileName = imageCount + fileExtension;
+
+            s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata));
+            System.out.format("Object %s has been uploaded to NCP S3 bucket.\n", newFileName);
+
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+            throw new IOException("Error uploading file to S3: " + e.getMessage());
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+            throw new IOException("Error in S3 SDK client: " + e.getMessage());
         }
 
-        File[] files = itemDir.listFiles(); // getlist
-        int imageCount = (files != null) ? files.length + 1 : 1; // 기존 이미지 파일 개수 + 1
-        String newFileName = imageCount + fileExtension;
-
-        // 서버에 파일 저장
-        File serverFile = new File(itemDir + File.separator + newFileName);
-        image.transferTo(serverFile);
-
-        return itemId + "/" + newFileName;
+        return savePath;
     }
 
     public void delete(Long itemId) {
@@ -69,12 +116,21 @@ public class ItemImgService {
     }
 
     private void deleteImage(String imgUrl) {
-        File file = new File(uploadDir + File.separator + imgUrl);
 
-        if (file.exists() && !file.delete()) {
-            throw new RuntimeException("Failed to delete file: " + file.getAbsolutePath());
+        String objectKey = imgUrl;
+
+        try {
+            s3.deleteObject(bucketName, objectKey);
+            System.out.format("Object %s has been deleted from NCP S3 bucket.\n", objectKey);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error deleting file from S3: " + e.getMessage());
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error in S3 SDK client: " + e.getMessage());
         }
     }
+
 
     public void update(List<MultipartFile> newImages, Long itemId) throws IOException {
         delete(itemId);
