@@ -3,7 +3,7 @@ name: Execute python, Spring, MySQL server
 on: 
   push:
     branches:
-      - main
+      - 24-advanced_search
 
 jobs:
   build:
