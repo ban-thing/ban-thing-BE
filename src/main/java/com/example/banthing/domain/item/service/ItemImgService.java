@@ -49,7 +49,7 @@ public class ItemImgService {
             itemDir.mkdirs();
         }
 
-        File[] files = itemDir.listFiles();
+        File[] files = itemDir.listFiles(); // getlist
         int imageCount = (files != null) ? files.length + 1 : 1; // 기존 이미지 파일 개수 + 1
         String newFileName = imageCount + fileExtension;
 
