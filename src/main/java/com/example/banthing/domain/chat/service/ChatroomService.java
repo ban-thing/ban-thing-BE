@@ -62,7 +62,7 @@ public class ChatroomService {
         User user = findUserById(userId);
 
         return chatroomRepository
-                .findByBuyerIdOrSellerId(userId, userId)
+                .findRoomsByUserIdOrderByLatestMessage(userId)
                 .stream()
                 .map(chatroom -> new FindRoomsResponseDto(chatroom, user))
                 .toList();
