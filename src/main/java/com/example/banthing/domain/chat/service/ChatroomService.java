@@ -1,9 +1,6 @@
 package com.example.banthing.domain.chat.service;
 
-import com.example.banthing.domain.chat.dto.ChatMessageDto;
-import com.example.banthing.domain.chat.dto.CreateRoomRequestDto;
-import com.example.banthing.domain.chat.dto.CreateRoomResponseDto;
-import com.example.banthing.domain.chat.dto.FindRoomsResponseDto;
+import com.example.banthing.domain.chat.dto.*;
 import com.example.banthing.domain.chat.entity.ChatMessage;
 import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.chat.repository.ChatMessageRepository;
@@ -13,6 +10,8 @@ import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,6 +65,15 @@ public class ChatroomService {
                 .stream()
                 .map(chatroom -> new FindRoomsResponseDto(chatroom, user))
                 .toList();
+    }
+
+    public FindMessageAndItemResponseDto getChatMessages(Long roomId, Pageable pageable) {
+        Chatroom chatroom = chatroomRepository.findById(roomId)
+                .orElseThrow(() -> new NullPointerException("해당 채팅방은 존재하지 않습니다."));
+
+        Slice<ChatMessage> messages = chatMessageRepository.findAllByChatroomIdOrderByCreatedAtDesc(roomId, pageable);
+
+        return new FindMessageAndItemResponseDto(chatroom, messages);
     }
 
     private User findUserById(Long userId) {
