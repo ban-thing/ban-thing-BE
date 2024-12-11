@@ -86,7 +86,12 @@ public class ItemImgService {
         objectMetadata.setContentLength(image.getSize());
         objectMetadata.setContentType(image.getContentType());
 
+
         try {
+
+            File[] files = itemDir.listFiles(); // getlist
+            int imageCount = (files != null) ? files.length + 1 : 1; // 기존 이미지 파일 개수 + 1
+            String newFileName = imageCount + fileExtension;
 
             s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata));
             System.out.format("Object %s has been uploaded to NCP S3 bucket.\n", newFileName);
