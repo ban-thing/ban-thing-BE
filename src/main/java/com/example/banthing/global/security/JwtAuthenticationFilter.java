@@ -1,5 +1,7 @@
 package com.example.banthing.global.security;
 
+import com.example.banthing.global.common.ApiResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = jwtUtil.getTokenFromRequest(request);
 
         if (StringUtils.hasText(token)) {
-
-            // JWT 토큰 substring
             log.info(token);
 
-            if (!jwtUtil.validateToken(token)) {
-                log.error("Token Error");
+            String checkToken = jwtUtil.validateToken(token);
+            if (!checkToken.equals("")) {
+                log.error(checkToken);
+                setTokenError(response, checkToken);
                 return;
             }
 
@@ -52,7 +54,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
     }
 
@@ -68,5 +69,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 인증 객체 생성
     private Authentication createAuthentication(String userId) {
         return new UsernamePasswordAuthenticationToken(userId, null, null);
+    }
+
+    private void setTokenError(HttpServletResponse response, String message) {
+        response.setContentType("application/json; charset=UTF-8");
+        response.setStatus(401);
+
+        try {
+            response.getWriter().write(new ObjectMapper().writeValueAsString(ApiResponse.errorResponse(message)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
