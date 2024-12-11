@@ -3,15 +3,20 @@ package com.example.banthing.domain.chat.service;
 import com.example.banthing.domain.chat.dto.ChatMessageDto;
 import com.example.banthing.domain.chat.dto.CreateRoomRequestDto;
 import com.example.banthing.domain.chat.dto.CreateRoomResponseDto;
+import com.example.banthing.domain.chat.dto.FindRoomsResponseDto;
 import com.example.banthing.domain.chat.entity.ChatMessage;
 import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.chat.repository.ChatMessageRepository;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
+import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,17 +25,20 @@ public class ChatroomService {
     private final ChatroomRepository chatroomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
+    @Transactional
     public CreateRoomResponseDto createRoom(long userId, CreateRoomRequestDto request) {
-        User user = userRepository.findById(userId).orElseThrow();
-        User seller = userRepository.findById(request.getSellerId()).orElseThrow();
+        User user = findUserById(userId);
+        User seller = findUserById(request.getSellerId());
 
-        // 아이템 검증 로직 필요
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new NullPointerException("해당 상품이 존재하지 않습니다."));
 
         Chatroom chatroom = chatroomRepository.save(Chatroom.builder()
                 .buyer(user)
                 .seller(seller)
-//              .item()
+                .item(item)
                 .build());
 
         return new CreateRoomResponseDto(chatroom);
@@ -48,5 +56,20 @@ public class ChatroomService {
                 .build();
 
         return chatMessageRepository.save(chatMessage);
+    }
+
+    public List<FindRoomsResponseDto> findAllRooms(Long userId) {
+        User user = findUserById(userId);
+
+        return chatroomRepository
+                .findByBuyerIdOrSellerId(userId, userId)
+                .stream()
+                .map(chatroom -> new FindRoomsResponseDto(chatroom, user))
+                .toList();
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NullPointerException("해당 유저는 존재하지 않습니다."));
     }
 }

@@ -2,15 +2,15 @@ package com.example.banthing.domain.chat.controller;
 
 import com.example.banthing.domain.chat.dto.CreateRoomResponseDto;
 import com.example.banthing.domain.chat.dto.CreateRoomRequestDto;
+import com.example.banthing.domain.chat.dto.FindRoomsResponseDto;
 import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
@@ -26,6 +26,12 @@ public class ChatController {
     public ResponseEntity<ApiResponse<CreateRoomResponseDto>> createRoom(@AuthenticationPrincipal String userId,
                                                                          @RequestBody CreateRoomRequestDto request) {
         return ResponseEntity.ok().body(successResponse(chatroomService.createRoom(Long.parseLong(userId), request)));
+    }
+
+    // 채팅방 전체목록 조회
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<FindRoomsResponseDto>>> findAllRooms(@AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok().body(successResponse(chatroomService.findAllRooms(Long.parseLong(userId))));
     }
 
 }
