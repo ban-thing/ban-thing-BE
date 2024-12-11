@@ -71,7 +71,20 @@ public class ItemController {
      ***/
     @DeleteMapping("/{id}")
     @Transactional
-    public void deleteItem(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<?>> deleteItem(@PathVariable Long id) {
         itemService.delete(id);
+        return ResponseEntity.ok(ApiResponse.successWithNoContent());
     }
+
+    /***
+     *
+     * 판매 완료
+     *
+     ***/
+    @PatchMapping("/sell/{id}")
+    public ResponseEntity<ApiResponse<?>> sellItem(@PathVariable Long id) {
+        itemService.sell(id);
+        return ResponseEntity.ok(ApiResponse.successWithNoContent());
+    }
+
 }

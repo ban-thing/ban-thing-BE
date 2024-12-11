@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -88,7 +90,6 @@ public class ItemService {
         item.setPrice((Integer) requestData.get("price"));
         item.setDirectLocation((String) requestData.get("directLocation"));
         item.setAddress((String) requestData.get("address"));
-        item.setStatus(ItemStatus.valueOf((String) requestData.get("status")));
         item.setSeller(seller);
         item.setCleaningDetail(cleaningDetail);
         item.setIsDirect((Boolean) requestData.get("isDirect"));
@@ -110,5 +111,11 @@ public class ItemService {
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
         itemRepository.deleteById(id);
+    }
+
+    public void sell(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
+        item.setStatus(판매완료);
+        itemRepository.save(item);
     }
 }
