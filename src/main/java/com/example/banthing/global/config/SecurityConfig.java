@@ -22,7 +22,8 @@ public class SecurityConfig {
             "/",
             "/user/kakao/callback",
             "/image/upload",
-            "/ws/chat/**"
+            "/ws/chat/**",
+            "/items"
     };
 
     @Bean
