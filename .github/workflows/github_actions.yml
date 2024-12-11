@@ -72,7 +72,7 @@ jobs:
           sudo docker stop spring-container
           sudo docker rm spring-container
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
-          sudo docker run -v /home/root/uploads:/app/uploads -u $(id -u):$(id -g) -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+          sudo docker run -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
           sudo docker stop python-container
           sudo docker rm python-container
