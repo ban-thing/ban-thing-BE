@@ -86,6 +86,7 @@ public class ItemImgService {
         objectMetadata.setContentLength(image.getSize());
         objectMetadata.setContentType(image.getContentType());
 
+
         try {
 
             s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata));
