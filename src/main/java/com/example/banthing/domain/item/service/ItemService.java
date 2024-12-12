@@ -187,14 +187,15 @@ public class ItemService {
             body = itemMapper.listFilteredItems(keyword, minPrice, maxPrice, address);
         }
         
-        
+        logger.info(flask_url);
+        /*
         try {
             logger.info("JSON Body2: {}", objectMapper.writeValueAsString(body));
-            logger.info("http://#{flask_url}:7000/post");
+            
         } catch (JsonProcessingException e) {
             logger.error("Failed to serialize items to JSON", e);
         }
-
+        */
         // send request to python with result, start, and end
         RestTemplate restTemplate = new RestTemplate();
         
@@ -204,13 +205,13 @@ public class ItemService {
         
         FlaskRequestDto request_body = new FlaskRequestDto(body);
         request_body.setHashtag(hashtags.toString());
-        
+        /*
         try {
             logger.info("JSON Flask requeset Body2: {}", objectMapper.writeValueAsString(request_body));
         } catch (JsonProcessingException e) {
             logger.error("JSON Flask requeset Failed to serialize items to JSON", e);
         }
-
+        */
         String flask_full_url = "http://" + flask_url + ":7000/post";
         HttpEntity<FlaskRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
         ResponseEntity<List<FlaskItemResponseDto>> flask_response = restTemplate.exchange(
