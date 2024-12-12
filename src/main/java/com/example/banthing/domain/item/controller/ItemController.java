@@ -109,14 +109,13 @@ public class ItemController {
      * 
      */
     @GetMapping("")
-    public ResponseEntity<ApiResponse<ItemListResponseDto>> listItems(@RequestBody(required = true ) ItemSearchRequestDto request) {
+    public ResponseEntity<ApiResponse<ItemListResponseDto>> listItems(
+        @RequestParam(required = false ) String keyword,
+        @RequestParam(required = false ) String hashtags,
+        @RequestParam(required = false ) Long minPrice,
+        @RequestParam(required = false ) Long maxPrice,
+        @RequestParam(required = false ) String address) {
         
-        String keyword = request.getKeyword();
-        String hashtags = request.getHashtags();
-        Long minPrice = request.getMinPrice();
-        Long maxPrice = request.getMaxPrice();
-        String address = request.getAddress();
-
         if (hashtags.length() != 0) {
             
             //logger.atError();
