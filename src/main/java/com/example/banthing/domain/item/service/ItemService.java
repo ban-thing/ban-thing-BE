@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -58,6 +59,9 @@ public class ItemService {
     public static Logger logger = LoggerFactory.getLogger("Flask 관련 로그");
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final ItemMapper itemMapper;
+    
+    @Value("${file.flask-url}")
+    private String flask_url;
 
     private final ItemRepository itemRepository;
     private final ItemImgRepository itemImgsRepository;
@@ -186,6 +190,7 @@ public class ItemService {
         
         try {
             logger.info("JSON Body2: {}", objectMapper.writeValueAsString(body));
+            logger.info("http://#{flask_url}:7000/post");
         } catch (JsonProcessingException e) {
             logger.error("Failed to serialize items to JSON", e);
         }
@@ -206,9 +211,10 @@ public class ItemService {
             logger.error("JSON Flask requeset Failed to serialize items to JSON", e);
         }
 
+        String flask_full_url = "http://" + flask_url + ":7000/post";
         HttpEntity<FlaskRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
         ResponseEntity<List<FlaskItemResponseDto>> flask_response = restTemplate.exchange(
-            "http://localhost:7000/post", 
+            flask_full_url, 
             HttpMethod.POST,
             requestHttp , 
             new ParameterizedTypeReference<List<FlaskItemResponseDto>>() {}); // fromFlask()로 매핑해야함
