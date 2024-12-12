@@ -5,12 +5,14 @@ import com.example.banthing.domain.user.entity.ProfileImage;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.ProfileRepository;
 import com.example.banthing.domain.user.repository.UserRepository;
+import com.example.banthing.global.common.Timestamped;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -49,12 +51,16 @@ public class UserService {
 
     public List<PurchaseResponseDto> findPurchasesById(Long userId) {
         User user = findById(userId);
-        return user.getPurchases().stream().map(PurchaseResponseDto::new).toList();
+        return user.getBuyerChats().stream()
+                .sorted(Comparator.comparing(chat -> chat.getItem().getCreatedAt(), Comparator.reverseOrder()))
+                .map(PurchaseResponseDto::new).toList();
     }
 
     public List<SalesResponseDto> findSalesById(Long userId) {
         User user = findById(userId);
-        return user.getSales().stream().map(SalesResponseDto::new).toList();
+        return user.getSales().stream()
+                .sorted(Comparator.comparing(Timestamped::getCreatedAt, Comparator.reverseOrder()))
+                .map(SalesResponseDto::new).toList();
     }
 
     @Transactional

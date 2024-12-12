@@ -1,5 +1,6 @@
 package com.example.banthing.domain.user.dto;
 
+import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.item.entity.Item;
 import lombok.Getter;
 
@@ -16,7 +17,8 @@ public class PurchaseResponseDto {
     private final String address;
     private final LocalDateTime updatedAt;
 
-    public PurchaseResponseDto(Item item) {
+    public PurchaseResponseDto(Chatroom chatroom) {
+        Item item = chatroom.getItem();
         this.itemId = item.getId();
         this.title = item.getTitle();
         this.price = item.getPrice();
