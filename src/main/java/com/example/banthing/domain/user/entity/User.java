@@ -79,25 +79,4 @@ public class User extends Timestamped {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
-
-    public void addPurchase(Item item) {
-        this.purchases.add(item);
-        item.setBuyer(this);
-    }
-
-    public void addSale(Item item) {
-        this.sales.add(item);
-        item.setSeller(this);
-    }
-
-    public void addBuyerChat(Chatroom chatroom) {
-        this.buyerChats.add(chatroom);
-        chatroom.setBuyer(this);
-    }
-
-    public void addSellerChat(Chatroom chatroom) {
-        this.sellerChats.add(chatroom);
-        chatroom.setSeller(this);
-    }
-
 }
