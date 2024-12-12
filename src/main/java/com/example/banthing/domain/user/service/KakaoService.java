@@ -1,11 +1,11 @@
 package com.example.banthing.domain.user.service;
 
+import com.example.banthing.domain.user.dto.KakaoUserInfoDto;
 import com.example.banthing.domain.user.entity.LoginType;
 import com.example.banthing.domain.user.entity.ProfileImage;
+import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.ProfileRepository;
 import com.example.banthing.domain.user.repository.UserRepository;
-import com.example.banthing.domain.user.dto.KakaoUserInfoDto;
-import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.global.security.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,7 +42,15 @@ public class KakaoService {
     @Value("${kakao.redirect-uri}") // Base64 Encode 한 SecretKey
     private String redirectUri;
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
+    public String kakaoLogin(String accessToken) throws JsonProcessingException {
+
+        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+
+        return jwtUtil.createToken(String.valueOf(kakaoUser.getId()));
+    }
+
+    public String kakaoLoginForBe(String code) throws JsonProcessingException {
 
         String accessToken = getToken(code);
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
