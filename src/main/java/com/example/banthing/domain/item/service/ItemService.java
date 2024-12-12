@@ -187,6 +187,10 @@ public class ItemService {
             body = itemMapper.listFilteredItems(keyword, minPrice, maxPrice, address);
         }
         
+        if (body == null || body.isEmpty()){
+            return new ItemListResponseDto(body);
+        }
+
         logger.info(flask_url);
         /*
         try {
