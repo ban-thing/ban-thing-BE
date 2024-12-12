@@ -6,9 +6,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
@@ -88,10 +86,9 @@ public class ItemImgService {
 
 
         try {
-
-            s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata));
+            s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
             System.out.format("Object %s has been uploaded to NCP S3 bucket.\n", newFileName);
-
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
             throw new IOException("Error uploading file to S3: " + e.getMessage());
@@ -100,33 +97,35 @@ public class ItemImgService {
             throw new IOException("Error in S3 SDK client: " + e.getMessage());
         }
 
-        return savePath;
+        return newFileName;
     }
+
 
     public void delete(Long itemId) {
         List<ItemImg> itemImgs = itemImgsRepository.findByItemId(itemId);
-        for (ItemImg img : itemImgs) {
-            deleteImage(img.getImgUrl());
-        }
+        deleteImage(itemId);
         itemImgsRepository.deleteAll(itemImgs);
     }
 
-    private void deleteImage(String imgUrl) {
+    private void deleteImage(Long itemId) {
 
-        String objectKey = imgUrl;
+        String itemFolderPath = folderName + "/" + itemId + "/";
 
         try {
-            s3.deleteObject(bucketName, objectKey);
-            System.out.format("Object %s has been deleted from NCP S3 bucket.\n", objectKey);
+            ObjectListing objectListing = s3.listObjects(bucketName, itemFolderPath);
+            for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+                String objectKey = objectSummary.getKey();
+                s3.deleteObject(bucketName, objectKey);
+                System.out.format("Object %s has been deleted from NCP S3 bucket.\n", objectKey);
+            }
         } catch (AmazonS3Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Error deleting file from S3: " + e.getMessage());
+            throw new RuntimeException("Error deleting files from S3: " + e.getMessage());
         } catch (SdkClientException e) {
             e.printStackTrace();
             throw new RuntimeException("Error in S3 SDK client: " + e.getMessage());
         }
     }
-
 
     public void update(List<MultipartFile> newImages, Long itemId) throws IOException {
         delete(itemId);
