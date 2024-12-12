@@ -20,12 +20,23 @@ public class KakaoController {
 
     private final KakaoService kakaoService;
 
+    @GetMapping("/user/kakao")
+    public ResponseEntity<ApiResponse<?>> kakaoLogin(@RequestParam String token, HttpServletResponse response) throws JsonProcessingException {
+
+        String jwt = kakaoService.kakaoLogin(token);
+
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, jwt.substring(7));
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().body(successWithNoContent());
+    }
+
     @GetMapping("/user/kakao/callback")
-    public ResponseEntity<ApiResponse<?>> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<?>> kakaoLoginForBe(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
-        String token = kakaoService.kakaoLogin(code);
+        String token = kakaoService.kakaoLoginForBe(code);
 
-        // Cookie 생성 및 직접 브라우저에 Set
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
         cookie.setPath("/");
         response.addCookie(cookie);

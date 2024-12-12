@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/",
-            "/user/kakao/callback",
+            "/user/kakao/**",
             "/image/upload",
             "/ws/chat/**",
             "/items"
