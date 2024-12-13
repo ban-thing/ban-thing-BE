@@ -25,6 +25,11 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/",
+            "/favicon.ico",
+            "/static/**",
+            "/public/**",
+            "/resources/**",
+            "/META-INF/resources/**",
             "/user/kakao/**",
             "/image/upload",
             "/ws/chat/**",
@@ -36,7 +41,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/user/kakao/**"))
                 )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> {
@@ -53,7 +58,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
