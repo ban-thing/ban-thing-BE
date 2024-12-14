@@ -8,6 +8,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,9 +29,12 @@ public class KakaoController {
 
         KakaoLoginResponseDto result = kakaoService.kakaoLogin(token);
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, result.getJwt().substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, result.getJwt().substring(7))
+                .httpOnly(true)
+                .sameSite("None")
+                .path("/")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok().body(successWithMessage(result.getMessage()));
     }
@@ -37,11 +42,15 @@ public class KakaoController {
     @GetMapping("/user/kakao/callback")
     public ResponseEntity<ApiResponse<?>> kakaoLoginForBe(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
-        String token = kakaoService.kakaoLoginForBe(code);
+        String result = kakaoService.kakaoLoginForBe(code);
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, result.substring(7))
+                .httpOnly(true)
+                .sameSite("None")
+                .path("/")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok().body(successWithNoContent());
     }
