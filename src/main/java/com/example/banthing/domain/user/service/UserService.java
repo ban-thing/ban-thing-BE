@@ -27,7 +27,7 @@ public class UserService {
     }
 
     @Transactional
-    public UpdateProfileResponseDto updateMyProfile(Long userId, MultipartFile file, UpdateNicknameRequestDto request) throws IOException {
+    public UpdateProfileResponseDto updateMyProfile(Long userId, MultipartFile file, String nickname) throws IOException {
         User user = findById(userId);
 
         if (!file.isEmpty()) {
@@ -41,8 +41,8 @@ public class UserService {
             user.updateProfileImg(image);
         }
 
-        if (request != null) {
-            user.updateNickname(request.getNickname());
+        if (nickname != null) {
+            user.updateNickname(nickname);
             System.out.println(user.getNickname());
         }
 
