@@ -1,22 +1,9 @@
 package com.example.banthing.domain.item.controller;
 
+import com.example.banthing.domain.item.dto.CreateItemRequestDto;
+import com.example.banthing.domain.item.dto.ItemDto;
 import com.example.banthing.domain.item.dto.ItemListResponseDto;
 import com.example.banthing.domain.item.dto.ItemResponseDto;
-import com.example.banthing.domain.item.dto.ItemSearchRequestDto;
-import com.example.banthing.domain.item.entity.Hashtag;
-import com.example.banthing.domain.item.service.ItemService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.banthing.domain.item.dto.ItemResponseDto;
-import com.example.banthing.domain.item.dto.ItemDto;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -49,11 +36,10 @@ public class ItemController {
      ***/
     @PostMapping
     public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
-            @RequestPart("data") Map<String, Object> requestData,
-            @RequestPart("images") List<MultipartFile> image,
+            @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String id
     ) throws IOException {
-        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), requestData, image)));
+        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
     }
 
     /***

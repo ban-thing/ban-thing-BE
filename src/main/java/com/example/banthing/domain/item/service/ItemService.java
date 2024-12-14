@@ -1,53 +1,33 @@
 package com.example.banthing.domain.item.service;
 
-import com.example.banthing.domain.item.dto.ItemDto;
-import com.example.banthing.domain.item.dto.ItemResponseDto;
-import com.example.banthing.domain.item.dto.ItemSearchRequestDto;
-import com.example.banthing.domain.item.dto.ItemSearchResponseDto;
-import com.example.banthing.domain.item.dto.ItemListResponseDto;
-import com.example.banthing.domain.item.dto.ItemResponseDto;
-import com.example.banthing.domain.item.dto.FlaskRequestDto;
-import com.example.banthing.domain.item.dto.FlaskItemResponseDto;
+import com.example.banthing.domain.item.dto.*;
+import com.example.banthing.domain.item.entity.CleaningDetail;
+import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.entity.ItemStatus;
+import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.mapper.ItemMapper;
-import com.example.banthing.domain.item.entity.*;
-import com.example.banthing.domain.user.entity.User;
-
 import com.example.banthing.domain.item.repository.CleaningDetailRepository;
 import com.example.banthing.domain.item.repository.HashtagRepository;
-import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
+import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.Collections;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
 
@@ -64,43 +44,40 @@ public class ItemService {
     private String flask_url;
 
     private final ItemRepository itemRepository;
-    private final ItemImgRepository itemImgsRepository;
     private final ItemImgService itemImgsService;
     private final UserRepository userRepository;
     private final CleaningDetailRepository cleaningDetailRepository;
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
     
-    public ItemResponseDto save(Long id, Map<String, Object> requestData, List<MultipartFile> images) throws IOException {
+    public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
 
-        Long userId = Long.valueOf(id);
-        User seller = userRepository.findById(userId).orElseThrow(RuntimeException::new);
+        User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
-                .pollution((String) requestData.get("clnPollution"))
-                .timeUsed((String) requestData.get("clnTimeUsed"))
-                .purchasedDate((String) requestData.get("clnPurchasedDate"))
-                .cleaned((String) requestData.get("clnCleaned"))
-                .expire((String) requestData.get("clnExpire"))
+                .pollution(request.getClnPollution())
+                .timeUsed(request.getClnTimeUsed())
+                .purchasedDate(request.getClnPurchasedDate())
+                .cleaned(request.getClnCleaned())
+                .expire(request.getClnExpire())
                 .build());
 
 
         Item item = itemRepository.save(Item.builder()
-                .title((String) requestData.get("title"))
-                .content((String) requestData.get("content"))
-                .price((Integer) requestData.get("price"))
-                .type(ItemType.valueOf((String) requestData.get("type")))
+                .title(request.getTitle())
+                .content(request.getContent())
+                .price(request.getPrice())
+                .type(ItemType.valueOf(request.getType()))
                 .status(ItemStatus.판매중)
-                .address((String) requestData.get("address"))
-                .directLocation((String) requestData.get("directLocation"))
+                .address(request.getAddress())
+                .directLocation(request.getDirectLocation())
                 .seller(seller)
                 .cleaningDetail(cleaningDetail)
-                .isDirect((Boolean) requestData.get("isDirect"))
+                .isDirect(request.getIsDirect())
                 .build());
 
-        List<String> hashtags = (List<String>) requestData.get("hashtags");
-        hashtagService.save(hashtags, item.getId());
-        itemImgsService.save(images, item.getId());
+        hashtagService.save(request.getHashtags(), item.getId());
+        itemImgsService.save(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
     }
