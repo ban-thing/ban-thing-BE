@@ -1,5 +1,6 @@
 package com.example.banthing.domain.user.controller;
 
+import com.example.banthing.domain.user.dto.KakaoLoginResponseDto;
 import com.example.banthing.domain.user.service.KakaoService;
 import com.example.banthing.global.common.ApiResponse;
 import com.example.banthing.global.security.JwtUtil;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.example.banthing.global.common.ApiResponse.successWithMessage;
 import static com.example.banthing.global.common.ApiResponse.successWithNoContent;
 
 @RestController
@@ -23,13 +25,13 @@ public class KakaoController {
     @GetMapping("/user/kakao")
     public ResponseEntity<ApiResponse<?>> kakaoLogin(@RequestParam String token, HttpServletResponse response) throws JsonProcessingException {
 
-        String jwt = kakaoService.kakaoLogin(token);
+        KakaoLoginResponseDto result = kakaoService.kakaoLogin(token);
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, jwt.substring(7));
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, result.getJwt().substring(7));
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return ResponseEntity.ok().body(successWithNoContent());
+        return ResponseEntity.ok().body(successWithMessage(result.getMessage()));
     }
 
     @GetMapping("/user/kakao/callback")
