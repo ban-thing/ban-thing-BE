@@ -1,6 +1,8 @@
 package com.example.banthing.domain.user.service;
 
+import com.example.banthing.domain.user.dto.KakaoLoginResponseDto;
 import com.example.banthing.domain.user.dto.KakaoUserInfoDto;
+import com.example.banthing.domain.user.dto.SignUpResponseDto;
 import com.example.banthing.domain.user.entity.LoginType;
 import com.example.banthing.domain.user.entity.ProfileImage;
 import com.example.banthing.domain.user.entity.User;
@@ -42,21 +44,22 @@ public class KakaoService {
     @Value("${kakao.redirect-uri}") // Base64 Encode 한 SecretKey
     private String redirectUri;
 
-    public String kakaoLogin(String accessToken) throws JsonProcessingException {
+    public KakaoLoginResponseDto kakaoLogin(String accessToken) throws JsonProcessingException {
 
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+        SignUpResponseDto signUpResponse = registerKakaoUserIfNeeded(kakaoUserInfo);
 
-        return jwtUtil.createToken(String.valueOf(kakaoUser.getId()));
+        return new KakaoLoginResponseDto(jwtUtil.createToken(String.valueOf(signUpResponse.getUserId())),
+                signUpResponse.getMessage());
     }
 
     public String kakaoLoginForBe(String code) throws JsonProcessingException {
 
         String accessToken = getToken(code);
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+        SignUpResponseDto signUpResponse = registerKakaoUserIfNeeded(kakaoUserInfo);
 
-        return jwtUtil.createToken(String.valueOf(kakaoUser.getId()));
+        return jwtUtil.createToken(String.valueOf(signUpResponse.getUserId()));
     }
 
     // 액세스 토큰 요청
@@ -127,7 +130,7 @@ public class KakaoService {
     }
 
     // 회원가입 처리
-    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
+    private SignUpResponseDto registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
         User kakaoUser = userRepository.findBySocialId(kakaoId).orElse(null);
@@ -136,17 +139,16 @@ public class KakaoService {
         if (kakaoUser == null) {
             String email = kakaoUserInfo.getEmail();
 
-            kakaoUser = User.builder()
+            kakaoUser = userRepository.save(User.builder()
                     .nickname("반띵#" + kakaoUserInfo.getId())
                     .email(email)
                     .socialId(kakaoId)
                     .profileImg(getRandomDefaultProfileImage())
                     .loginType(LoginType.kakao)
-                    .build();
-
-            userRepository.save(kakaoUser);
+                    .build());
+            return new SignUpResponseDto(kakaoUser.getId(), "회원가입 되었습니다");
         }
-        return kakaoUser;
+        return new SignUpResponseDto(kakaoUser.getId(), "로그인 되었습니다");
     }
 
     private ProfileImage getRandomDefaultProfileImage() {
