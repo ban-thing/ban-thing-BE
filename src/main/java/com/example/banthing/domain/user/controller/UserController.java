@@ -29,8 +29,8 @@ public class UserController {
     @PatchMapping("/profile")
     public ResponseEntity<ApiResponse<UpdateProfileResponseDto>> updateMyProfile(@AuthenticationPrincipal String userId,
                                                                                  @RequestPart(required = false, name = "profileImg") MultipartFile file,
-                                                                                 @RequestPart(required = false, name = "nickname") UpdateNicknameRequestDto req)  throws IOException {
-        return ResponseEntity.ok().body(successResponse(userService.updateMyProfile(Long.valueOf(userId), file, req)));
+                                                                                 @RequestPart(required = false, name = "nickname") String nickname)  throws IOException {
+        return ResponseEntity.ok().body(successResponse(userService.updateMyProfile(Long.valueOf(userId), file, nickname)));
     }
 
     @GetMapping("/purchases")
