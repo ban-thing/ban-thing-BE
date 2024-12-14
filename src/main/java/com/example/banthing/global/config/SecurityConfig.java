@@ -11,10 +11,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -60,16 +62,23 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-//        config.addAllowedOrigin("http://localhost:5173"); // allow react server
-//        config.addAllowedOrigin("http://localhost:7000"); // allow python server
-//        config.addAllowedOrigin("http://localhost:3306"); // allow mysql server
-        config.addAllowedOriginPattern("*");
-        config.addAllowedMethod("*"); // Allow all HTTP methods
-        config.addAllowedHeader("*"); // Allow all headers
-        config.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+        List<String> allowedOrigins = Arrays.asList(
+                "http://localhost:5173",
+                "http://211.188.62.82:5173",
+                "http://localhost:3000",
+                "http://211.188.62.82:3000",
+                "http://localhost:7000",
+                "http://localhost:3306"
+        );
+        config.setAllowedOrigins(allowedOrigins);
+
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply the CORS configuration to all endpoints
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
