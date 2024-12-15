@@ -34,13 +34,15 @@ public class ChatroomService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NullPointerException("해당 상품이 존재하지 않습니다."));
 
-        Chatroom chatroom = chatroomRepository.save(Chatroom.builder()
-                .buyer(user)
-                .seller(seller)
-                .item(item)
-                .build());
-
-        return new CreateRoomResponseDto(chatroom);
+        return new CreateRoomResponseDto(chatroomRepository.findBySellerIdAndItemId(seller.getId(), item.getId())
+                .orElseGet(() -> {
+                    Chatroom newChatroom = Chatroom.builder()
+                            .buyer(user)
+                            .seller(seller)
+                            .item(item)
+                            .build();
+                    return chatroomRepository.save(newChatroom);
+                }));
     }
 
     @Transactional
