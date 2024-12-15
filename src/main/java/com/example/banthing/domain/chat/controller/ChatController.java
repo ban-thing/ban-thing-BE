@@ -1,6 +1,9 @@
 package com.example.banthing.domain.chat.controller;
 
-import com.example.banthing.domain.chat.dto.*;
+import com.example.banthing.domain.chat.dto.CreateRoomRequestDto;
+import com.example.banthing.domain.chat.dto.CreateRoomResponseDto;
+import com.example.banthing.domain.chat.dto.FindMessageAndItemResponseDto;
+import com.example.banthing.domain.chat.dto.FindRoomsResponseDto;
 import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
+import static com.example.banthing.global.common.ApiResponse.successWithDataAndMessage;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +27,8 @@ public class ChatController {
     @PostMapping
     public ResponseEntity<ApiResponse<CreateRoomResponseDto>> createRoom(@AuthenticationPrincipal String userId,
                                                                          @RequestBody CreateRoomRequestDto request) {
-        return ResponseEntity.ok().body(successResponse(chatroomService.createRoom(Long.parseLong(userId), request)));
+        CreateRoomResponseDto res = chatroomService.createRoom(Long.parseLong(userId), request);
+        return ResponseEntity.ok().body(successWithDataAndMessage(res, res.getMessage()));
     }
 
     @GetMapping

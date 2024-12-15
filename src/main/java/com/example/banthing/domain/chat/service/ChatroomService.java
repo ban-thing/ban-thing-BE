@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,15 +35,20 @@ public class ChatroomService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NullPointerException("해당 상품이 존재하지 않습니다."));
 
-        return new CreateRoomResponseDto(chatroomRepository.findBySellerIdAndItemId(seller.getId(), item.getId())
-                .orElseGet(() -> {
-                    Chatroom newChatroom = Chatroom.builder()
+        Optional<Chatroom> existingChatroom = chatroomRepository.findBySellerIdAndItemId(seller.getId(), item.getId());
+
+        if (existingChatroom.isPresent()) {
+            return new CreateRoomResponseDto(existingChatroom.get().getId(), "이미 방이 존재합니다.");
+        } else {
+            Chatroom savedChatroom = chatroomRepository
+                    .save(Chatroom.builder()
                             .buyer(user)
                             .seller(seller)
                             .item(item)
-                            .build();
-                    return chatroomRepository.save(newChatroom);
-                }));
+                            .build()
+                    );
+            return new CreateRoomResponseDto(savedChatroom.getId(), "새로운 방이 생성되었습니다.");
+        }
     }
 
     @Transactional
