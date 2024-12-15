@@ -8,14 +8,17 @@ import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.mapper.ItemMapper;
 import com.example.banthing.domain.item.repository.CleaningDetailRepository;
 import com.example.banthing.domain.item.repository.HashtagRepository;
+import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -37,7 +40,7 @@ import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
 public class ItemService {
 
     public static Logger logger = LoggerFactory.getLogger("Flask 관련 로그");
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
     private final ItemMapper itemMapper;
     
     @Value("${file.flask-url}")
@@ -138,15 +141,6 @@ public class ItemService {
     
     // 일반 & 필터 검색 메소드
     public ItemListResponseDto listItems(String keyword, Long minPrice, Long maxPrice, String address) {
-        
-        try {
-            logger.info("JSON Body1: {}", objectMapper.writeValueAsString(itemMapper.listItems(keyword, minPrice, maxPrice, address)));
-            logger.info("JSON request Body1: {}", objectMapper.writeValueAsString(keyword));
-            logger.info("filter low Body1: {}", objectMapper.writeValueAsString(minPrice));
-            logger.info("filter high Body1: {}", objectMapper.writeValueAsString(maxPrice));
-        } catch (JsonProcessingException e) {
-            logger.error("Failed to serialize items to JSON", e);
-        }
 
         if( minPrice == 0 && maxPrice == 0){
             return new ItemListResponseDto(itemMapper.listItems(keyword, minPrice, maxPrice, address));
@@ -170,14 +164,7 @@ public class ItemService {
         }
 
         logger.info(flask_url);
-        /*
-        try {
-            logger.info("JSON Body2: {}", objectMapper.writeValueAsString(body));
-            
-        } catch (JsonProcessingException e) {
-            logger.error("Failed to serialize items to JSON", e);
-        }
-        */
+
         // send request to python with result, start, and end
         RestTemplate restTemplate = new RestTemplate();
         
@@ -187,13 +174,7 @@ public class ItemService {
         
         FlaskRequestDto request_body = new FlaskRequestDto(body);
         request_body.setHashtag(hashtags.toString());
-        /*
-        try {
-            logger.info("JSON Flask requeset Body2: {}", objectMapper.writeValueAsString(request_body));
-        } catch (JsonProcessingException e) {
-            logger.error("JSON Flask requeset Failed to serialize items to JSON", e);
-        }
-        */
+        
         String flask_full_url = "http://" + flask_url + ":7000/post";
         HttpEntity<FlaskRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
         ResponseEntity<List<FlaskItemResponseDto>> flask_response = restTemplate.exchange(
