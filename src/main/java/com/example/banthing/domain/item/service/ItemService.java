@@ -62,6 +62,7 @@ public class ItemService {
                 .expire(request.getClnExpire())
                 .build());
 
+        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
 
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
