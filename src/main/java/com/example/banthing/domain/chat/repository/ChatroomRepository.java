@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
 
@@ -19,4 +20,7 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
             """)
     List<Chatroom> findRoomsByUserIdOrderByLatestMessage(@Param("userId") Long userId);
 
+    Optional<Chatroom> findBySellerIdAndItemId(Long selleId, Long itemId);
+
+    List<Chatroom> findAllByBuyerId(Long buyerId);
 }
