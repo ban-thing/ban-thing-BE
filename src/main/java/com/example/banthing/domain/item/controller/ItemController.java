@@ -55,7 +55,7 @@ public class ItemController {
 
     /***
      *
-     * 상품 조회
+     * 상품 단건 조회
      *
      ***/
     @GetMapping("/{itemId}")

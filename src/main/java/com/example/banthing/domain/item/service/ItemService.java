@@ -141,7 +141,6 @@ public class ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."));
         User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User를 찾을 수 없습니다"));
 
-        // 아이템이 사용자의 것인지 체크
         if (!item.getSeller().equals(user)) {
             throw new AccessDeniedException("해당 item에 접근할 수 없습니다.");
         }
