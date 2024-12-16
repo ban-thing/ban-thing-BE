@@ -1,5 +1,6 @@
 package com.example.banthing.domain.user.service;
 
+import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.entity.ProfileImage;
 import com.example.banthing.domain.user.entity.User;
@@ -20,6 +21,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ChatroomRepository chatroomRepository;
     private final ProfileRepository profileRepository;
 
     public ProfileResponseDto findMyProfile(Long userId) {
@@ -51,9 +53,10 @@ public class UserService {
 
     public List<PurchaseResponseDto> findPurchasesById(Long userId) {
         User user = findById(userId);
-        return user.getBuyerChats().stream()
-                .sorted(Comparator.comparing(chat -> chat.getItem().getCreatedAt(), Comparator.reverseOrder()))
-                .map(PurchaseResponseDto::new).toList();
+        return chatroomRepository.findAllByBuyerId(user.getId()).stream()
+                .sorted(Comparator.comparing(chatroom -> chatroom.getItem().getCreatedAt(), Comparator.reverseOrder()))
+                .map(PurchaseResponseDto::new)
+                .toList();
     }
 
     public List<SalesResponseDto> findSalesById(Long userId) {

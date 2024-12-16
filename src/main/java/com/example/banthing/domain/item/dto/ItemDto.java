@@ -17,6 +17,7 @@ public class ItemDto {
 
     private String title;
     private String content;
+    private Long sellerId;
     private ProfileImage sellerImgUrl;
     private String sellerNickname;
     private ItemType type;
@@ -33,6 +34,7 @@ public class ItemDto {
         return new ItemDto(
                 item.getTitle(),
                 item.getContent(),
+                item.getSeller().getId(),
                 item.getSeller().getProfileImg(),
                 item.getSeller().getNickname(),
                 item.getType(),

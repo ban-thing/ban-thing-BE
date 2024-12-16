@@ -12,11 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
@@ -28,7 +25,7 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    
+
     /***
      *
      * 상품 등록
@@ -47,23 +44,24 @@ public class ItemController {
      * 상품 수정
      *
      ***/
-    @PatchMapping("/{id}")
+    @PatchMapping("/{itemId}")
     public ResponseEntity<ApiResponse<ItemResponseDto>> updateItem(
-            @PathVariable Long id,
-            @RequestPart(value = "data", required = false) Map<String, Object> requestData,
-            @RequestPart(value = "images", required = false) List<MultipartFile> newImages) throws IOException {
-
-        return ResponseEntity.ok().body(successResponse(itemService.update(Long.valueOf(id), requestData, newImages)));
+            @ModelAttribute CreateItemRequestDto request,
+            @AuthenticationPrincipal String userId,
+            @PathVariable Long itemId) throws IOException {
+        itemService.checkUserItem(itemId, userId);
+        return ResponseEntity.ok().body(successResponse(itemService.update(Long.valueOf(itemId), request, userId)));
     }
 
     /***
      *
-     * 상품 조회
+     * 상품 단건 조회
      *
      ***/
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ItemDto>> getItemById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(successResponse(itemService.get(Long.valueOf(id))));
+    @GetMapping("/{itemId}")
+    public ResponseEntity<ApiResponse<ItemDto>> getItemById(@PathVariable Long itemId) {
+        itemService.checkItem(itemId);
+        return ResponseEntity.ok().body(successResponse(itemService.get(Long.valueOf(itemId))));
     }
 
     /***
@@ -71,10 +69,13 @@ public class ItemController {
      * 상품 삭제
      *
      ***/
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{itemId}")
     @Transactional
-    public ResponseEntity<ApiResponse<?>> deleteItem(@PathVariable Long id) {
-        itemService.delete(id);
+    public ResponseEntity<ApiResponse<?>> deleteItem(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal String userId) {
+        itemService.checkUserItem(itemId, userId);
+        itemService.delete(itemId);
         return ResponseEntity.ok(ApiResponse.successWithNoContent());
     }
 
@@ -83,38 +84,39 @@ public class ItemController {
      * 판매 완료
      *
      ***/
-    @PatchMapping("/sell/{id}")
-    public ResponseEntity<ApiResponse<?>> sellItem(@PathVariable Long id) {
-        itemService.sell(id);
+    @PatchMapping("/sell/{itemId}")
+    public ResponseEntity<ApiResponse<?>> sellItem(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal String userId) {
+        itemService.checkUserItem(itemId, userId);
+        itemService.sell(itemId);
         return ResponseEntity.ok(ApiResponse.successWithNoContent());
     }
-    
+
     /**
-     * 
      * 상품 검색
-     * 
      */
     @GetMapping("")
     public ResponseEntity<ApiResponse<ItemListResponseDto>> listItems(
-        @RequestParam(required = false ) String keyword,
-        @RequestParam(required = false ) String hashtags,
-        @RequestParam(required = false ) Long minPrice,
-        @RequestParam(required = false ) Long maxPrice,
-        @RequestParam(required = false ) String address) {
-        
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String hashtags,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) String address) {
+
         if (hashtags.length() != 0) {
-            
+
             //logger.atError();
             // output ItemListResponseDto로 받는 방법 찾기
-            return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address))); 
-        }else {
+            return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)));
+        } else {
             // or output FlaskResponseDto로 받는 방법 찾기
-            
+
             return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         }
-        
+
         //return ResponseEntity.ok(itemService.listItems(page, keyword, filter_low, filter_high));
-        
+
     }
-    
+
 }

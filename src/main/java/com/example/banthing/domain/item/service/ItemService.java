@@ -22,14 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
@@ -86,35 +86,32 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
-    public ItemResponseDto update(Long id, Map<String, Object> requestData, List<MultipartFile> images) throws IOException {
+    public ItemResponseDto update(Long itemId, CreateItemRequestDto request, String userId)throws IOException {
 
-        Long userId = Long.valueOf(id);
-        User seller = userRepository.findById(userId).orElseThrow(RuntimeException::new);
-        Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
+        User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
 
-        CleaningDetail cleaningDetail = item.getCleaningDetail();
-        cleaningDetail.setPollution((String) requestData.get("clnPollution"));
-        cleaningDetail.setTimeUsed((String) requestData.get("clnTimeUsed"));
-        cleaningDetail.setPurchasedDate((String) requestData.get("clnPurchasedDate"));
-        cleaningDetail.setCleaned((String) requestData.get("clnCleaned"));
-        cleaningDetail.setExpire((String) requestData.get("clnExpire"));
+        CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
+                .pollution(request.getClnPollution())
+                .timeUsed(request.getClnTimeUsed())
+                .purchasedDate(request.getClnPurchasedDate())
+                .cleaned(request.getClnCleaned())
+                .expire(request.getClnExpire())
+                .build());
         cleaningDetailRepository.save(cleaningDetail);
 
-        List<String> newHashtags = (List<String>) requestData.get("hashtags");
-        hashtagService.update(newHashtags, item.getId());
-
-        item.setTitle((String) requestData.get("title"));
-        item.setContent((String) requestData.get("content"));
-        item.setType(ItemType.valueOf((String) requestData.get("type")));
-        item.setPrice((Integer) requestData.get("price"));
-        item.setDirectLocation((String) requestData.get("directLocation"));
-        item.setAddress((String) requestData.get("address"));
+        item.setTitle(request.getTitle());
+        item.setContent(request.getContent());
+        item.setType(ItemType.valueOf(request.getType()));
+        item.setPrice(request.getPrice());
+        item.setDirectLocation(request.getDirectLocation());
+        item.setAddress(request.getAddress());
         item.setSeller(seller);
-        item.setCleaningDetail(cleaningDetail);
-        item.setIsDirect((Boolean) requestData.get("isDirect"));
-
+        item.setIsDirect(request.getIsDirect());
         itemRepository.save(item);
-        itemImgsService.update(images, item.getId());
+
+        hashtagService.update(request.getHashtags(), item.getId());
+        itemImgsService.update(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
     }
@@ -132,11 +129,25 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-
     public void sell(Long id) {
         Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
         item.setStatus(판매완료);
         itemRepository.save(item);
+    }
+
+    public void checkItem(Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다.")
+        );
+    }
+
+    public void checkUserItem(Long itemId, String userId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."));
+        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User를 찾을 수 없습니다"));
+
+        if (!item.getSeller().equals(user)) {
+            throw new AccessDeniedException("해당 item에 접근할 수 없습니다.");
+        }
     }
     
     // 일반 & 필터 검색 메소드
