@@ -66,7 +66,7 @@ public class SecurityConfig {
                 "https://localhost:5173",
                 "https://211.188.62.82:5173",
                 "https://localhost:3000",
-                "https://211.188.62.82:3000",
+                "https://banthing.net",
                 "https://localhost:7000",
                 "https://localhost:3306"
         );
