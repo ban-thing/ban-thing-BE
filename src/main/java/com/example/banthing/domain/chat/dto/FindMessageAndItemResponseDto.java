@@ -17,6 +17,7 @@ public class FindMessageAndItemResponseDto {
     private final Long itemId;
     private final String title;
     private final Integer price;
+    private final String seller;
     private String itemImage;
     private List<MessagesDto> messages = new ArrayList<>();
     private final boolean hasNext;
@@ -26,6 +27,7 @@ public class FindMessageAndItemResponseDto {
         this.itemId = item.getId();
         this.title = item.getTitle();
         this.price = item.getPrice();
+        this.seller = item.getSeller().getNickname();
         if (item.getImages().size() > 0)
             this.itemImage = item.getImages().get(0).getImgUrl();
 
