@@ -10,6 +10,7 @@ public class ApiResponse<T> {
 
     private static final String SUCCESS_STATUS = "success";
     private static final String ERROR_STATUS = "error";
+    private static final String TOKEN_ERROR_STATUS = "invalid-token";
 
     private String status;
     private T data;
@@ -33,6 +34,10 @@ public class ApiResponse<T> {
 
     public static ApiResponse<?> errorResponse(String message) {
         return new ApiResponse<>(ERROR_STATUS, null, message);
+    }
+
+    public static ApiResponse<?> tokenErrorResponse(String message) {
+        return new ApiResponse<>(TOKEN_ERROR_STATUS, null, message);
     }
 
     private ApiResponse(String status, T data, String message) {
