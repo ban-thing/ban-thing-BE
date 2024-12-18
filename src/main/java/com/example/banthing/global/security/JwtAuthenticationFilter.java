@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setStatus(401);
 
         try {
-            response.getWriter().write(new ObjectMapper().writeValueAsString(ApiResponse.errorResponse(message)));
+            response.getWriter().write(new ObjectMapper().writeValueAsString(ApiResponse.tokenErrorResponse(message)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
