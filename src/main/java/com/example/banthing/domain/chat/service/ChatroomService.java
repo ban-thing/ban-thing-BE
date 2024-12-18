@@ -51,20 +51,6 @@ public class ChatroomService {
         }
     }
 
-    @Transactional
-    public ChatMessage saveChatMessage(ChatMessageDto chatMessageDto) {
-        Chatroom chatroom = chatroomRepository.findById(chatMessageDto.getChatRoomId())
-                .orElseThrow(() -> new RuntimeException("Chatroom not found"));
-
-        ChatMessage chatMessage = ChatMessage.builder()
-                .content(chatMessageDto.getMessage())
-                .senderId(chatMessageDto.getSenderId())
-                .chatroom(chatroom)
-                .build();
-
-        return chatMessageRepository.save(chatMessage);
-    }
-
     public List<FindRoomsResponseDto> findAllRooms(Long userId) {
         User user = findUserById(userId);
 
