@@ -63,12 +63,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         List<String> allowedOrigins = Arrays.asList(
-                "https://localhost:5173",
-                "https://211.188.62.82:5173",
-                "https://localhost:3000",
-                "https://211.188.62.82:3000",
-                "https://localhost:7000",
-                "https://localhost:3306"
+                "http://localhost:5173",
+                "http://211.188.62.82:5173",
+                "http://localhost:3000",
+                "http://211.188.62.82:3000",
+                "http://localhost:7000",
+                "http://localhost:3306"
         );
         config.setAllowedOrigins(allowedOrigins);
 
