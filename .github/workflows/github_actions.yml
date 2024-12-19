@@ -40,10 +40,10 @@ jobs:
         -keysize 2048 \
         -storetype PKCS12 \
         -keystore keystore.p12 \
-        -storepass qwertyzx1! \
-        -keypass qwertyzx1! \
+        -storepass qwerty1! \
+        -keypass qwerty1! \
         -validity 3650 \
-        -dname "CN=211.188.62.82:8443, OU=banthing, O=banthing, L=Icheon, S=Gyeongi, C=SK”
+        -dname "CN=211.188.62.82:8443, OU=banthing, O=banthing, L=Icheon, S=Gyeongi, C=SK"
 
       # gradle을 통해 소스를 빌드.
       
