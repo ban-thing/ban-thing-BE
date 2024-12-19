@@ -65,12 +65,14 @@ public class SecurityConfig {
         List<String> allowedOrigins = Arrays.asList(
                 "https://localhost:3000",
                 "https://banthing.net",
+                "https://211.188.62.82:3000",
                 "https://localhost:7000",
                 "https://localhost:3306",
                 "http://localhost:3000",
                 "http://banthing.net",
                 "http://localhost:7000",
-                "http://localhost:3306"
+                "http://localhost:3306",
+                "http://211.188.62.82:3000"
         );
         config.setAllowedOrigins(allowedOrigins);
 
