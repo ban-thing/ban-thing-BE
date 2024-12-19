@@ -2,6 +2,8 @@ package com.example.banthing.domain.user.controller;
 
 import com.example.banthing.domain.user.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +15,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/image")
+//@CrossOrigin(origins = "https://banthing.net")
 public class ProfileController {
 
     private final ProfileService profileService;
