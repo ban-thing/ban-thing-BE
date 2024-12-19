@@ -15,7 +15,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/image")
-@CrossOrigin(origins = "https://yourdomain.com")
+@CrossOrigin(origins = "https://banthing.net")
 public class ProfileController {
 
     private final ProfileService profileService;

@@ -18,7 +18,7 @@ import static com.example.banthing.global.common.ApiResponse.successWithNoConten
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://yourdomain.com")
+@CrossOrigin(origins = "https://banthing.net")
 public class KakaoController {
 
     private final KakaoService kakaoService;
