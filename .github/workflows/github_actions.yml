@@ -44,6 +44,9 @@ jobs:
         -keypass qwerty1! \
         -validity 3650 \
         -dname "CN=211.188.62.82:8443, OU=banthing, O=banthing, L=Icheon, S=Gyeongi, C=SK"
+    - name: keystore path
+      run: |
+        realpath keystore.p12
 
       # gradle을 통해 소스를 빌드.
       
