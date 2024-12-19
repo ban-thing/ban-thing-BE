@@ -3,6 +3,9 @@ FROM gradle:7.6.4-jdk17 AS build
 
 COPY /build/libs/*-SNAPSHOT.jar app.jar
 COPY /keystore.p12 keystore.p12
+COPY /keystore.crt keystore.crt
+COPY /keystore.key keystore.key
+COPY /privkey.pem privkey.pem
 EXPOSE 8080
 RUN ls
 
