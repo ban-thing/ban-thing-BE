@@ -32,6 +32,19 @@ jobs:
         touch ./application.properties
         echo "${{ secrets.Application }}" > ./application.properties
 
+    - name: Build Keystore
+      run: |
+        keytool -genkeypair \
+        -alias banthing
+        -keyalg RSA \
+        -keysize 2048 \
+        -storetype PKCS12 \
+        -keystore keystore.p12 \
+        -storepass Jl56060516! \
+        -keypass Jl56060516! \
+        -validity 3650 \
+        -dname "CN=211.188.62.82:8443, OU=banthing, O=banthing, L=Icheon, S=Gyeongi, C=SK”
+
       # gradle을 통해 소스를 빌드.
       
     - name: Build with Gradle
