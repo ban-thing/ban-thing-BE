@@ -89,7 +89,7 @@ jobs:
           sudo docker stop spring-container
           sudo docker rm spring-container
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
-          sudo docker run -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+          sudo docker run -d --name spring-container --network docker-network -p 8443:8443 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
           sudo docker image prune -f
        #   sudo docker stop python-container
