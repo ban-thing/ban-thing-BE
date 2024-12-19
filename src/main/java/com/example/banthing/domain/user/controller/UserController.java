@@ -17,6 +17,7 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/my")
+@CrossOrigin(origins = "https://yourdomain.com")
 public class UserController {
 
     private final UserService userService;
