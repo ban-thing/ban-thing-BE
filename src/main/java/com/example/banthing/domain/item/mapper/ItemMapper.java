@@ -28,7 +28,14 @@ public interface ItemMapper {
                i.price AS price,
                i.title AS title,
                i.type AS type,
-               GROUP_CONCAT(h.hashtag) AS hashtags
+               GROUP_CONCAT(h.hashtag) AS hashtags,
+               (
+                SELECT img.img_url
+                FROM item_imgs img 
+                WHERE img.item_id = i.id 
+                ORDER BY img.id ASC 
+                LIMIT 1
+                ) AS images
         FROM items i
         LEFT JOIN hashtags h ON i.id = h.item_id
         WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
@@ -54,7 +61,14 @@ public interface ItemMapper {
                i.price AS price,
                i.title AS title,
                i.type AS type,
-               GROUP_CONCAT(h.hashtag) AS hashtags
+               GROUP_CONCAT(h.hashtag) AS hashtags,
+               (
+                SELECT img.img_url
+                FROM item_imgs img 
+                WHERE img.item_id = i.id 
+                ORDER BY img.id ASC 
+                LIMIT 1
+                ) AS images
         FROM items i
         LEFT JOIN hashtags h ON i.id = h.item_id
         WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
@@ -69,7 +83,8 @@ public interface ItemMapper {
         @Result(column = "price", property = "price"),
         @Result(column = "title", property = "title"),
         @Result(column = "type", property = "type"),
-        @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class)
+        @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class),
+        @Result(column = "images", property = "images")
     })
     List<ItemSearchResponseDto> listFilteredItems(@Param("keyword") String keyword, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice, @Param("address") String address);
 

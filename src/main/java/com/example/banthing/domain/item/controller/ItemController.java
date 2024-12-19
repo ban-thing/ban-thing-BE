@@ -21,6 +21,7 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/items")
+//@CrossOrigin(origins = "https://banthing.net")
 public class ItemController {
 
     private final ItemService itemService;
