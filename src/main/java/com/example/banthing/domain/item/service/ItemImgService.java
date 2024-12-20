@@ -93,8 +93,8 @@ public class ItemImgService {
         objectMetadata.setContentLength(image.getSize());
         objectMetadata.setContentType(image.getContentType());
 
-        objectMapper.setVisibility(PropertyAccessor.FIELD, com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY);
-        logger.info("Image Response in Service: {}", objectMapper.writeValueAsString(image));
+        // objectMapper.setVisibility(PropertyAccessor.FIELD, com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY);
+        // logger.info("Image Response in Service: {}", objectMapper.writeValueAsString(image));
 
         try {
             s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata)
