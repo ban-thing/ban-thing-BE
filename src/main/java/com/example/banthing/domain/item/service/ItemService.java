@@ -56,7 +56,7 @@ public class ItemService {
     private final HashtagRepository hashtagRepository;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
-        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
+        //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
 
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
@@ -68,7 +68,7 @@ public class ItemService {
                 .expire(request.getClnExpire())
                 .build());
 
-        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
+        //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
 
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
@@ -84,10 +84,6 @@ public class ItemService {
                 .build());
 
         hashtagService.save(request.getHashtags(), item.getId());
-
-        logger.info("Input Stream: {}", objectMapper.writeValueAsString(request.getImages().stream()
-                        .collect(Collectors.toList()).get(0).getInputStream()));
-
         itemImgsService.save(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
