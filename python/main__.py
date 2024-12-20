@@ -35,7 +35,7 @@ def adv_search(question, trait_data):
     model = SentenceTransformer('all-MiniLM-L6-v2') # sentence transfomers 모델 불러오기
     model = model.to(device)  
 
-    # 행동 특성 텍스트 데이터 vectorization
+    # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
     X_full = X_full.to(device)
 
