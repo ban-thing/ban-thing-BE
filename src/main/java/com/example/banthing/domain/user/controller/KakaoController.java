@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import static com.example.banthing.global.common.ApiResponse.successWithNoConten
 
 @RestController
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "https://banthing.net")
 public class KakaoController {
 
     private final KakaoService kakaoService;

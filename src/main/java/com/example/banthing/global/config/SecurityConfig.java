@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,7 +22,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig{
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -35,13 +36,13 @@ public class SecurityConfig {
             "/user/kakao/**",
             "/image/upload",
             "/ws/chat/**",
-            "/items/**"
+            "/items/**",
     };
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> {
@@ -63,12 +64,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         List<String> allowedOrigins = Arrays.asList(
-                "http://localhost:5173",
-                "http://211.188.62.82:5173",
+                "https://localhost:3000",
+                "https://banthing.net",
+                "https://localhost:7000",
+                "https://localhost:3306",
+                "https://211.188.62.82:3000",
                 "http://localhost:3000",
-                "http://211.188.62.82:3000",
+                "http://banthing.net",
                 "http://localhost:7000",
-                "http://localhost:3306"
+                "http://localhost:3306",
+                "http://211.188.62.82:3000"
         );
         config.setAllowedOrigins(allowedOrigins);
 

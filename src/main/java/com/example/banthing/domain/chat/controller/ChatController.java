@@ -20,6 +20,7 @@ import static com.example.banthing.global.common.ApiResponse.successWithDataAndM
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chats")
+//@CrossOrigin(origins = "https://banthing.net")
 public class ChatController {
 
     private final ChatroomService chatroomService;

@@ -3,6 +3,8 @@ package com.example.banthing.domain.item.dto;
 import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.entity.ItemType;
+import com.example.banthing.domain.item.repository.ItemRepository;
+import com.example.banthing.domain.item.service.ItemImgService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +26,9 @@ public class ItemSearchResponseDto {
     private String title;
     private ItemType type;
     private List<HashtagDto> hashtag;
-    private List<String> images;
+    private String images;
+
+    private static ItemImgService itemImgService;
 
     public ItemSearchResponseDto(ItemSearchResponseDto item) {
         this.id = item.getId();
@@ -50,7 +54,7 @@ public class ItemSearchResponseDto {
                         .collect(Collectors.toList()),
             item.getImages().stream()
             .map(ItemImg::getImgUrl)
-            .collect(Collectors.toList())
+            .collect(Collectors.toList()).get(0)
         );
         
     }
@@ -65,7 +69,7 @@ public class ItemSearchResponseDto {
             item.getTitle(),
             item.getType(),
             null,
-            null
+            item.getImages()
         );
         
         List<HashtagDto> list_temp = new ArrayList<>();
