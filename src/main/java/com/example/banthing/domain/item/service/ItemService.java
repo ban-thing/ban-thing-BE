@@ -39,7 +39,7 @@ import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
 @RequiredArgsConstructor
 public class ItemService {
 
-    public static Logger logger = LoggerFactory.getLogger("Flask 관련 로그");
+    public static Logger logger = LoggerFactory.getLogger("Item 관련 로그");
     private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
     private final ItemMapper itemMapper;
     
