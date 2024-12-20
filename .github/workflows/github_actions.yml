@@ -32,22 +32,22 @@ jobs:
         touch ./application.properties
         echo "${{ secrets.Application }}" > ./application.properties
 
-  #  - name: Build Keystore
-  #    run: |
-  #      keytool -genkeypair \
-  #      -alias banthing \
-  ##      -keyalg RSA \
-  #      -keysize 2048 \
-  #      -storetype PKCS12 \
-  ##      -keystore keystore.p12 \
-  #      -storepass qwerty1! \
-  #      -keypass qwerty1! \
-  #      -validity 3650 \
-  #      -dname "CN=211.188.62.82:8443, OU=banthing, O=banthing, L=Icheon, S=Gyeongi, C=SK"
-  #  - name: keystore path
-  #    run: |
-  #      realpath keystore.p12
-  #      cp keystore.p12 ./src/main/resources/keystore.p12
+    - name: Build Keystore
+      run: |
+        keytool -genkeypair \
+        -alias banthing \
+        -keyalg RSA \
+        -keysize 2048 \
+        -storetype PKCS12 \
+        -keystore keystore.p12 \
+        -storepass qwerty1! \
+        -keypass qwerty1! \
+        -validity 3650 \
+        -dname "CN=211.188.62.82:8443, OU=banthing, O=banthing, L=Icheon, S=Gyeongi, C=SK"
+    - name: keystore path
+      run: |
+        realpath keystore.p12
+        cp keystore.p12 ./src/main/resources/keystore.p12
 
       # gradle을 통해 소스를 빌드.
       
