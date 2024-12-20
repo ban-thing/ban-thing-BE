@@ -85,8 +85,8 @@ public class ItemService {
 
         hashtagService.save(request.getHashtags(), item.getId());
 
-        logger.info("Input Stream: {}", request.getImages().stream()
-                        .collect(Collectors.toList()).get(0).getInputStream());
+        logger.info("Input Stream: {}", objectMapper.writeValueAsString(request.getImages().stream()
+                        .collect(Collectors.toList()).get(0).getInputStream()));
 
         itemImgsService.save(request.getImages(), item.getId());
 
