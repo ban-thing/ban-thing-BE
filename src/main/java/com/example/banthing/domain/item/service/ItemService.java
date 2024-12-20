@@ -54,6 +54,7 @@ public class ItemService {
     private final HashtagRepository hashtagRepository;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
+        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
 
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
