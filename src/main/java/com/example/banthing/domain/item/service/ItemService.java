@@ -200,6 +200,12 @@ public class ItemService {
         .map(ItemSearchResponseDto::fromFlask)
         .collect(Collectors.toList());
         
+        try{
+            logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(result));
+        } catch (Exception e) {
+            logger.error("error", e);
+        }
+
         return new ItemListResponseDto(result);
 
     }
