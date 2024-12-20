@@ -10,8 +10,13 @@ import com.amazonaws.services.s3.model.*;
 import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +32,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemImgService {
 
+    public static Logger logger = LoggerFactory.getLogger("Item 이미지 관련 로그");
+    private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
     private final ItemImgRepository itemImgsRepository;
     private final ItemRepository itemRepository;
 
@@ -84,6 +91,8 @@ public class ItemImgService {
         objectMetadata.setContentLength(image.getSize());
         objectMetadata.setContentType(image.getContentType());
 
+
+        logger.info("Image Response in Service: {}", objectMapper.writeValueAsString(image));
 
         try {
             s3.putObject(new PutObjectRequest(bucketName, savePath, image.getInputStream(), objectMetadata)
