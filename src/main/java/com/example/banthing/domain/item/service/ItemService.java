@@ -3,6 +3,7 @@ package com.example.banthing.domain.item.service;
 import com.example.banthing.domain.item.dto.*;
 import com.example.banthing.domain.item.entity.CleaningDetail;
 import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.entity.ItemStatus;
 import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.mapper.ItemMapper;
@@ -29,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,6 +84,10 @@ public class ItemService {
                 .build());
 
         hashtagService.save(request.getHashtags(), item.getId());
+
+        logger.info("Input Stream: {}", request.getImages().stream()
+                        .collect(Collectors.toList()).get(0).getInputStream());
+
         itemImgsService.save(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
