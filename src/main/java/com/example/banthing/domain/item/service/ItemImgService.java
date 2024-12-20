@@ -4,12 +4,14 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.cloudformation.model.Visibility;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
@@ -91,7 +93,7 @@ public class ItemImgService {
         objectMetadata.setContentLength(image.getSize());
         objectMetadata.setContentType(image.getContentType());
 
-
+        objectMapper.setVisibility(PropertyAccessor.FIELD, com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY);
         logger.info("Image Response in Service: {}", objectMapper.writeValueAsString(image));
 
         try {
