@@ -59,7 +59,7 @@ public class ItemService {
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
+        //User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
         /*
