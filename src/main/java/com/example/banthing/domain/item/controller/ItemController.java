@@ -38,12 +38,12 @@ public class ItemController {
      *
      ***/
     @PostMapping(consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<?>> addItem(
+    public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String id
     ) throws IOException {
-        //return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
-        return null;
+        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        
     }
 
     /***

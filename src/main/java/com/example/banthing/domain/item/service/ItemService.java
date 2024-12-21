@@ -56,9 +56,11 @@ public class ItemService {
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
     
-    public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
+    public void save(Long id, CreateItemRequestDto request) throws IOException {
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        
+        /*
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
@@ -88,6 +90,7 @@ public class ItemService {
         itemImgsService.save(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
+         */
     }
 
     public ItemResponseDto update(Long itemId, CreateItemRequestDto request, String userId)throws IOException {
