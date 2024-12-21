@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.example.banthing.domain.item.serialization.MultipartFileSerializer;
 
@@ -34,7 +36,7 @@ public class CreateItemRequestDto {
     private List<String> hashtags;
 
     // 이미지 파일
-    @JsonSerialize(using = MultipartFileSerializer.class)
-    // @JsonIgnore
+    //@JsonSerialize(using = MultipartFileSerializer.class)
+    @JsonIgnore
     private List<MultipartFile> images;
 }
