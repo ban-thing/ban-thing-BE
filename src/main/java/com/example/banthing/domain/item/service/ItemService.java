@@ -56,7 +56,7 @@ public class ItemService {
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
     
-    public void save(Long id, CreateItemRequestDto request) throws IOException {
+    public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
         logger.info("Request images size: {}", request.getImages() != null ? request.getImages().size() : "No images received");
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         //User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
