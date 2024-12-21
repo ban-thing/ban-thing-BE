@@ -47,11 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("userId : " + userId);
 
             try {
-                if (StringUtils.hasText(userId) && isNumeric(userId)) {
-                    setAuthentication(userId);
-                } else {
-                    log.warn("Skipping authentication due to invalid userId: {}", userId);
-                }
+                setAuthentication(userId);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return;
@@ -83,18 +79,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(new ObjectMapper().writeValueAsString(ApiResponse.tokenErrorResponse(message)));
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-    
-    private boolean isNumeric(String str) {
-        if (str == null) {
-            return false;
-        }
-        try {
-            Long.parseLong(str); // Check if it can be converted to a Long
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
         }
     }
 }

@@ -91,7 +91,7 @@ public class ItemService {
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
         
-        return new ItemResponseDto(null);
+        return new ItemResponseDto(item);
         
     }
 
