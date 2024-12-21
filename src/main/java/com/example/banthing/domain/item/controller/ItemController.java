@@ -6,12 +6,15 @@ import com.example.banthing.domain.item.dto.ItemListResponseDto;
 import com.example.banthing.domain.item.dto.ItemResponseDto;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.global.common.ApiResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +33,9 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 public class ItemController {
 
     private final ItemService itemService;
-
+    public static Logger logger = LoggerFactory.getLogger("Item 관련 로그");
+    private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    
 
     /***
      *
@@ -38,12 +43,13 @@ public class ItemController {
      *
      ***/
     @PostMapping(consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
+    public ResponseEntity<ApiResponse<?>> addItem(
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String id
     ) throws IOException {
-        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
-        
+        logger.info("problematic one {}", objectMapper.writeValueAsString(request));
+        //return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        return null;
     }
 
     /***
