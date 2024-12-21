@@ -10,6 +10,8 @@ import com.example.banthing.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +37,7 @@ public class ItemController {
      * 상품 등록
      *
      ***/
-    @PostMapping
+    @PostMapping(consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
             @ModelAttribute CreateItemRequestDto request,
             //HttpServletRequest request,
