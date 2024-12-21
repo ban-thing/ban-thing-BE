@@ -57,7 +57,7 @@ public class ItemService {
     private final HashtagRepository hashtagRepository;
     
     public void save(Long id, CreateItemRequestDto request) throws IOException {
-        //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
+        logger.info("Request images size: {}", request.getImages() != null ? request.getImages().size() : "No images received");
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         //User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
@@ -91,7 +91,7 @@ public class ItemService {
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
          */
-        //return new ItemResponseDto(item);
+        return new ItemResponseDto(null);
         
     }
 
