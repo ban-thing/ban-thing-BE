@@ -72,7 +72,7 @@ public class ItemService {
                 .build());
 
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-
+        
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -85,10 +85,10 @@ public class ItemService {
                 .cleaningDetail(cleaningDetail)
                 .isDirect(request.getIsDirect())
                 .build());
-
+        /*
         hashtagService.save(request.getHashtags(), item.getId());
-        //itemImgsService.save(request.getImages(), item.getId());
-
+        itemImgsService.save(request.getImages(), item.getId());
+         */
         return new ItemResponseDto(item);
         
     }
