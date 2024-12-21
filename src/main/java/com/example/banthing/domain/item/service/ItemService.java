@@ -62,19 +62,6 @@ public class ItemService {
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-        
-        Item item = itemRepository.save(Item.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .price(request.getPrice())
-                .type(ItemType.valueOf(request.getType()))
-                .status(ItemStatus.판매중)
-                .address(request.getAddress())
-                .directLocation(request.getDirectLocation())
-                .seller(seller)
-                .cleaningDetail(null)
-                .isDirect(request.getIsDirect())
-                .build());
         /*
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
@@ -104,7 +91,7 @@ public class ItemService {
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
          */
-        return new ItemResponseDto(item);
+        return new ItemResponseDto(null);
         
     }
 
