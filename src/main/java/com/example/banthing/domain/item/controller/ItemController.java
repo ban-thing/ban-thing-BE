@@ -48,6 +48,7 @@ public class ItemController {
             @AuthenticationPrincipal String id
     ) throws IOException {
         logger.info("problematic one {}", objectMapper.writeValueAsString(request));
+        log.info("Request images size: {}", request.getImages() != null ? request.getImages().size() : "No images received");
         //return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
         return null;
     }
