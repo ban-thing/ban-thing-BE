@@ -8,7 +8,6 @@ import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +25,11 @@ public class ChatController {
 
     private final ChatroomService chatroomService;
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<?>> createRoom(@AuthenticationPrincipal String userId,
+    @PostMapping
+    public ResponseEntity<ApiResponse<CreateRoomResponseDto>> createRoom(@AuthenticationPrincipal String userId,
                                                                          @RequestBody CreateRoomRequestDto request) {
-        //CreateRoomResponseDto res = chatroomService.createRoom(Long.parseLong(userId), request);
-        //return ResponseEntity.ok().body(successWithDataAndMessage(res, res.getMessage()));
-        return null;
+        CreateRoomResponseDto res = chatroomService.createRoom(Long.parseLong(userId), request);
+        return ResponseEntity.ok().body(successWithDataAndMessage(res, res.getMessage()));
     }
 
     @GetMapping
