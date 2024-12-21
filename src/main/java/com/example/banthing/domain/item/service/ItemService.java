@@ -27,6 +27,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class ItemService {
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
@@ -84,7 +85,7 @@ public class ItemService {
                 .build());
 
         hashtagService.save(request.getHashtags(), item.getId());
-        itemImgsService.save(request.getImages(), item.getId());
+        itemImgsService.save(multipartRequest.getFiles("images"), item.getId());
 
         return new ItemResponseDto(item);
     }
