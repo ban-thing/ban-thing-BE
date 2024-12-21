@@ -59,8 +59,23 @@ public class ItemService {
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
+
+        //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
         
-        
+        Item item = itemRepository.save(Item.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .price(request.getPrice())
+                .type(ItemType.valueOf(request.getType()))
+                .status(ItemStatus.판매중)
+                .address(request.getAddress())
+                .directLocation(request.getDirectLocation())
+                .seller(seller)
+                .cleaningDetail(null)
+                .isDirect(request.getIsDirect())
+                .build());
+        /*
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
@@ -85,7 +100,7 @@ public class ItemService {
                 .cleaningDetail(cleaningDetail)
                 .isDirect(request.getIsDirect())
                 .build());
-        /*
+        
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
          */
