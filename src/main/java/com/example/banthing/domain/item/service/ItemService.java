@@ -58,11 +58,7 @@ public class ItemService {
     private final HashtagRepository hashtagRepository;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
-        //logger.info("Request images size: {}", images != null ? images.size() : "No images received");
-        //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        
-        //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-        
+        // MultipartFile에서는 logger 사용 절대 금지!!
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
@@ -73,8 +69,6 @@ public class ItemService {
                 .expire(request.getClnExpire())
                 .build());
 
-        //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-        
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -88,6 +82,8 @@ public class ItemService {
                 .isDirect(request.getIsDirect())
                 .build());
         
+        logger.info("address {}", request.getAddress());
+
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
         
