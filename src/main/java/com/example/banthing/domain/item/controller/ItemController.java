@@ -55,8 +55,8 @@ public class ItemController {
         log.info("OriginalFileName {}", objectMapper.writeValueAsString(request.getImages().get(0).getSize()));
         log.info("OriginalFileName {}", objectMapper.writeValueAsString(request.getImages().get(0).getContentType()));
         InputStream inputStream = request.getImages().get(0).getInputStream();
-        //return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), new CreateErrorDto(request), request.getImages())));
-        return null;
+        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        //return null;
     }
 
     /***

@@ -57,8 +57,8 @@ public class ItemService {
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
     
-    public ItemResponseDto save(Long id, CreateErrorDto request, List<MultipartFile> images) throws IOException {
-        logger.info("Request images size: {}", images != null ? images.size() : "No images received");
+    public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
+        //logger.info("Request images size: {}", images != null ? images.size() : "No images received");
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
@@ -89,7 +89,7 @@ public class ItemService {
                 .build());
         
         hashtagService.save(request.getHashtags(), item.getId());
-        itemImgsService.save(images, item.getId());
+        itemImgsService.save(request.getImages(), item.getId());
         
         return new ItemResponseDto(null);
         
