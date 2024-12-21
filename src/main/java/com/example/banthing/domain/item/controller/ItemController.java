@@ -37,10 +37,9 @@ public class ItemController {
      * 상품 등록
      *
      ***/
-    @PostMapping(consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping
     public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
             @ModelAttribute CreateItemRequestDto request,
-            //HttpServletRequest request,
             @AuthenticationPrincipal String id
     ) throws IOException {
         return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
