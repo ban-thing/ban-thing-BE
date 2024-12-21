@@ -6,6 +6,8 @@ import com.example.banthing.domain.item.dto.ItemListResponseDto;
 import com.example.banthing.domain.item.dto.ItemResponseDto;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.global.common.ApiResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
@@ -33,11 +36,16 @@ public class ItemController {
      *
      ***/
     @PostMapping
-    public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
-            @ModelAttribute CreateItemRequestDto request,
+    public ResponseEntity<ApiResponse<String>> addItem(
+            //@ModelAttribute CreateItemRequestDto request,
+            HttpServletRequest request,
             @AuthenticationPrincipal String id
     ) throws IOException {
-        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        request.getParameterMap().forEach((key, value) -> {
+            System.out.println(key + " -> " + Arrays.toString(value));
+        });
+        return ResponseEntity.ok().body(successResponse("success"));
+        //return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
     }
 
     /***
