@@ -89,7 +89,7 @@ public class ItemService {
                 .build());
         
         hashtagService.save(request.getHashtags(), item.getId());
-        itemImgsService.save(request.getImages(), item.getId());
+        itemImgsService.save(images, item.getId());
         
         return new ItemResponseDto(null);
         
