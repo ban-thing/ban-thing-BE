@@ -60,10 +60,9 @@ public class ItemService {
     public ItemResponseDto save(Long id, CreateErrorDto request, List<MultipartFile> images) throws IOException {
         logger.info("Request images size: {}", images != null ? images.size() : "No images received");
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        //User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
-
+        
         //logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-        /*
+        
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
@@ -91,7 +90,7 @@ public class ItemService {
         
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
-         */
+        
         return new ItemResponseDto(null);
         
     }
