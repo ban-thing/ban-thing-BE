@@ -36,16 +36,12 @@ public class ItemController {
      *
      ***/
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> addItem(
-            //@ModelAttribute CreateItemRequestDto request,
-            HttpServletRequest request,
+    public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
+            @ModelAttribute CreateItemRequestDto request,
+            //HttpServletRequest request,
             @AuthenticationPrincipal String id
     ) throws IOException {
-        request.getParameterMap().forEach((key, value) -> {
-            System.out.println(key + " -> " + Arrays.toString(value));
-        });
-        return ResponseEntity.ok().body(successResponse("success"));
-        //return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
     }
 
     /***
