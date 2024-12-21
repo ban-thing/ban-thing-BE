@@ -68,7 +68,7 @@ public class ItemImgService {
                 .build();
     }
 
-    public void save(List<String> images, Long itemId) throws IOException {
+    public void save(MultipartFile images, Long itemId) throws IOException {
         List<ItemImg> itemImgs = new ArrayList<>();
         /*
         for (String image : images) {
@@ -140,7 +140,7 @@ public class ItemImgService {
         }
     }
 
-    public void update(List<String> newImages, Long itemId) throws IOException {
+    public void update(MultipartFile newImages, Long itemId) throws IOException {
         delete(itemId);
         save(newImages, itemId);
     }

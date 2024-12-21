@@ -36,5 +36,5 @@ public class CreateItemRequestDto {
     // 이미지 파일
     // @JsonSerialize(using = MultipartFileSerializer.class)
     // @JsonIgnore
-    private List<String> images;
+    private MultipartFile images;
 }
