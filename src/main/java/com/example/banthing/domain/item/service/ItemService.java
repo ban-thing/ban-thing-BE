@@ -27,6 +27,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -56,8 +57,8 @@ public class ItemService {
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
     
-    public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
-        logger.info("Request images size: {}", request.getImages() != null ? request.getImages().size() : "No images received");
+    public ItemResponseDto save(Long id, CreateErrorDto request, List<MultipartFile> images) throws IOException {
+        logger.info("Request images size: {}", images != null ? images.size() : "No images received");
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         //User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 

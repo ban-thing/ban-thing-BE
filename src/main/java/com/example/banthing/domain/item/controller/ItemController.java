@@ -1,5 +1,6 @@
 package com.example.banthing.domain.item.controller;
 
+import com.example.banthing.domain.item.dto.CreateErrorDto;
 import com.example.banthing.domain.item.dto.CreateItemRequestDto;
 import com.example.banthing.domain.item.dto.ItemDto;
 import com.example.banthing.domain.item.dto.ItemListResponseDto;
@@ -49,8 +50,7 @@ public class ItemController {
     ) throws IOException {
         //logger.info("problematic one {}", objectMapper.writeValueAsString(request));
         //log.info("Request images size: {}", request.getImages() != null ? request.getImages().size() : "No images received");
-        
-        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), new CreateErrorDto(request), request.getImages())));
         
     }
 
