@@ -34,7 +34,7 @@ public class CreateItemRequestDto {
     private List<String> hashtags;
 
     // 이미지 파일
-    // @JsonSerialize(using = MultipartFileSerializer.class)
+    @JsonSerialize(using = MultipartFileSerializer.class)
     // @JsonIgnore
     private List<MultipartFile> images;
 }
