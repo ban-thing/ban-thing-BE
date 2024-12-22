@@ -93,6 +93,9 @@ public class ItemService {
 
     public ItemResponseDto update(Long itemId, CreateItemRequestDto request, String userId)throws IOException {
 
+        logger.info(request.getAddress());
+        logger.info(objectMapper.writeValueAsString(request.getImages().size()));
+
         User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
         Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
 

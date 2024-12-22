@@ -119,9 +119,6 @@ public class ItemController {
             @RequestParam(required = false) String address) {
 
         if (hashtags.length() != 0) {
-
-            //logger.atError();
-            // output ItemListResponseDto로 받는 방법 찾기
             return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)));
         } else {
             // or output FlaskResponseDto로 받는 방법 찾기
@@ -129,8 +126,7 @@ public class ItemController {
             return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         }
 
-        //return ResponseEntity.ok(itemService.listItems(page, keyword, filter_low, filter_high));
-
+        
     }
 
 }
