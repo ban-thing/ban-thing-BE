@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
                 // 해당 경로로 WebSocket 연결을 허용
-                .addHandler(webSocketHandler, "/wss/chat/{roomId}")
+                .addHandler(webSocketHandler, "/ws/chat/{roomId}")
                 // CORS 허용
                 .setAllowedOrigins("*");
     }
