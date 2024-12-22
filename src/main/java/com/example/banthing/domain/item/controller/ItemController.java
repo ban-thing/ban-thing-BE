@@ -49,12 +49,6 @@ public class ItemController {
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String id
     ) throws IOException {
-        logger.info("problematic one {}", objectMapper.writeValueAsString(request));
-        log.info("Request images size: {}", request.getImages() != null ? request.getImages().size() : "No images received");
-        log.info("OriginalFileName {}", objectMapper.writeValueAsString(request.getImages().get(0).getOriginalFilename()));
-        log.info("OriginalFileName {}", objectMapper.writeValueAsString(request.getImages().get(0).getSize()));
-        log.info("OriginalFileName {}", objectMapper.writeValueAsString(request.getImages().get(0).getContentType()));
-        InputStream inputStream = request.getImages().get(0).getInputStream();
         return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
         //return null;
     }
