@@ -32,4 +32,16 @@ public class NcpConfig {
                 .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials))
                 .build();
     }
+
+    List<CORSRule.AllowedMethods> methodRule = new ArrayList<CORSRule.AllowedMethods>();
+    methodRule.add(CORSRule.AllowedMethods.PUT);
+    methodRule.add(CORSRule.AllowedMethods.GET);
+    methodRule.add(CORSRule.AllowedMethods.POST);
+    CORSRule rule = new CORSRule().withId("CORSRule")
+            .withAllowedMethods(methodRule)
+            .withAllowedHeaders(Arrays.asList(new String[] { "*" }))
+            .withAllowedOrigins(Arrays.asList(new String[] { "https://banthing.net" }))
+            .withMaxAgeSeconds(3000);
+
+
 }
