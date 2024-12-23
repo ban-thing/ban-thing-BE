@@ -14,7 +14,7 @@ import java.util.Base64;
 public class FindRoomsResponseDto {
     private Long chatRoomId;
     private String address;
-    private String profileImg;
+    private String itemImg;
     private String nickname;
     private String latestMessage;
     private LocalDateTime latestMessageDateTime;
@@ -28,11 +28,13 @@ public class FindRoomsResponseDto {
         if (user == chatroom.getSeller()) {
             this.type = "판매";
             this.nickname = chatroom.getBuyer().getNickname();
-            this.profileImg = Base64.getEncoder().encodeToString(chatroom.getBuyer().getProfileImg().getData());
         } else {
             this.type = "구매";
             this.nickname = chatroom.getSeller().getNickname();
-            this.profileImg = Base64.getEncoder().encodeToString(chatroom.getSeller().getProfileImg().getData());
+        }
+
+        if (chatroom.getItem().getImages().size() > 0) {
+            this.itemImg = chatroom.getItem().getImages().get(0).getImgUrl();
         }
 
         if (chatroom.getChatMessages().size() > 0) {
