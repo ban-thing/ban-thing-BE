@@ -1,5 +1,9 @@
 package com.example.banthing.domain.item.service;
 
+import com.example.banthing.domain.chat.entity.Chatroom;
+import com.example.banthing.domain.chat.repository.ChatMessageRepository;
+import com.example.banthing.domain.chat.repository.ChatroomRepository;
+import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.domain.item.dto.*;
 import com.example.banthing.domain.item.entity.CleaningDetail;
 import com.example.banthing.domain.item.entity.Item;
@@ -52,6 +56,9 @@ public class ItemService {
     private final CleaningDetailRepository cleaningDetailRepository;
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
+    private final ChatroomRepository chatroomRepository;
+
+    private final ChatroomService chatroomService;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
 //        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
@@ -123,13 +130,26 @@ public class ItemService {
     }
 
     public void delete(Long id) {
+        //이미지 삭제
         itemImgsService.delete(id);
-        
-        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
 
+        //cleaning detail 삭제
+        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
         cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
+        
+        //해시태그 삭제
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
+
+        //채팅방 삭제 
+        // Retrieve the chatroom to be deleted
+        Long seller_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getSeller().getId();
+        List<Chatroom> chatrooms = chatroomRepository.findAllBySellerId(seller_id);
+        
+        for(Chatroom chatroom:chatrooms){
+            chatroomService.deleteRoom(chatroom.getId(), seller_id);
+        }
+
         itemRepository.deleteById(id);
     }
 
