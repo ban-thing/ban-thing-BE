@@ -133,13 +133,6 @@ public class ItemService {
         //이미지 삭제
         itemImgsService.delete(id);
 
-        //cleaning detail 삭제
-        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
-        cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
-                .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
-        
-        logger.info(cleaning_detail_id.toString());
-
         //해시태그 삭제
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
 
@@ -153,6 +146,15 @@ public class ItemService {
         }
 
         itemRepository.deleteById(id);
+
+        //cleaning detail 삭제
+        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
+        cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
+                .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
+        
+        logger.info(cleaning_detail_id.toString());
+        
+
     }
 
     public void sell(Long id) {
