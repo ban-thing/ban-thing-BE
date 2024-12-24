@@ -26,8 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -145,6 +149,33 @@ public class ItemImgService {
 
     public List<ItemImg> findItemImgs(Long itemId) {
         return itemImgsRepository.findByItemId(itemId);
+    }
+
+    public List<String> getBase64EncodedImages(Long itemId) {
+        List<ItemImg> itemImgs = findItemImgs(itemId);
+
+        return itemImgs.stream()
+                .map(itemImg -> {
+                    try {
+                        return encodeImageToBase64(itemImg.getImgUrl(), itemId);
+                    } catch (IOException e) {
+                        logger.error("Failed to encode image to Base64: {}", itemImg.getImgUrl(), e);
+                        return null;
+                    }
+                })
+                .filter(base64 -> base64 != null)
+                .collect(Collectors.toList());
+    }
+
+
+    private String encodeImageToBase64(String imgUrl, Long itemId) throws IOException {
+        String fullUrl = "https://kr.object.ncloudstorage.com/banthing-images/itemImage/" + itemId + "/" + imgUrl;
+        URL url = new URL(fullUrl);
+
+        try (InputStream inputStream = url.openStream()) {
+            byte[] imageBytes = inputStream.readAllBytes();
+            return Base64.getEncoder().encodeToString(imageBytes);
+        }
     }
 
 }
