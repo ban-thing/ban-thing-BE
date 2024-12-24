@@ -1,8 +1,8 @@
 package com.example.banthing.domain.item.dto;
 
 import com.example.banthing.domain.item.entity.Item;
-import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.entity.ItemType;
+import com.example.banthing.domain.item.service.ItemImgService;
 import com.example.banthing.domain.user.entity.ProfileImage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,22 +30,19 @@ public class ItemDto {
     private boolean isDirect;
     private LocalDateTime updateTime;
 
-    public static ItemDto fromEntity(Item item) {
+    public static ItemDto fromEntity(Item item, ItemImgService itemImgService) {
+        List<String> base64Images = itemImgService.getBase64EncodedImages(item.getId());
         return new ItemDto(
                 item.getTitle(),
                 item.getContent(),
                 item.getSeller().getId(),
                 item.getSeller().getProfileImg(),
-                item.getSeller().getNickname().contains("#") 
-                        ? item.getSeller().getNickname().substring(0, item.getSeller().getNickname().length() - 6)
-                        : item.getSeller().getNickname(),
+                item.getSeller().getNickname(),
                 item.getType(),
                 item.getPrice(),
                 item.getDirectLocation(),
                 item.getSeller().getAddress2(),
-                item.getImages().stream()
-                        .map(ItemImg::getImgUrl)
-                        .collect(Collectors.toList()),
+                base64Images,
                 item.getHashtags().stream()
                         .map(HashtagDto::fromEntity)
                         .collect(Collectors.toList()),
