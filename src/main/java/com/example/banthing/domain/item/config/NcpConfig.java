@@ -33,8 +33,6 @@ public class NcpConfig {
 
     @Bean
     public AmazonS3Client amazonS3Client() {
-        BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        
         // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
             .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
@@ -46,6 +44,8 @@ public class NcpConfig {
         methodRule.add(CORSRule.AllowedMethods.PUT);
         methodRule.add(CORSRule.AllowedMethods.GET);
         methodRule.add(CORSRule.AllowedMethods.POST);
+        methodRule.add(CORSRule.AllowedMethods.DELETE);
+        methodRule.add(CORSRule.AllowedMethods.HEAD);
         CORSRule rule = new CORSRule().withId("CORSRule")
                 .withAllowedMethods(methodRule)
                 .withAllowedHeaders(Arrays.asList(new String[] { "*" }))
