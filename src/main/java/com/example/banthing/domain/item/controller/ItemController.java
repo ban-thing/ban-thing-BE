@@ -1,6 +1,5 @@
 package com.example.banthing.domain.item.controller;
 
-import com.example.banthing.domain.item.dto.CreateErrorDto;
 import com.example.banthing.domain.item.dto.CreateItemRequestDto;
 import com.example.banthing.domain.item.dto.ItemDto;
 import com.example.banthing.domain.item.dto.ItemListResponseDto;

@@ -5,8 +5,13 @@ import com.example.banthing.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -76,6 +81,26 @@ public class Item extends Timestamped {
     public void addImage(ItemImg image) {
         this.images.add(image);
         image.setItem(this); // 양방향 연관관계 설정
+    }
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
+        createdAt = LocalDateTime.now(koreanTimeZone);
+        updatedAt = LocalDateTime.now(koreanTimeZone);
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
+        updatedAt = LocalDateTime.now(koreanTimeZone);
     }
 
 }
