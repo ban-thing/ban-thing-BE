@@ -74,8 +74,6 @@ public class ChatroomService {
                 .orElseThrow(() -> new NullPointerException("해당 채팅방은 존재하지 않습니다."));
 
         Slice<ChatMessage> messages = chatMessageRepository.findAllByChatroomIdOrderByCreatedAtDesc(roomId, pageable);
-
-        logger.info(new FindMessageAndItemResponseDto(chatroom, messages).getBuyer());
         
         return new FindMessageAndItemResponseDto(chatroom, messages);
     }

@@ -29,7 +29,7 @@ public class FindMessageAndItemResponseDto {
         this.title = item.getTitle();
         this.price = item.getPrice();
         this.seller = item.getSeller().getNickname();
-        this.buyer = item.getBuyer().getNickname();
+        this.buyer = chatroom.getBuyer().getNickname();
         if (item.getImages().size() > 0)
             this.itemImage = item.getImages().get(0).getImgUrl();
 
