@@ -74,6 +74,7 @@ public class ItemImgService {
 
     public void save(List<MultipartFile> images, Long itemId) throws IOException {
         List<ItemImg> itemImgs = new ArrayList<>();
+        
         for (MultipartFile image : images) {
             String imgUrl = saveImage(image, itemId);
             ItemImg itemImg = ItemImg.builder()
@@ -82,6 +83,7 @@ public class ItemImgService {
                     .build();
             itemImgs.add(itemImg);
         }
+        
         itemImgsRepository.saveAll(itemImgs);
     }
 

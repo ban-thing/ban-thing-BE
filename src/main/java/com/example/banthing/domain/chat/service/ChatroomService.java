@@ -9,7 +9,12 @@ import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -21,6 +26,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ChatroomService {
+
+    public static Logger logger = LoggerFactory.getLogger("Chat 관련 로그");
+    private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     private final ChatroomRepository chatroomRepository;
     private final ChatMessageRepository chatMessageRepository;
@@ -66,7 +74,7 @@ public class ChatroomService {
                 .orElseThrow(() -> new NullPointerException("해당 채팅방은 존재하지 않습니다."));
 
         Slice<ChatMessage> messages = chatMessageRepository.findAllByChatroomIdOrderByCreatedAtDesc(roomId, pageable);
-
+        
         return new FindMessageAndItemResponseDto(chatroom, messages);
     }
 

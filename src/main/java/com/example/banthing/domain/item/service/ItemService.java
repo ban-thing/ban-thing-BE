@@ -119,7 +119,7 @@ public class ItemService {
 
     public ItemDto get(Long id) {
         Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
-        return ItemDto.fromEntity(item, itemImgsService);
+        return ItemDto.fromEntity(item,itemImgsService);
     }
 
     public void delete(Long id) {

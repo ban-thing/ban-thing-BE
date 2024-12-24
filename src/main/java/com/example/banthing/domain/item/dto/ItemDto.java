@@ -37,7 +37,9 @@ public class ItemDto {
                 item.getContent(),
                 item.getSeller().getId(),
                 item.getSeller().getProfileImg(),
-                item.getSeller().getNickname(),
+                item.getSeller().getNickname().contains("#") 
+                        ? item.getSeller().getNickname().substring(0, item.getSeller().getNickname().length() - 6)
+                        : item.getSeller().getNickname(),
                 item.getType(),
                 item.getPrice(),
                 item.getDirectLocation(),
