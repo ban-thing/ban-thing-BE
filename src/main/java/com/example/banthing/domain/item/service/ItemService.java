@@ -146,18 +146,18 @@ public class ItemService {
             chatroomService.deleteRoom(chatroom.getId(), seller_id);
         }
 
-        logger.info("cleaning_detail 삭제 완료");
+        logger.info("채팅방 삭제 완료");
 
         itemRepository.deleteById(id);
 
-        logger.info("cleaning_detail 삭제 시작");
+        logger.info("cleaning_detail 삭제 시작 {}", id);
 
         //cleaning detail 삭제
         Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
         cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
         
-        logger.info("cleaning_detail 삭제 시작");
+        logger.info("cleaning_detail 삭제 완료");
         
         //logger.info(cleaning_detail_id.toString());
         
