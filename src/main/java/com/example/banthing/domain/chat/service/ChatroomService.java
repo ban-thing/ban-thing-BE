@@ -82,4 +82,5 @@ public class ChatroomService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NullPointerException("해당 유저는 존재하지 않습니다."));
     }
+
 }

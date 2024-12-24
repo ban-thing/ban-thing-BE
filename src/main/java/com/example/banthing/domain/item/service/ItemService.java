@@ -131,7 +131,7 @@ public class ItemService {
 
     public void delete(Long id) {
         itemImgsService.delete(id);
-
+        
         Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
 
         cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
