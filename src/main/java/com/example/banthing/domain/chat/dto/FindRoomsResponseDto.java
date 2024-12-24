@@ -28,10 +28,14 @@ public class FindRoomsResponseDto {
 
         if (user == chatroom.getSeller()) {
             this.type = "판매";
-            this.nickname = chatroom.getBuyer().getNickname();
+            this.nickname = chatroom.getBuyer().getNickname().contains("#") 
+            ? chatroom.getBuyer().getNickname().substring(0, chatroom.getBuyer().getNickname().length() - 6)
+            : chatroom.getBuyer().getNickname();
         } else {
             this.type = "구매";
-            this.nickname = chatroom.getSeller().getNickname();
+            this.nickname = chatroom.getSeller().getNickname().contains("#") 
+            ? chatroom.getSeller().getNickname().substring(0, chatroom.getSeller().getNickname().length() - 6)
+            : chatroom.getSeller().getNickname();
         }
 
         if (chatroom.getItem().getImages().size() > 0) {
