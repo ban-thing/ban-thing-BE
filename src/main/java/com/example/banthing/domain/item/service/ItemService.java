@@ -3,6 +3,7 @@ package com.example.banthing.domain.item.service;
 import com.example.banthing.domain.item.dto.*;
 import com.example.banthing.domain.item.entity.CleaningDetail;
 import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.entity.ItemImg;
 import com.example.banthing.domain.item.entity.ItemStatus;
 import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.mapper.ItemMapper;
@@ -26,9 +27,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,8 +58,7 @@ public class ItemService {
     private final HashtagRepository hashtagRepository;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
-        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-
+        // MultipartFile에서는 logger 사용 절대 금지!!
         User seller = userRepository.findById(id).orElseThrow(NullPointerException::new);
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
@@ -65,8 +68,6 @@ public class ItemService {
                 .cleaned(request.getClnCleaned())
                 .expire(request.getClnExpire())
                 .build());
-
-        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
 
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
@@ -80,14 +81,20 @@ public class ItemService {
                 .cleaningDetail(cleaningDetail)
                 .isDirect(request.getIsDirect())
                 .build());
+        
+        logger.info("address {}", request.getAddress());
 
         hashtagService.save(request.getHashtags(), item.getId());
         itemImgsService.save(request.getImages(), item.getId());
-
+        
         return new ItemResponseDto(item);
+        
     }
 
     public ItemResponseDto update(Long itemId, CreateItemRequestDto request, String userId)throws IOException {
+
+        logger.info(request.getAddress());
+        logger.info(objectMapper.writeValueAsString(request.getImages().size()));
 
         User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
         Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);

@@ -79,4 +79,10 @@ public class User extends Timestamped {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public String getNickname2() {
+        return this.nickname.contains("#") 
+                        ? this.nickname.substring(0, this.nickname.length() - 6)
+                        : this.nickname;
+    }
 }

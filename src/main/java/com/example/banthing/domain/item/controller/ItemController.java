@@ -6,14 +6,23 @@ import com.example.banthing.domain.item.dto.ItemListResponseDto;
 import com.example.banthing.domain.item.dto.ItemResponseDto;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.global.common.ApiResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
@@ -25,19 +34,22 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 public class ItemController {
 
     private final ItemService itemService;
-
+    public static Logger logger = LoggerFactory.getLogger("Item 관련 로그");
+    private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    
 
     /***
      *
      * 상품 등록
      *
      ***/
-    @PostMapping
-    public ResponseEntity<ApiResponse<ItemResponseDto>> addItem(
+    @PostMapping(consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ApiResponse<?>> addItem(
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String id
     ) throws IOException {
         return ResponseEntity.ok().body(successResponse(itemService.save(Long.valueOf(id), request)));
+        //return null;
     }
 
     /***
@@ -106,9 +118,6 @@ public class ItemController {
             @RequestParam(required = false) String address) {
 
         if (hashtags.length() != 0) {
-
-            //logger.atError();
-            // output ItemListResponseDto로 받는 방법 찾기
             return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)));
         } else {
             // or output FlaskResponseDto로 받는 방법 찾기
@@ -116,8 +125,7 @@ public class ItemController {
             return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         }
 
-        //return ResponseEntity.ok(itemService.listItems(page, keyword, filter_low, filter_high));
-
+        
     }
 
 }

@@ -18,6 +18,7 @@ public class FindMessageAndItemResponseDto {
     private final String title;
     private final Integer price;
     private final String seller;
+    private final String buyer;
     private String itemImage;
     private List<MessagesDto> messages = new ArrayList<>();
     private final boolean hasNext;
@@ -27,7 +28,13 @@ public class FindMessageAndItemResponseDto {
         this.itemId = item.getId();
         this.title = item.getTitle();
         this.price = item.getPrice();
-        this.seller = item.getSeller().getNickname();
+        this.seller =  item.getSeller().getNickname().contains("#") 
+        ? item.getSeller().getNickname().substring(0, item.getSeller().getNickname().length() - 6)
+        : item.getSeller().getNickname();
+        this.buyer = chatroom.getBuyer().getNickname().contains("#") 
+        ? chatroom.getBuyer().getNickname().substring(0, chatroom.getBuyer().getNickname().length() - 6)
+        : chatroom.getBuyer().getNickname();
+        
         if (item.getImages().size() > 0)
             this.itemImage = item.getImages().get(0).getImgUrl();
 
