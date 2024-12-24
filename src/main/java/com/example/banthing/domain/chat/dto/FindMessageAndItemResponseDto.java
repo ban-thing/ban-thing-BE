@@ -31,9 +31,9 @@ public class FindMessageAndItemResponseDto {
         this.seller =  item.getSeller().getNickname().contains("#") 
         ? item.getSeller().getNickname().substring(0, item.getSeller().getNickname().length() - 6)
         : item.getSeller().getNickname();
-        this.buyer = item.getBuyer().getNickname().contains("#") 
-        ? item.getBuyer().getNickname().substring(0, item.getBuyer().getNickname().length() - 6)
-        : item.getBuyer().getNickname();
+        this.buyer = chatroom.getBuyer().getNickname().contains("#") 
+        ? chatroom.getBuyer().getNickname().substring(0, chatroom.getBuyer().getNickname().length() - 6)
+        : chatroom.getBuyer().getNickname();
         
         if (item.getImages().size() > 0)
             this.itemImage = item.getImages().get(0).getImgUrl();
