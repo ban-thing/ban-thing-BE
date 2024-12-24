@@ -20,6 +20,7 @@ public class FindRoomsResponseDto {
     private LocalDateTime latestMessageDateTime;
     private Integer unreadMessageCount;
     private String type; // 판매/구매
+    private Long itemId;
 
     public FindRoomsResponseDto(Chatroom chatroom, User user) {
         this.chatRoomId = chatroom.getId();
@@ -42,5 +43,7 @@ public class FindRoomsResponseDto {
             this.latestMessage = message.getContent();
             this.latestMessageDateTime = message.getCreatedAt();
         }
+
+        this.itemId = chatroom.getItem().getId();
     }
 }
