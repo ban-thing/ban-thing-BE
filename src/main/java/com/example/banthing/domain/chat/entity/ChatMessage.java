@@ -1,5 +1,11 @@
 package com.example.banthing.domain.chat.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.example.banthing.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -43,5 +49,26 @@ public class ChatMessage extends Timestamped {
 
     public void setChatroom(Chatroom chatroom) {
         this.chatroom = chatroom;
+    }
+
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
+        createdAt = LocalDateTime.now(koreanTimeZone);
+        updatedAt = LocalDateTime.now(koreanTimeZone);
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
+        updatedAt = LocalDateTime.now(koreanTimeZone);
     }
 }
