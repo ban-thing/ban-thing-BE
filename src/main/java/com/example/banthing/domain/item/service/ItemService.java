@@ -131,7 +131,10 @@ public class ItemService {
 
     public void delete(Long id) {
         itemImgsService.delete(id);
-        cleaningDetailRepository.delete(cleaningDetailRepository.findById(id)
+
+        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
+
+        cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
         itemRepository.deleteById(id);

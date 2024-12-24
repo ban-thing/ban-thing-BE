@@ -3,7 +3,7 @@ name: Execute python, Spring, MySQL server
 on: 
   push:
     branches:
-      - main
+      - 73-err_fix
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
         ./gradlew dependencies
     
     - name: Spring-Docker build & push to prod
-      if: contains(github.ref, 'main')
+      if: contains(github.ref, '73-err_fix')
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PWD }}
         docker build -f ./dockerfilejava -t ${{ secrets.DOCKER_USERNAME }}/cicdtestjava .
