@@ -136,26 +136,30 @@ public class ItemService {
         //해시태그 삭제
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
 
-        logger.info("cleaning_detail 삭제 시작");
+        logger.info("채팅방 삭제 시작");
         //채팅방 삭제 
         // Retrieve the chatroom to be deleted
         Long seller_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getSeller().getId();
         List<Chatroom> chatrooms = chatroomRepository.findAllBySellerId(seller_id);
         
-        logger.info("cleaning_detail 삭제 완료");
-
         for(Chatroom chatroom:chatrooms){
             chatroomService.deleteRoom(chatroom.getId(), seller_id);
         }
 
+        logger.info("cleaning_detail 삭제 완료");
+
         itemRepository.deleteById(id);
+
+        logger.info("cleaning_detail 삭제 시작");
 
         //cleaning detail 삭제
         Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
         cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
         
-        logger.info(cleaning_detail_id.toString());
+        logger.info("cleaning_detail 삭제 시작");
+        
+        //logger.info(cleaning_detail_id.toString());
         
 
     }
