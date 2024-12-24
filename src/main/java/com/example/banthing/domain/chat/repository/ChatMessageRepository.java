@@ -13,4 +13,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Slice<ChatMessage> findMessagesByChatroomId(@Param("roomId") Long roomId, Pageable pageable);
 
     Slice<ChatMessage> findAllByChatroomIdOrderByCreatedAtDesc(Long ChatroomId, Pageable page);
+
+    void deleteAllByChatroomId(Long ChatroomId);
 }
