@@ -136,11 +136,14 @@ public class ItemService {
         //해시태그 삭제
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
 
+        logger.info("cleaning_detail 삭제 시작");
         //채팅방 삭제 
         // Retrieve the chatroom to be deleted
         Long seller_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getSeller().getId();
         List<Chatroom> chatrooms = chatroomRepository.findAllBySellerId(seller_id);
         
+        logger.info("cleaning_detail 삭제 완료");
+
         for(Chatroom chatroom:chatrooms){
             chatroomService.deleteRoom(chatroom.getId(), seller_id);
         }
