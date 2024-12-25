@@ -45,7 +45,7 @@ public class ItemDto {
                 item.getType(),
                 item.getPrice(),
                 item.getDirectLocation(),
-                item.getSeller().getAddress2(),
+                item.getAddress(),
                 imageNames,
                 base64Images,
                 item.getHashtags().stream()
