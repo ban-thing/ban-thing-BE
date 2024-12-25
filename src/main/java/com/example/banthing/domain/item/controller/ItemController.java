@@ -60,7 +60,7 @@ public class ItemController {
      * 상품 수정
      *
      ***/
-    @PatchMapping("/{itemId}")
+    @PatchMapping(path = "/{itemId}", consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ItemResponseDto>> updateItem(
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String userId,
