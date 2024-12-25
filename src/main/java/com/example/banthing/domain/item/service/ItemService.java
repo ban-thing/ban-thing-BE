@@ -96,8 +96,12 @@ public class ItemService {
 
     public ItemResponseDto update(Long itemId, CreateItemRequestDto request, String userId)throws IOException {
 
+        logger.info("아이템 수정 시작");
+
         User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
         Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
+
+        logger.info("cleaning detail 저장 시작");
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
                 .pollution(request.getClnPollution())
@@ -108,6 +112,8 @@ public class ItemService {
                 .build());
         cleaningDetailRepository.save(cleaningDetail);
 
+        logger.info("일반형 파라미터 저장 시작");
+
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
         item.setType(ItemType.valueOf(request.getType()));
@@ -116,9 +122,17 @@ public class ItemService {
         item.setAddress(request.getAddress());
         item.setSeller(seller);
         item.setIsDirect(request.getIsDirect());
+        
+        logger.info("아이템저장 시작");
+
         itemRepository.save(item);
 
+        logger.info("해시태그 저장 시작");
+
         hashtagService.update(request.getHashtags(), item.getId());
+
+        logger.info("이미지 저장 시작");
+
         itemImgsService.update(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
