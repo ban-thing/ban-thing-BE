@@ -180,4 +180,14 @@ public class ItemImgService {
         }
     }
 
+    public List<String> getImgNames(Long itemId) {
+        List<ItemImg> itemImgs = findItemImgs(itemId);
+
+        return itemImgs.stream()
+                .map(itemImg -> {
+                    return itemImg.getImgUrl();
+                })
+                .collect(Collectors.toList());
+    }
+
 }

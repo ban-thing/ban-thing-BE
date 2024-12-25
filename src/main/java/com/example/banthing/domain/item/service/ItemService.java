@@ -158,9 +158,6 @@ public class ItemService {
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
         
         logger.info("cleaning_detail 삭제 완료");
-        
-        //logger.info(cleaning_detail_id.toString());
-        
 
     }
 
