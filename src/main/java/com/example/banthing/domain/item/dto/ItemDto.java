@@ -24,6 +24,7 @@ public class ItemDto {
     private Integer price;
     private String directLocation;
     private String address;
+    private List<String> itemImgNames;
     private List<String> itemImgs;
     private List<HashtagDto> hashtags;
     private CleaningDetailDto cleaningDetail;
@@ -32,6 +33,7 @@ public class ItemDto {
 
     public static ItemDto fromEntity(Item item, ItemImgService itemImgService) {
         List<String> base64Images = itemImgService.getBase64EncodedImages(item.getId());
+        List<String> imageNames = itemImgService.getImgNames(item.getId());
         return new ItemDto(
                 item.getTitle(),
                 item.getContent(),
@@ -44,6 +46,7 @@ public class ItemDto {
                 item.getPrice(),
                 item.getDirectLocation(),
                 item.getSeller().getAddress2(),
+                imageNames,
                 base64Images,
                 item.getHashtags().stream()
                         .map(HashtagDto::fromEntity)

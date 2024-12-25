@@ -1,5 +1,9 @@
 package com.example.banthing.domain.item.service;
 
+import com.example.banthing.domain.chat.entity.Chatroom;
+import com.example.banthing.domain.chat.repository.ChatMessageRepository;
+import com.example.banthing.domain.chat.repository.ChatroomRepository;
+import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.domain.item.dto.*;
 import com.example.banthing.domain.item.entity.CleaningDetail;
 import com.example.banthing.domain.item.entity.Item;
@@ -52,6 +56,9 @@ public class ItemService {
     private final CleaningDetailRepository cleaningDetailRepository;
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
+    private final ChatroomRepository chatroomRepository;
+
+    private final ChatroomService chatroomService;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
 //        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
@@ -89,8 +96,12 @@ public class ItemService {
 
     public ItemResponseDto update(Long itemId, CreateItemRequestDto request, String userId)throws IOException {
 
+        logger.info("아이템 수정 시작");
+
         User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
         Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
+
+        logger.info("cleaning detail 저장 시작");
 
         CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
                 .pollution(request.getClnPollution())
@@ -101,6 +112,8 @@ public class ItemService {
                 .build());
         cleaningDetailRepository.save(cleaningDetail);
 
+        logger.info("일반형 파라미터 저장 시작");
+
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
         item.setType(ItemType.valueOf(request.getType()));
@@ -109,9 +122,17 @@ public class ItemService {
         item.setAddress(request.getAddress());
         item.setSeller(seller);
         item.setIsDirect(request.getIsDirect());
+        
+        logger.info("아이템저장 시작");
+
         itemRepository.save(item);
 
+        logger.info("해시태그 저장 시작");
+
         hashtagService.update(request.getHashtags(), item.getId());
+
+        logger.info("이미지 저장 시작");
+
         itemImgsService.update(request.getImages(), item.getId());
 
         return new ItemResponseDto(item);
@@ -123,14 +144,35 @@ public class ItemService {
     }
 
     public void delete(Long id) {
+        //이미지 삭제
         itemImgsService.delete(id);
 
-        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
+        //해시태그 삭제
+        hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
 
+        logger.info("채팅방 삭제 시작");
+        //채팅방 삭제 
+        // Retrieve the chatroom to be deleted
+        Long seller_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getSeller().getId();
+        List<Chatroom> chatrooms = chatroomRepository.findAllBySellerId(seller_id);
+        
+        for(Chatroom chatroom:chatrooms){
+            chatroomService.deleteRoom(chatroom.getId(), seller_id);
+        }
+
+        logger.info("채팅방 삭제 완료");
+
+        Long cleaning_detail_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getCleaningDetail().getId();
+        itemRepository.deleteById(id);
+
+        logger.info("cleaning_detail 삭제 시작 {}", id);
+
+        //cleaning detail 삭제
         cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
-        hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
-        itemRepository.deleteById(id);
+        
+        logger.info("cleaning_detail 삭제 완료");
+
     }
 
     public void sell(Long id) {

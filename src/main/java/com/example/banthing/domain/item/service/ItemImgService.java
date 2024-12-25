@@ -145,8 +145,18 @@ public class ItemImgService {
     }
 
     public void update(List<MultipartFile> newImages, Long itemId) throws IOException {
+        logger.info("아이템 삭제 시작");
+
         delete(itemId);
+
+        logger.info("아이템 삭제 성공");
+        logger.info("아이템 업로드 시작");
+
         save(newImages, itemId);
+
+        logger.info("아이템 업로드 성공");
+
+
     }
 
     public List<ItemImg> findItemImgs(Long itemId) {
@@ -178,6 +188,16 @@ public class ItemImgService {
             byte[] imageBytes = inputStream.readAllBytes();
             return Base64.getEncoder().encodeToString(imageBytes);
         }
+    }
+
+    public List<String> getImgNames(Long itemId) {
+        List<ItemImg> itemImgs = findItemImgs(itemId);
+
+        return itemImgs.stream()
+                .map(itemImg -> {
+                    return itemImg.getImgUrl();
+                })
+                .collect(Collectors.toList());
     }
 
 }
