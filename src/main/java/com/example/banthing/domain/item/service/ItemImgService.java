@@ -145,8 +145,18 @@ public class ItemImgService {
     }
 
     public void update(List<MultipartFile> newImages, Long itemId) throws IOException {
+        logger.info("아이템 삭제 시작");
+
         delete(itemId);
+
+        logger.info("아이템 삭제 성공");
+        logger.info("아이템 업로드 시작");
+
         save(newImages, itemId);
+
+        logger.info("아이템 업로드 성공");
+
+
     }
 
     public List<ItemImg> findItemImgs(Long itemId) {
