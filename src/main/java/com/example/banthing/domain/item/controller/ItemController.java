@@ -65,7 +65,9 @@ public class ItemController {
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String userId,
             @PathVariable Long itemId) throws IOException {
+        logger.info("데이터 받기 성공");
         itemService.checkUserItem(itemId, userId);
+        logger.info("데이터 보내기 시작");
         return ResponseEntity.ok().body(successResponse(itemService.update(Long.valueOf(itemId), request, userId)));
     }
 
