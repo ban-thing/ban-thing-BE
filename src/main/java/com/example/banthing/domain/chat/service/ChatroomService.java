@@ -43,7 +43,7 @@ public class ChatroomService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NullPointerException("해당 상품이 존재하지 않습니다."));
 
-        Optional<Chatroom> existingChatroom = chatroomRepository.findBySellerIdAndItemId(seller.getId(), item.getId());
+        Optional<Chatroom> existingChatroom = chatroomRepository.findBySellerIdAndBuyerIdAndItemId(seller.getId(), item.getId(), userId);
 
         if (existingChatroom.isPresent()) {
             return new CreateRoomResponseDto(existingChatroom.get().getId(), "이미 방이 존재합니다.");
@@ -57,6 +57,26 @@ public class ChatroomService {
                     );
             return new CreateRoomResponseDto(savedChatroom.getId(), "새로운 방이 생성되었습니다.");
         }
+    }
+
+    @Transactional
+    public void deleteRoom(Long roomId, Long userId) {
+        // Retrieve the chatroom to be deleted
+        Chatroom chatroom = chatroomRepository.findById(roomId)
+                .orElseThrow(() -> new NullPointerException("해당 채팅방은 존재하지 않습니다."));
+
+        // Verify if the requesting user is authorized to delete the room (e.g., buyer or seller)
+        if (!chatroom.getBuyer().getId().equals(userId) && !chatroom.getSeller().getId().equals(userId)) {
+            throw new IllegalStateException("채팅방을 삭제할 권한이 없습니다.");
+        }
+
+        // Optionally delete associated chat messages
+        chatMessageRepository.deleteAllByChatroomId(chatroom.getId());
+
+        // Delete the chatroom
+        chatroomRepository.delete(chatroom);
+
+        logger.info("Chatroom with ID {} deleted by user with ID {}", roomId, userId);
     }
 
     public List<FindRoomsResponseDto> findAllRooms(Long userId) {
@@ -82,4 +102,5 @@ public class ChatroomService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NullPointerException("해당 유저는 존재하지 않습니다."));
     }
+
 }

@@ -60,12 +60,14 @@ public class ItemController {
      * 상품 수정
      *
      ***/
-    @PatchMapping("/{itemId}")
+    @PatchMapping(path = "/{itemId}", consumes = {org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ItemResponseDto>> updateItem(
             @ModelAttribute CreateItemRequestDto request,
             @AuthenticationPrincipal String userId,
             @PathVariable Long itemId) throws IOException {
+        logger.info("데이터 받기 성공");
         itemService.checkUserItem(itemId, userId);
+        logger.info("데이터 보내기 시작");
         return ResponseEntity.ok().body(successResponse(itemService.update(Long.valueOf(itemId), request, userId)));
     }
 

@@ -22,5 +22,9 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
 
     Optional<Chatroom> findBySellerIdAndItemId(Long selleId, Long itemId);
 
+    Optional<Chatroom> findBySellerIdAndBuyerIdAndItemId(Long selleId, Long itemId, Long buyerId);
+
     List<Chatroom> findAllByBuyerId(Long buyerId);
+
+    List<Chatroom> findAllBySellerId(Long sellerId);
 }
