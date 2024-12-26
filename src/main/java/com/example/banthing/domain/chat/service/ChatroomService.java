@@ -47,7 +47,7 @@ public class ChatroomService {
         logger.info("아이템 아이디", item.getId());
         logger.info("바이어 아이디", userId);
 
-        Optional<Chatroom> existingChatroom = chatroomRepository.findBySellerIdAndBuyerIdAndItemId(seller.getId(), item.getId(), userId);
+        Optional<Chatroom> existingChatroom = chatroomRepository.findBySellerIdAndBuyerIdAndItemId(seller.getId(), userId, item.getId());
 
         if (existingChatroom.isPresent()) {
             return new CreateRoomResponseDto(existingChatroom.get().getId(), "이미 방이 존재합니다.");
