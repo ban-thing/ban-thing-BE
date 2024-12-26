@@ -103,13 +103,12 @@ public class ItemService {
 
         logger.info("cleaning detail 저장 시작");
 
-        CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
-                .pollution(request.getClnPollution())
-                .timeUsed(request.getClnTimeUsed())
-                .purchasedDate(request.getClnPurchasedDate())
-                .cleaned(request.getClnCleaned())
-                .expire(request.getClnExpire())
-                .build());
+        CleaningDetail cleaningDetail = item.getCleaningDetail();
+        cleaningDetail.setPollution(request.getClnPollution());
+        cleaningDetail.setTimeUsed(request.getClnTimeUsed());
+        cleaningDetail.setPurchasedDate(request.getClnPurchasedDate());
+        cleaningDetail.setCleaned(request.getClnCleaned());
+        cleaningDetail.setExpire(request.getClnExpire());
         cleaningDetailRepository.save(cleaningDetail);
 
         logger.info("일반형 파라미터 저장 시작");
