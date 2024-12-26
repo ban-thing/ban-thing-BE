@@ -91,15 +91,12 @@ public class ItemService {
 
         User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
         Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
-
-        CleaningDetail cleaningDetail = cleaningDetailRepository.save(CleaningDetail.builder()
-                .pollution(request.getClnPollution())
-                .timeUsed(request.getClnTimeUsed())
-                .purchasedDate(request.getClnPurchasedDate())
-                .cleaned(request.getClnCleaned())
-                .expire(request.getClnExpire())
-                .build());
-        cleaningDetailRepository.save(cleaningDetail);
+        CleaningDetail cleaningDetail = cleaningDetailRepository.findById(itemId).orElseThrow(RuntimeException::new);
+        cleaningDetail.setCleaned(request.getClnCleaned());
+        cleaningDetail.setExpire(request.getClnExpire());
+        cleaningDetail.setPollution(request.getClnPollution());
+        cleaningDetail.setTimeUsed(request.getClnTimeUsed());
+        cleaningDetail.setPurchasedDate(request.getClnPurchasedDate());
 
         item.setTitle(request.getTitle());
         item.setContent(request.getContent());
@@ -109,6 +106,7 @@ public class ItemService {
         item.setAddress(request.getAddress());
         item.setSeller(seller);
         item.setIsDirect(request.getIsDirect());
+        item.setCleaningDetail(cleaningDetail);
         itemRepository.save(item);
 
         hashtagService.update(request.getHashtags(), item.getId());
