@@ -43,6 +43,10 @@ public class ChatroomService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NullPointerException("해당 상품이 존재하지 않습니다."));
 
+        logger.info("셀러 아이디", seller.getId());
+        logger.info("아이템 아이디", item.getId());
+        logger.info("바이어 아이디", userId);
+
         Optional<Chatroom> existingChatroom = chatroomRepository.findBySellerIdAndBuyerIdAndItemId(seller.getId(), item.getId(), userId);
 
         if (existingChatroom.isPresent()) {
