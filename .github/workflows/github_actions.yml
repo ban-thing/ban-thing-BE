@@ -68,8 +68,8 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST_PROD }}
-        username: root
-        password: ${{ secrets.HOST_PWD }}
+        username: ubuntu
+        key: ${{ secrets.HOST_PEM }}
         envs:
           GITHUB_SHA
         script: |
