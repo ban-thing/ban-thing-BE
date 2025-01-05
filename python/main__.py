@@ -14,6 +14,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from datetime import datetime
 import time
+from transformers import AutoModel, AutoTokenizer
+from sentence_transformers import SentenceTransformer, models
+
 
 
 
@@ -34,9 +37,23 @@ def adv_search(question, trait_data, model_name):
 
     # 질문 텍스트 vectorization
 
-    # sentence transformer 모델 불러오기
-    model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
-    model = model.to(device)  
+    if model_name == 'monologg/koalbert-tiny':
+        # Define the transformer and pooling layers
+        word_embedding_model = models.Transformer(model_name, max_seq_length=128)
+        pooling_model = models.Pooling(
+        word_embedding_model.get_word_embedding_dimension(),
+        pooling_mode_mean_tokens=True,
+        pooling_mode_cls_token=False,
+        pooling_mode_max_tokens=False,
+        )
+
+        # Combine into a Sentence Transformer model
+        model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
+        
+    else:
+        # sentence transformer 모델 불러오기
+        model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
+        model = model.to(device)  
 
     # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
@@ -94,13 +111,14 @@ def advanced_search():
     items = body['items']
     
     response_df = pd.DataFrame(items)
-    print(response_df)
-    print("---------------------------------")
-    print(response_df.columns)
-    print(response_df)
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
-    model_names = ['distilbert-base-uncased', 'paraphrase-MiniLM-L3-v2', 'paraphrase-albert-small-v2', 'all-MiniLM-L6-v2']
+    ## other models
+    model_names = ['monologg/koalbert-tiny', 
+                   'distilbert-base-uncased', 
+                   'paraphrase-MiniLM-L3-v2', 
+                   'paraphrase-albert-small-v2', 
+                   'all-MiniLM-L6-v2']
 
     for model_name in model_names: 
         
