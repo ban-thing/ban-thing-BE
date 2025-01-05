@@ -3,7 +3,7 @@ name: Execute python, Spring, MySQL server
 on: 
   push:
     branches:
-      - 73-err_fix
+      - 78-server-aws
 
 jobs:
   build:
@@ -44,11 +44,11 @@ jobs:
         ./gradlew dependencies
     
     - name: Spring-Docker build & push to prod
-      if: contains(github.ref, '73-err_fix')
+      if: contains(github.ref, '78-server-aws')
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PWD }}
-        docker build -f ./dockerfilejava -t ${{ secrets.DOCKER_USERNAME }}/cicdtestjava .
-        docker push ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
+        docker build -f ./dockerfilejava -t ${{ secrets.DOCKER_USERNAME }}/cicdjava .
+        docker push ${{ secrets.DOCKER_USERNAME }}/cicdjava
         
     #- name: Python-Docker build & push to prod
     #  if: contains(github.ref, '24-advanced_search')
@@ -68,18 +68,17 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST_PROD }}
-        username: root
-        password: ${{ secrets.HOST_PWD }}
+        username: ubuntu
+        key: ${{ secrets.HOST_PEM }}
         envs:
           GITHUB_SHA
         script: |
           sudo docker stop spring-container
           sudo docker rm spring-container
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
-          sudo docker run -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdtestjava
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdtest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdjava
+          sudo docker run -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdjava
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdjava
+          sudo docker stop python-container
+          sudo docker rm python-container
+          sudo docker run -d --name python-container --network docker-network -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/cicdtest
           sudo docker image prune -f
-       #   sudo docker stop python-container
-       #   sudo docker rm python-container
-       #   sudo docker run -d --name python-container --network docker-network -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/cicdtest
-       #   sudo docker image prune -f
