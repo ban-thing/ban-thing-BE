@@ -109,7 +109,7 @@ def advanced_search():
         print("---------------------------------")
         print(df.columns)
         print(df)
-        print("---------------------------------")
+        print("---------------------------------") 
 
         df = df[df['Matching Rank/Probability'] > 0.1]
         df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
