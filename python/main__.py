@@ -16,7 +16,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-def adv_search(question, trait_data):
+def adv_search(question, trait_data, model_name):
 
     # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -32,7 +32,7 @@ def adv_search(question, trait_data):
     # 질문 텍스트 vectorization
 
     # sentence transformer 모델 불러오기
-    model = SentenceTransformer('all-MiniLM-L6-v2') # sentence transfomers 모델 불러오기
+    model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
     model = model.to(device)  
 
     # 해시태그 데이터 vectorization
@@ -97,8 +97,27 @@ def advanced_search():
     print(response_df)
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
-    df = adv_search(hashtag, response_df)
-    
+    model_names = ['all-MiniLM-L12-v2', 'paraphrase-MiniLM-L3-v2', 'all-MiniLM-L3-v2']
+
+    for model_name in model_names: 
+        df = adv_search(hashtag, response_df, model_name)
+
+        print("---------------------------------")
+        print("::::::",model_name,"::::::")
+        print(response_df.columns)
+        print(response_df)
+        print("---------------------------------")
+        print(df.columns)
+        print(df)
+        print("---------------------------------")
+
+        df = df[df['Matching Rank/Probability'] > 0.1]
+        df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
+        print(df.to_dict(orient='records'))
+
+
+    df = adv_search(hashtag, response_df, 'all-MiniLM-L6-v2')
+
     print("---------------------------------")
     print(response_df.columns)
     print(response_df)
@@ -110,7 +129,6 @@ def advanced_search():
     df = df[df['Matching Rank/Probability'] > 0.1]
     df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
     print(df.to_dict(orient='records'))
-    
 
     return jsonify(df.to_dict(orient='records'))
 
