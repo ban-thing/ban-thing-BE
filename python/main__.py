@@ -69,11 +69,14 @@ def adv_search(question, trait_data, model_name, n_components):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
-        pca = PCA(n_components)
-        question_vec = pca.fit_transform(question_vec) # PCA
+        
+        # If there are enough samples, apply PCA
+        if question_vec.shape[0] > 1:
+            pca = PCA(n_components)
+            question_vec = pca.fit_transform(question_vec.cpu().numpy())
+        else:
+            question_vec = question_vec.cpu().numpy()[:, :50]
         question_vec = question_vec.to(device)
-
-
         
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
         cosine_similarities = cosine_similarity(question_vec, X_full).flatten()  # Compute cosine similarity on CPU
