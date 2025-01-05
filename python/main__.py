@@ -13,6 +13,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from datetime import datetime
+import time
+
+
 
 app = Flask(__name__)
 
@@ -100,6 +103,9 @@ def advanced_search():
     model_names = ['all-MiniLM-L12-v2', 'paraphrase-MiniLM-L3-v2', 'paraphrase-albert-small-v2', 'all-MiniLM-L6-v2']
 
     for model_name in model_names: 
+        
+        start = time.time()
+        
         df = adv_search(hashtag, response_df, model_name)
 
         print("---------------------------------")
@@ -114,6 +120,10 @@ def advanced_search():
         df = df[df['Matching Rank/Probability'] > 0.1]
         df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
         print(df.to_dict(orient='records'))
+
+        end = time.time()
+        print(model_name, ": ", end - start, "초")
+
 
     return jsonify(df.to_dict(orient='records'))
 
