@@ -78,8 +78,7 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdjava
           sudo docker run -d --name spring-container --network docker-network -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/cicdjava
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicdjava
+          sudo docker stop python-container
+          sudo docker rm python-container
+          sudo docker run -d --name python-container --network docker-network -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/cicdtest
           sudo docker image prune -f
-       #   sudo docker stop python-container
-       #   sudo docker rm python-container
-       #   sudo docker run -d --name python-container --network docker-network -p 7000:7000 ${{ secrets.DOCKER_USERNAME }}/cicdtest
-       #   sudo docker image prune -f
