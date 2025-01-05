@@ -1,28 +1,31 @@
 import sys
-
 import os
 import re
 
-import pandas as pd
 from flask import Flask, jsonify, request
 from http import HTTPStatus
 from io import StringIO
 import json
-import torch
-from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
+import pandas as pd
 from datetime import datetime
 import time
+
+import torch
+
+from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import PCA
+
 from transformers import AutoModel, AutoTokenizer
 from sentence_transformers import SentenceTransformer, models
 
 
 
 
+
 app = Flask(__name__)
 
-def adv_search(question, trait_data, model_name):
+def adv_search(question, trait_data, model_name, n_components):
 
     # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -66,7 +69,12 @@ def adv_search(question, trait_data, model_name):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
+        pca = PCA(n_components)
+        reduced_embeddings = pca.fit_transform(question_vec) # PCA
+        
         question_vec = question_vec.to(device)
+
+
         
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
         cosine_similarities = cosine_similarity(question_vec, X_full).flatten()  # Compute cosine similarity on CPU
@@ -114,17 +122,20 @@ def advanced_search():
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
     ## other models
-    model_names = ['monologg/koalbert-tiny', 
-                   'distilbert-base-uncased', 
-                   'paraphrase-MiniLM-L3-v2', 
-                   'paraphrase-albert-small-v2', 
-                   'all-MiniLM-L6-v2']
+    model_name = 'paraphrase-albert-small-v2', 
+                 
 
-    for model_name in model_names: 
+    dimensions = [50,
+                  70,
+                  90,
+                  110,
+                  120]
+
+    for dimension in dimensions: 
         
         start = time.time()
         
-        df = adv_search(hashtag, response_df, model_name)
+        df = adv_search(hashtag, response_df, model_name, dimension)
 
         print("---------------------------------")
         print("::::::",model_name,"::::::")
