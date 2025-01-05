@@ -97,7 +97,7 @@ def advanced_search():
     print(response_df)
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
-    model_names = ['all-MiniLM-L12-v2', 'paraphrase-MiniLM-L3-v2', 'all-MiniLM-L3-v2']
+    model_names = ['all-MiniLM-L12-v2', 'paraphrase-MiniLM-L3-v2']
 
     for model_name in model_names: 
         df = adv_search(hashtag, response_df, model_name)
