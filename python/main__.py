@@ -70,8 +70,7 @@ def adv_search(question, trait_data, model_name, n_components):
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
         pca = PCA(n_components)
-        reduced_embeddings = pca.fit_transform(question_vec) # PCA
-        
+        question_vec = pca.fit_transform(question_vec) # PCA
         question_vec = question_vec.to(device)
 
 
