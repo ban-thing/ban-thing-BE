@@ -97,7 +97,7 @@ def advanced_search():
     print(response_df)
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
-    model_names = ['all-MiniLM-L12-v2', 'paraphrase-MiniLM-L3-v2']
+    model_names = ['all-MiniLM-L12-v2', 'paraphrase-MiniLM-L3-v2', 'paraphrase-albert-small-v2', 'all-MiniLM-L6-v2']
 
     for model_name in model_names: 
         df = adv_search(hashtag, response_df, model_name)
@@ -114,21 +114,6 @@ def advanced_search():
         df = df[df['Matching Rank/Probability'] > 0.1]
         df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
         print(df.to_dict(orient='records'))
-
-
-    df = adv_search(hashtag, response_df, 'all-MiniLM-L6-v2')
-
-    print("---------------------------------")
-    print(response_df.columns)
-    print(response_df)
-    print("---------------------------------")
-    print(df.columns)
-    print(df)
-    print("---------------------------------")
-
-    df = df[df['Matching Rank/Probability'] > 0.1]
-    df = df[['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images']]
-    print(df.to_dict(orient='records'))
 
     return jsonify(df.to_dict(orient='records'))
 
