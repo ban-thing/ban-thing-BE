@@ -58,8 +58,15 @@ def adv_search(question, trait_data, model_name, n_components):
         model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
         model = model.to(device)  
 
+    pca = PCA(n_components)
+
     # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
+    if X_full.shape[0] > 1:
+        X_full = pca.fit_transform(X_full.cpu().numpy())
+        X_full = X_full.to(device)
+    else:
+        X_full = X_full.cpu().numpy()[:, :50]
     X_full = X_full.to(device)
 
     # 질문 텍스트 vectorization 적용한 후 
@@ -72,7 +79,6 @@ def adv_search(question, trait_data, model_name, n_components):
         
         # If there are enough samples, apply PCA
         if question_vec.shape[0] > 1:
-            pca = PCA(n_components)
             question_vec = pca.fit_transform(question_vec.cpu().numpy())
             question_vec = question_vec.to(device)
         else:
