@@ -58,8 +58,6 @@ def adv_search(question, trait_data, model_name, n_components):
         model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
         model = model.to(device)  
 
-
-
     # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
     X_full.to(device)
@@ -75,23 +73,14 @@ def adv_search(question, trait_data, model_name, n_components):
     # 질문 텍스트 vectorization 적용한 후 
 
     # Function to find best matches in dataset based on the processed text and include rank
-    def match_question_to_data_detailed(question, trait_data, top_n=None):
+    def match_question_to_data_detailed(question, trait_data, pca, top_n=None):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
         question_vec.to(device)
 
-        n_samples, n_features = question_vec.numpy().shape
-        n_components = min(n_samples, n_features)
-        
-
         # If there are enough samples, apply PCA
-        if n_components > 1:
-            pca = PCA(n_components)
-            question_vec = pca.fit_transform(question_vec.cpu().numpy())
-        else:
-            question_vec = question_vec.numpy()
-        
+        question_vec = pca.fit_transform(question_vec.cpu().numpy())
         
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
         cosine_similarities = cosine_similarity(question_vec, X_full).flatten()  # Compute cosine similarity on CPU
@@ -109,7 +98,7 @@ def adv_search(question, trait_data, model_name, n_components):
     # Find the best matches for each question with detailed information
     question_matches_detailed_ranked = {}
     for idx, q in enumerate([question]):
-        matched_data = match_question_to_data_detailed(q, trait_data, n_components) # 각각의 질문 내용과 행동 특성들을 비교
+        matched_data = match_question_to_data_detailed(q, trait_data, pca) # 각각의 질문 내용과 행동 특성들을 비교
         question_matches_detailed_ranked[f"advanced_search_result {idx}"] = matched_data
 
     #output_filepath_questions_detailed_ranked = r"advanced_search_result.xlsx"
