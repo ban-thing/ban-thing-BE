@@ -66,13 +66,13 @@ def adv_search(question, trait_data, model_name, n_components):
         X_full = pca.fit_transform(X_full.cpu().numpy())
         X_full = X_full.to(device)
     else:
-        X_full = X_full.cpu().numpy()[:, :50]
+        X_full = X_full.cpu().numpy()[:, :n_components]
     X_full = X_full.to(device)
 
     # 질문 텍스트 vectorization 적용한 후 
 
     # Function to find best matches in dataset based on the processed text and include rank
-    def match_question_to_data_detailed(question, trait_data, top_n=None):
+    def match_question_to_data_detailed(question, trait_data, dimension_space, top_n=None):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
@@ -82,7 +82,7 @@ def adv_search(question, trait_data, model_name, n_components):
             question_vec = pca.fit_transform(question_vec.cpu().numpy())
             question_vec = question_vec.to(device)
         else:
-            question_vec = question_vec.cpu().numpy()[:, :50]
+            question_vec = question_vec.cpu().numpy()[:, :dimension_space]
         
         
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
@@ -101,7 +101,7 @@ def adv_search(question, trait_data, model_name, n_components):
     # Find the best matches for each question with detailed information
     question_matches_detailed_ranked = {}
     for idx, q in enumerate([question]):
-        matched_data = match_question_to_data_detailed(q, trait_data) # 각각의 질문 내용과 행동 특성들을 비교
+        matched_data = match_question_to_data_detailed(q, trait_data, n_components) # 각각의 질문 내용과 행동 특성들을 비교
         question_matches_detailed_ranked[f"advanced_search_result {idx}"] = matched_data
 
     #output_filepath_questions_detailed_ranked = r"advanced_search_result.xlsx"
