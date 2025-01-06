@@ -58,31 +58,39 @@ def adv_search(question, trait_data, model_name, n_components):
         model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
         model = model.to(device)  
 
-    pca = PCA(n_components)
+
 
     # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
-    if X_full.shape[0] > 1:
+    X_full.to(device)
+
+    n_samples, n_features = X_full.numpy().shape
+    n_components = min(n_samples, n_features)
+    if n_components > 1:
+        pca = PCA(n_components)
         X_full = pca.fit_transform(X_full.cpu().numpy())
-        X_full = X_full.to(device)
     else:
-        X_full = X_full.cpu().numpy()[:, :n_components]
-    X_full = X_full.to(device)
+        X_full = X_full.numpy()
 
     # 질문 텍스트 vectorization 적용한 후 
 
     # Function to find best matches in dataset based on the processed text and include rank
-    def match_question_to_data_detailed(question, trait_data, dimension_space, top_n=None):
+    def match_question_to_data_detailed(question, trait_data, top_n=None):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
+        question_vec.to(device)
+
+        n_samples, n_features = question_vec.numpy().shape
+        n_components = min(n_samples, n_features)
         
+
         # If there are enough samples, apply PCA
-        if question_vec.shape[0] > 1:
+        if n_components > 1:
+            pca = PCA(n_components)
             question_vec = pca.fit_transform(question_vec.cpu().numpy())
-            question_vec = question_vec.to(device)
         else:
-            question_vec = question_vec.cpu().numpy()[:, :dimension_space]
+            question_vec = question_vec.numpy()
         
         
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
