@@ -25,7 +25,7 @@ from sentence_transformers import SentenceTransformer, models
 
 app = Flask(__name__)
 
-def adv_search(question, trait_data, model_name, n_components):
+def adv_search(question, trait_data, model_name):
 
     # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -129,19 +129,12 @@ def advanced_search():
 
     ## other models
     model_name = 'paraphrase-albert-small-v2'
-                 
-
-    dimensions = [50,
-                  70,
-                  90,
-                  110,
-                  120]
-
-    for dimension in dimensions: 
+                
+    for i in range(1): 
         
         start = time.time()
         
-        df = adv_search(hashtag, response_df, model_name, dimension)
+        df = adv_search(hashtag, response_df, model_name)
 
         print("---------------------------------")
         print("::::::",model_name,"::::::")
