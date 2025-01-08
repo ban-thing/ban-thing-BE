@@ -16,7 +16,6 @@ from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import PCA
 
-from transformers import AutoModel, AutoTokenizer
 from sentence_transformers import SentenceTransformer, models
 
 
@@ -58,6 +57,9 @@ def adv_search(question, trait_data, model_name):
     # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
     X_full.to(device)
+
+    print(X_full.numpy().shape)
+    print(type(X_full.numpy().shape))
 
     n_samples1, n_features1 = X_full.numpy().shape
     
@@ -154,5 +156,5 @@ def advanced_search():
     return jsonify(df.to_dict(orient='records'))
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=7000, debug = True)
+    app.run(host="0.0.0.0", port=8080, debug = True)
 
