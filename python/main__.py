@@ -128,7 +128,8 @@ def advanced_search():
 
     ## other models
     model_name = 'paraphrase-albert-small-v2'
-                
+    model_name = 'All-MiniLM-L6-v2'
+
     for i in range(1): 
         
         start = time.time()

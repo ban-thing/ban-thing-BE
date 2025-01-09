@@ -27,7 +27,7 @@ def adv_search(question, trait_data, model_name):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     trait_data.head()
-
+    print(device)
     # 모든 텍스트 소문자로 전환하기
 
 
@@ -58,30 +58,31 @@ def adv_search(question, trait_data, model_name):
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
     X_full.to(device)
 
-    print(X_full.numpy().shape)
-    print(type(X_full.numpy().shape))
+    #print(X_full.numpy().shape)
+    #print(type(X_full.numpy().shape))
 
     n_samples1, n_features1 = X_full.numpy().shape
     
     # Function to find best matches in dataset based on the processed text and include rank
-    def match_question_to_data_detailed(question, trait_data, n_samples1, n_features1, X_full, top_n=None):
+    def match_question_to_data_detailed(question, trait_data, X_full, top_n=None):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
         question_vec.to(device)
 
+        
         # If there are enough samples, apply PCA
-        n_samples2, n_features2 = question_vec.numpy().shape
+        #n_samples2, n_features2 = question_vec.numpy().shape
+        
+        #n_components = min(n_samples1, n_features1, n_samples2, n_features2)
+        #pca = PCA(n_components=n_components)
 
-        n_components = min(n_samples1, n_features1, n_samples2, n_features2)
-        pca = PCA(n_components=n_components)
-
-        if n_components > 1:
-            X_full = pca.fit_transform(X_full.numpy())
-            question_vec = pca.fit_transform(question_vec.numpy())
-        else:
-            X_full = X_full.numpy()
-            question_vec = question_vec.numpy()
+        #if n_components > 1:
+        #    X_full = pca.fit_transform(X_full.numpy())
+        #    question_vec = pca.fit_transform(question_vec.numpy())
+        #else:
+        #    X_full = X_full.numpy()
+        #    question_vec = question_vec.numpy()
         
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
         cosine_similarities = cosine_similarity(question_vec, X_full).flatten()  # Compute cosine similarity on CPU
@@ -99,7 +100,8 @@ def adv_search(question, trait_data, model_name):
     # Find the best matches for each question with detailed information
     question_matches_detailed_ranked = {}
     for idx, q in enumerate([question]):
-        matched_data = match_question_to_data_detailed(q, trait_data, n_samples1, n_features1, X_full) # 각각의 질문 내용과 행동 특성들을 비교
+        #matched_data = match_question_to_data_detailed(q, trait_data, n_samples1, n_features1, X_full) # 각각의 질문 내용과 행동 특성들을 비교
+        matched_data = match_question_to_data_detailed(q, trait_data, X_full) # 각각의 질문 내용과 행동 특성들을 비교
         question_matches_detailed_ranked[f"advanced_search_result {idx}"] = matched_data
 
     #output_filepath_questions_detailed_ranked = r"advanced_search_result.xlsx"
@@ -129,7 +131,8 @@ def advanced_search():
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
     ## other models
-    model_name = 'paraphrase-albert-small-v2'
+    #model_name = 'paraphrase-albert-small-v2'
+    model_name = 'All-MiniLM-L6-v2'
                 
     for i in range(1): 
         
