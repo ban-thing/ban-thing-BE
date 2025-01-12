@@ -127,7 +127,6 @@ def advanced_search():
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
     ## other models
-    model_name = 'paraphrase-albert-small-v2'
     model_name = 'All-MiniLM-L6-v2'
 
     for i in range(1): 

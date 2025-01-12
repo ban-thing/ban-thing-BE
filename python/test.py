@@ -21,7 +21,7 @@ from sentence_transformers import SentenceTransformer, models
 
 app = Flask(__name__)
 
-def adv_search(question, trait_data, model_name):
+def adv_search(start, question, trait_data, model_name):
 
     # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -58,32 +58,34 @@ def adv_search(question, trait_data, model_name):
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
     X_full.to(device)
 
-    #print(X_full.numpy().shape)
-    #print(type(X_full.numpy().shape))
-
     n_samples1, n_features1 = X_full.numpy().shape
     
     # Function to find best matches in dataset based on the processed text and include rank
-    def match_question_to_data_detailed(question, trait_data, X_full, top_n=None):
+    def match_question_to_data_detailed(start, question, trait_data, n_samples1, n_features1, X_full, top_n=None):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
         question_vec.to(device)
 
-        
         # If there are enough samples, apply PCA
-        #n_samples2, n_features2 = question_vec.numpy().shape
+        n_samples2, n_features2 = question_vec.numpy().shape
         
-        #n_components = min(n_samples1, n_features1, n_samples2, n_features2)
-        #pca = PCA(n_components=n_components)
+        n_components = min(n_samples1, n_features1, n_samples2, n_features2)
+        pca = PCA(n_components=n_components)
 
-        #if n_components > 1:
-        #    X_full = pca.fit_transform(X_full.numpy())
-        #    question_vec = pca.fit_transform(question_vec.numpy())
-        #else:
-        #    X_full = X_full.numpy()
-        #    question_vec = question_vec.numpy()
+        if n_components > 1:
+            X_full = pca.fit_transform(X_full.numpy())
+            question_vec = pca.fit_transform(question_vec.numpy())
+        else:
+            X_full = X_full.numpy()
+            question_vec = question_vec.numpy()
         
+        print("엠베딩 시간: ", time.time() - start, "초")
+        start = time.time()
+
+        print("X_full: ", X_full)
+        print("question_vec :", question_vec)
+
         # 각가의 질문과 행동 특성 사이의 유사도(similarity) 계산
         cosine_similarities = cosine_similarity(question_vec, X_full).flatten()  # Compute cosine similarity on CPU
         
@@ -95,13 +97,13 @@ def adv_search(question, trait_data, model_name):
         matched_data = trait_data.iloc[related_docs_indices]
         matched_data['Question']= question
         matched_data['Matching Rank/Probability'] = cosine_similarities[related_docs_indices]
-        return matched_data
+        return matched_data, start
 
     # Find the best matches for each question with detailed information
     question_matches_detailed_ranked = {}
     for idx, q in enumerate([question]):
-        #matched_data = match_question_to_data_detailed(q, trait_data, n_samples1, n_features1, X_full) # 각각의 질문 내용과 행동 특성들을 비교
-        matched_data = match_question_to_data_detailed(q, trait_data, X_full) # 각각의 질문 내용과 행동 특성들을 비교
+        matched_data, start = match_question_to_data_detailed(start, q, trait_data, n_samples1, n_features1, X_full) # 각각의 질문 내용과 행동 특성들을 비교
+        #matched_data = match_question_to_data_detailed(q, trait_data, X_full) # 각각의 질문 내용과 행동 특성들을 비교
         question_matches_detailed_ranked[f"advanced_search_result {idx}"] = matched_data
 
     #output_filepath_questions_detailed_ranked = r"advanced_search_result.xlsx"
@@ -115,7 +117,7 @@ def adv_search(question, trait_data, model_name):
     # Use close() instead of save()
     #writer.close()
 
-    return dataframe
+    return dataframe, start
 
 def dict_to_String(hashtag_list):
     return ", ".join(hashtag_list)
@@ -123,6 +125,8 @@ def dict_to_String(hashtag_list):
 @app.route("/post", methods=['POST'])
 def advanced_search():
     # get the data from dataset with label '해시태그'
+    start = time.time()
+
     body = request.json
     hashtag = body['input_hashtag']
     items = body['items']
@@ -134,11 +138,9 @@ def advanced_search():
     #model_name = 'paraphrase-albert-small-v2'
     model_name = 'All-MiniLM-L6-v2'
                 
-    for i in range(1): 
+    for _ in range(1):
         
-        start = time.time()
-        
-        df = adv_search(hashtag, response_df, model_name)
+        df, start = adv_search(start, hashtag, response_df, model_name)
 
         print("---------------------------------")
         print("::::::",model_name,"::::::")
