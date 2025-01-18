@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemSearchResponseDto {
     private Long id;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String address;
     private Integer price;
@@ -32,6 +33,7 @@ public class ItemSearchResponseDto {
 
     public ItemSearchResponseDto(ItemSearchResponseDto item) {
         this.id = item.getId();
+        this.createdAt = item.getCreatedAt();
         this.updatedAt = item.getUpdatedAt();
         this.address = item.getAddress();
         this.price = item.getPrice();
@@ -44,6 +46,7 @@ public class ItemSearchResponseDto {
     public static ItemSearchResponseDto fromEntity(Item item) {
         return new ItemSearchResponseDto(
             item.getId(),
+            item.getCreatedAt(),
             item.getUpdatedAt(),
             item.getAddress(),
             item.getPrice(),
@@ -63,6 +66,7 @@ public class ItemSearchResponseDto {
         
         ItemSearchResponseDto newResponse = new ItemSearchResponseDto(
             item.getId(),
+            item.getCreatedAt(),
             item.getUpdatedAt(),
             item.getAddress(),
             item.getPrice(),

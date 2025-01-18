@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public class FlaskItemResponseDto {
     private final Long id;
+    private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     private final String address;
     private final Integer price;
@@ -18,6 +19,7 @@ public class FlaskItemResponseDto {
 
     public FlaskItemResponseDto(
         Long id, 
+        LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String address,
         Integer price,
@@ -27,6 +29,7 @@ public class FlaskItemResponseDto {
         String images
     ) {
             this.id = id;
+            this.createdAt = createdAt;
             this.updatedAt = updatedAt;
             this.address = address;
             this.price = price;

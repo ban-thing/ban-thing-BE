@@ -124,7 +124,7 @@ public class ItemController {
 
         if (hashtags.length() != 0) {
             //return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)));
-            return ResponseEntity.ok(successResponse(itemService.advancedListItems(keyword, hashtags, minPrice, maxPrice, address)));
+            return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         } else {
             // or output FlaskResponseDto로 받는 방법 찾기
 
