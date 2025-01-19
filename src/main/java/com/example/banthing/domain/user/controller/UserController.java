@@ -35,7 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/purchases")
-    public ResponseEntity<ApiResponse<List<PurchaseResponseDto>>> findMyPurchases(@AuthenticationPrincipal String userId) {
+    public ResponseEntity<ApiResponse<List<PurchaseResponseDto>>> findMyPurchases(
+            @AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findPurchasesById(Long.valueOf(userId))));
     }
 
