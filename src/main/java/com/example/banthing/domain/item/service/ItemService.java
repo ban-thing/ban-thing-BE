@@ -1,6 +1,7 @@
 package com.example.banthing.domain.item.service;
 
 import com.example.banthing.domain.chat.entity.Chatroom;
+import com.example.banthing.domain.chat.repository.ChatMessageRepository;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.domain.item.dto.*;
@@ -55,8 +56,9 @@ public class ItemService {
     private final CleaningDetailRepository cleaningDetailRepository;
     private final HashtagService hashtagService;
     private final HashtagRepository hashtagRepository;
-    private final ChatroomService chatroomService;
     private final ChatroomRepository chatroomRepository;
+
+    private final ChatroomService chatroomService;
     
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
 //        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
@@ -99,13 +101,14 @@ public class ItemService {
         User seller = userRepository.findById(Long.valueOf(userId)).orElseThrow(RuntimeException::new);
         Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
 
-        CleaningDetail cleaningDetail = cleaningDetailRepository.findById(itemId).orElseThrow(RuntimeException::new);
-        cleaningDetail.setCleaned(request.getClnCleaned());
-        cleaningDetail.setExpire(request.getClnExpire());
+        logger.info("cleaning detail 저장 시작");
+
+        CleaningDetail cleaningDetail = item.getCleaningDetail();
         cleaningDetail.setPollution(request.getClnPollution());
         cleaningDetail.setTimeUsed(request.getClnTimeUsed());
         cleaningDetail.setPurchasedDate(request.getClnPurchasedDate());
-
+        cleaningDetail.setCleaned(request.getClnCleaned());
+        cleaningDetail.setExpire(request.getClnExpire());
         cleaningDetailRepository.save(cleaningDetail);
 
         logger.info("일반형 파라미터 저장 시작");
@@ -118,8 +121,7 @@ public class ItemService {
         item.setAddress(request.getAddress());
         item.setSeller(seller);
         item.setIsDirect(request.getIsDirect());
-        item.setCleaningDetail(cleaningDetail);
-
+        
         logger.info("아이템저장 시작");
 
         itemRepository.save(item);
@@ -148,11 +150,11 @@ public class ItemService {
         hashtagRepository.deleteAll(hashtagRepository.findByItemId(id));
 
         logger.info("채팅방 삭제 시작");
-        //채팅방 삭제
+        //채팅방 삭제 
         // Retrieve the chatroom to be deleted
         Long seller_id = itemRepository.findById(id).orElseThrow(RuntimeException::new).getSeller().getId();
         List<Chatroom> chatrooms = chatroomRepository.findAllBySellerId(seller_id);
-
+        
         for(Chatroom chatroom:chatrooms){
             chatroomService.deleteRoom(chatroom.getId(), seller_id);
         }
@@ -167,7 +169,7 @@ public class ItemService {
         //cleaning detail 삭제
         cleaningDetailRepository.delete(cleaningDetailRepository.findById(cleaning_detail_id)
                 .orElseThrow(() -> new IllegalArgumentException("CleaningDetail을 찾을 수 없습니다.")));
-
+        
         logger.info("cleaning_detail 삭제 완료");
 
     }
