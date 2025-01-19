@@ -40,7 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/sales")
-    public ResponseEntity<ApiResponse<List<SalesResponseDto>>> findMySales(@AuthenticationPrincipal String userId) {
+    public ResponseEntity<ApiResponse<List<SalesResponseDto>>> findMySales(
+            @AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findSalesById(Long.valueOf(userId))));
     }
 
