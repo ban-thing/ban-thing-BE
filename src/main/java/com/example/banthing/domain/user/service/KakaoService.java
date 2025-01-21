@@ -145,8 +145,9 @@ public class KakaoService {
 
         // 신규 회원가입
         if (kakaoUser == null) {
+            logger.info("신규 회원가입");
             String email = kakaoUserInfo.getEmail();
-
+            
             kakaoUser = userRepository.save(User.builder()
                     .nickname("반띵#" + kakaoUserInfo.getId())
                     .email(email)
