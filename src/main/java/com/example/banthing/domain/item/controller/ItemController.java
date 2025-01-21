@@ -112,7 +112,9 @@ public class ItemController {
     }
 
     /**
+     *
      * 상품 검색
+     *
      */
     @GetMapping("")
     public ResponseEntity<ApiResponse<ItemListResponseDto>> listItems(
