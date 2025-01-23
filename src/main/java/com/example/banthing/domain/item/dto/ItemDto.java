@@ -1,6 +1,7 @@
 package com.example.banthing.domain.item.dto;
 
 import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.entity.ItemStatus;
 import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.service.ItemImgService;
 import com.example.banthing.domain.user.entity.ProfileImage;
@@ -29,6 +30,7 @@ public class ItemDto {
     private List<HashtagDto> hashtags;
     private CleaningDetailDto cleaningDetail;
     private boolean isDirect;
+    private ItemStatus status;
     private LocalDateTime updateTime;
 
     public static ItemDto fromEntity(Item item, ItemImgService itemImgService) {
@@ -51,6 +53,7 @@ public class ItemDto {
                         .collect(Collectors.toList()),
                 item.getCleaningDetail() != null ? CleaningDetailDto.fromEntity(item.getCleaningDetail()) : null,
                 item.getIsDirect(),
+                item.getStatus(),
                 item.getUpdatedAt()
         );
     }
