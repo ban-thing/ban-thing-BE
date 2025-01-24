@@ -158,7 +158,7 @@ public class KakaoService {
             log.info("회원가입");
             return new SignUpResponseDto(kakaoUser.getId(), "회원가입 되었습니다");
         } else {
-
+            logger.info("기존 회원 로그인");
         }
         log.info("로그인 userId: " + kakaoUser.getId() + ", name: " + kakaoUser.getNickname());
         return new SignUpResponseDto(kakaoUser.getId(), "로그인 되었습니다");

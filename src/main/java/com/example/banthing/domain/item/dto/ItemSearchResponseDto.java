@@ -2,6 +2,7 @@ package com.example.banthing.domain.item.dto;
 
 import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.entity.ItemImg;
+import com.example.banthing.domain.item.entity.ItemStatus;
 import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.item.service.ItemImgService;
@@ -28,6 +29,7 @@ public class ItemSearchResponseDto {
     private ItemType type;
     private List<HashtagDto> hashtag;
     private String images;
+    private ItemStatus status;
 
     private static ItemImgService itemImgService;
 
@@ -41,6 +43,7 @@ public class ItemSearchResponseDto {
         this.type = item.getType();
         this.hashtag = item.getHashtag();
         this.images = item.getImages();
+        this.status = item.getStatus();
     }
 
     public static ItemSearchResponseDto fromEntity(Item item) {
@@ -57,7 +60,9 @@ public class ItemSearchResponseDto {
                         .collect(Collectors.toList()),
             item.getImages().stream()
             .map(ItemImg::getImgUrl)
-            .collect(Collectors.toList()).get(0)
+            .collect(Collectors.toList()).get(0),
+            item.getStatus()
+
         );
         
     }
@@ -73,7 +78,8 @@ public class ItemSearchResponseDto {
             item.getTitle(),
             item.getType(),
             null,
-            item.getImages()
+            item.getImages(),
+            item.getStatus()
         );
         
         List<HashtagDto> list_temp = new ArrayList<>();
