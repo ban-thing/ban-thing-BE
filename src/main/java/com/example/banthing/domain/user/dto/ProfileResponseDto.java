@@ -17,9 +17,7 @@ public class ProfileResponseDto {
 
     public ProfileResponseDto(User user) {
         this.userId = user.getId();
-        this.nickname = user.getNickname().contains("#") 
-        ? user.getNickname().substring(0, user.getNickname().length() - 6)
-        : user.getNickname();
+        this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.profileImg = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
         this.address1 = user.getAddress1();
