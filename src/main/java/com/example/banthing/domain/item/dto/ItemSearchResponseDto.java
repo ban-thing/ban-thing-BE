@@ -2,6 +2,7 @@ package com.example.banthing.domain.item.dto;
 
 import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.entity.ItemImg;
+import com.example.banthing.domain.item.entity.ItemStatus;
 import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.item.service.ItemImgService;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemSearchResponseDto {
     private Long id;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String address;
     private Integer price;
@@ -27,11 +29,13 @@ public class ItemSearchResponseDto {
     private ItemType type;
     private List<HashtagDto> hashtag;
     private String images;
+    private ItemStatus status;
 
     private static ItemImgService itemImgService;
 
     public ItemSearchResponseDto(ItemSearchResponseDto item) {
         this.id = item.getId();
+        this.createdAt = item.getCreatedAt();
         this.updatedAt = item.getUpdatedAt();
         this.address = item.getAddress();
         this.price = item.getPrice();
@@ -39,11 +43,13 @@ public class ItemSearchResponseDto {
         this.type = item.getType();
         this.hashtag = item.getHashtag();
         this.images = item.getImages();
+        this.status = item.getStatus();
     }
 
     public static ItemSearchResponseDto fromEntity(Item item) {
         return new ItemSearchResponseDto(
             item.getId(),
+            item.getCreatedAt(),
             item.getUpdatedAt(),
             item.getAddress(),
             item.getPrice(),
@@ -54,7 +60,9 @@ public class ItemSearchResponseDto {
                         .collect(Collectors.toList()),
             item.getImages().stream()
             .map(ItemImg::getImgUrl)
-            .collect(Collectors.toList()).get(0)
+            .collect(Collectors.toList()).get(0),
+            item.getStatus()
+
         );
         
     }
@@ -63,13 +71,15 @@ public class ItemSearchResponseDto {
         
         ItemSearchResponseDto newResponse = new ItemSearchResponseDto(
             item.getId(),
+            item.getCreatedAt(),
             item.getUpdatedAt(),
             item.getAddress(),
             item.getPrice(),
             item.getTitle(),
             item.getType(),
             null,
-            item.getImages()
+            item.getImages(),
+            item.getStatus()
         );
         
         List<HashtagDto> list_temp = new ArrayList<>();

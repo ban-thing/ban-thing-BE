@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
@@ -32,6 +35,8 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
+
+    public static Logger logger = LoggerFactory.getLogger("로그인 관련 로그");
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
@@ -133,12 +138,16 @@ public class KakaoService {
     private SignUpResponseDto registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
+
+        logger.info("kakao Id" + kakaoId);
+
         User kakaoUser = userRepository.findBySocialId(kakaoId).orElse(null);
 
         // 신규 회원가입
         if (kakaoUser == null) {
+            logger.info("신규 회원가입");
             String email = kakaoUserInfo.getEmail();
-
+            
             kakaoUser = userRepository.save(User.builder()
                     .nickname("반띵#" + kakaoUserInfo.getId())
                     .email(email)
@@ -148,6 +157,8 @@ public class KakaoService {
                     .build());
             log.info("회원가입");
             return new SignUpResponseDto(kakaoUser.getId(), "회원가입 되었습니다");
+        } else {
+            logger.info("기존 회원 로그인");
         }
         log.info("로그인 userId: " + kakaoUser.getId() + ", name: " + kakaoUser.getNickname());
         return new SignUpResponseDto(kakaoUser.getId(), "로그인 되었습니다");

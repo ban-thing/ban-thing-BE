@@ -28,6 +28,7 @@ public interface ItemMapper {
                i.price AS price,
                i.title AS title,
                i.type AS type,
+               i.status AS status,
                GROUP_CONCAT(h.hashtag) AS hashtags,
                (
                 SELECT img.img_url
@@ -49,7 +50,8 @@ public interface ItemMapper {
         @Result(column = "price", property = "price"),
         @Result(column = "title", property = "title"),
         @Result(column = "type", property = "type"),
-        @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class)
+        @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class),
+        @Result(column = "status", property = "status"),
     })
     List<ItemSearchResponseDto> listItems(@Param("keyword") String keyword, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice, @Param("address") String address);
         
@@ -61,6 +63,7 @@ public interface ItemMapper {
                i.price AS price,
                i.title AS title,
                i.type AS type,
+               i.status AS status,
                GROUP_CONCAT(h.hashtag) AS hashtags,
                (
                 SELECT img.img_url
@@ -84,7 +87,8 @@ public interface ItemMapper {
         @Result(column = "title", property = "title"),
         @Result(column = "type", property = "type"),
         @Result(column = "hashtags", property = "hashtag", javaType = List.class, typeHandler = MyBatisListHandler.class),
-        @Result(column = "images", property = "images")
+        @Result(column = "images", property = "images"),
+        @Result(column = "status", property = "status"),
     })
     List<ItemSearchResponseDto> listFilteredItems(@Param("keyword") String keyword, @Param("minPrice") Long minPrice, @Param("maxPrice") Long maxPrice, @Param("address") String address);
 
