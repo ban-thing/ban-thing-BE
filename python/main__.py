@@ -53,7 +53,7 @@ def vectorized_hashtag(input_hashtag, model_name):
     # Find the best matches for each question with detailed information
     return result
 
-def adv_search(question, response_df, model_name):
+def adv_search(hashtags, response_df, model_name):
 
     # Check if CUDA is available and set the device accordingly
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -82,7 +82,7 @@ def adv_search(question, response_df, model_name):
     n_samples1, n_features1 = response_df.numpy().shape
     
     # Function to find best matches in dataset based on the processed text and include rank
-    def match_question_to_data_detailed(question, response_df, n_samples1, n_features1, X_full, top_n=None):
+    def match_question_to_data_detailed(question, response_df, n_samples1, n_features1, top_n=None):
         
         # 질문 텍스트 vectorization 
         question_vec = model.encode([question], convert_to_tensor=True)
@@ -116,8 +116,8 @@ def adv_search(question, response_df, model_name):
 
     # Find the best matches for each question with detailed information
     question_matches_detailed_ranked = {}
-    for idx, q in enumerate([question]):
-        matched_data = match_question_to_data_detailed(q, response_df, n_samples1, n_features1, X_full) # 각각의 질문 내용과 행동 특성들을 비교
+    for idx, q in enumerate([hashtags]):
+        matched_data = match_question_to_data_detailed(q, response_df, n_samples1, n_features1) # 각각의 질문 내용과 행동 특성들을 비교
         question_matches_detailed_ranked[f"advanced_search_result {idx}"] = matched_data
 
     #output_filepath_questions_detailed_ranked = r"advanced_search_result.xlsx"
