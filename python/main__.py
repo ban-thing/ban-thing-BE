@@ -124,7 +124,7 @@ def adv_search(hashtags, response_df, model_name):
     #writer = pd.ExcelWriter(output_filepath_questions_detailed_ranked, engine='xlsxwriter')
     for q_key, matched_data in question_matches_detailed_ranked.items():
         # Add the question as a separate row before the matches
-        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None]], columns=['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images', 'Matching Rank/Probability'])
+        dataframe = pd.DataFrame([[None, None, None, None, None, None, None, None, None]], columns=['id', 'updatedAt', 'address', 'price', 'title', 'type', 'hashtag', 'images', 'Matching Rank/Probability', 'vectorized_hashtags'])
         dataframe = pd.concat([dataframe, matched_data], ignore_index=True)
         #dataframe.to_excel(writer, sheet_name=q_key, index=False)
 
@@ -140,7 +140,8 @@ def dict_to_String(hashtag_list):
 def vectorization():
 
     body = request.json
-    
+    print(body['input_hashtag'])
+    print(type(body['input_hashtag']))
     response_df = pd.DataFrame(body)
     response_df['input_hashtag'] = response_df['input_hashtag'].apply(dict_to_String)
     
@@ -164,7 +165,7 @@ def advanced_search():
     items = body['items']
     
     response_df = pd.DataFrame(items)
-    response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
+    response_df['vectorized_hashtags'] = response_df['vectorized_hashtags'].apply(dict_to_String)
 
     ## other models
     model_name = 'All-MiniLM-L6-v2'
