@@ -106,8 +106,7 @@ public class ItemService {
                 .seller(seller)
                 .cleaningDetail(cleaningDetail)
                 .isDirect(request.getIsDirect())
-                .vectorized_hashtags1(flask_response.getBody().getVectorized_hashtags1())
-                .vectorized_hashtags2(flask_response.getBody().getVectorized_hashtags2())
+                .vectorized_hashtags(flask_response.getBody().getVectorized_hashtags())
                 .build());
 
         hashtagService.save(request.getHashtags(), item.getId());
