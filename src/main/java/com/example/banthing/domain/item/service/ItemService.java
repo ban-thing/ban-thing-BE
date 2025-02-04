@@ -73,28 +73,6 @@ public class ItemService {
                 .expire(request.getClnExpire())
                 .build());
 
-        // ## 벡터 데이터베이스 적용 코드 ##
-        RestTemplate restTemplate = new RestTemplate();
-                
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Accept", "application/json");
-
-        FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(String.join(", ", request.getHashtags()));
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonPayload = mapper.writeValueAsString(request_body);
-        logger.info("Serialized JSON: " + jsonPayload);
-
-        String flask_full_url = "http://" + flask_url + ":7000/vectorization";
-        HttpEntity<FlaskVectorizationRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
-        ResponseEntity<FlaskVectorizationResponseDto> flask_response = restTemplate.exchange(
-            flask_full_url, 
-            HttpMethod.POST,
-            requestHttp, 
-            new ParameterizedTypeReference<FlaskVectorizationResponseDto>() {}); // fromFlask()로 매핑해야함
-        // ##
-
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -106,8 +84,6 @@ public class ItemService {
                 .seller(seller)
                 .cleaningDetail(cleaningDetail)
                 .isDirect(request.getIsDirect())
-                .vectorized_hashtags1(flask_response.getBody().getVectorized_hashtags1())
-                .vectorized_hashtags2(flask_response.getBody().getVectorized_hashtags2())
                 .build());
 
         hashtagService.save(request.getHashtags(), item.getId());
