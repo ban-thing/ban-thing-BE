@@ -145,7 +145,7 @@ def vectorization():
         return jsonify({"error": "input_hashtag must be a string"}), 400
 
     print(f"Received input_hashtag: {body['input_hashtag']}")
-    print(type(body['input_hashtag']))
+    print(type(body))
     response_df = pd.DataFrame(body)
     response_df['input_hashtag'] = response_df['input_hashtag'].apply(dict_to_String)
     
