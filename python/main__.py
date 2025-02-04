@@ -163,7 +163,7 @@ def vectorization():
     end = time.time()
     print(model_name, ": ", end - start, "초")
 
-    return jsonify(pd.DataFrame(result).to_dict(orient='records'))
+    return jsonify(pd.DataFrame(result.tolist()).to_dict(orient='records'))
 
 @app.route("/post", methods=['POST'])
 def advanced_search():
