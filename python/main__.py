@@ -159,7 +159,7 @@ def vectorization():
     start = time.time()
 
     result = vectorized_hashtag(response_df['input_hashtag'], model_name)
-
+    print(type(result))
     end = time.time()
     print(model_name, ": ", end - start, "초")
 
