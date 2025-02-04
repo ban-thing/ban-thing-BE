@@ -161,8 +161,8 @@ def vectorization():
     result = vectorized_hashtag(response_df['input_hashtag'], model_name).tolist()
     
     response = dict()
-    response['vectorized_hashtags1'] = result[0][0]
-    response['vectorized_hashtags2'] = result[0][1]
+    response['vectorized_hashtags1'] = json.dumps(result[0][0])
+    response['vectorized_hashtags2'] = json.dumps(result[0][1])
 
     end = time.time()
     print(model_name, ": ", end - start, "초")
