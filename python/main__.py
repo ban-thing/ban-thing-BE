@@ -158,12 +158,16 @@ def vectorization():
 
     start = time.time()
 
-    result = vectorized_hashtag(response_df['input_hashtag'], model_name)
-    print(type(result))
+    result = vectorized_hashtag(response_df['input_hashtag'], model_name).tolist()
+    
+    response = dict()
+    response['vectorized_hashtags1'] = result[0]
+    response['vectorized_hashtags2'] = result[1]
+
     end = time.time()
     print(model_name, ": ", end - start, "초")
 
-    return jsonify(pd.DataFrame(result.tolist()).to_dict(orient='records'))
+    return jsonify(response)
 
 @app.route("/post", methods=['POST'])
 def advanced_search():
