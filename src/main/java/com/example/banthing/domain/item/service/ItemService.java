@@ -80,7 +80,7 @@ public class ItemService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Accept", "application/json");
 
-        FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(request.getHashtags());
+        FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(request.getHashtags().toString());
 
         String flask_full_url = "http://" + flask_url + ":7000/vectorization";
         HttpEntity<FlaskVectorizationRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
