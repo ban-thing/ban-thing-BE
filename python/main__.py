@@ -140,17 +140,16 @@ def dict_to_String(hashtag_list):
 def vectorization():
 
     body = request.json
-    items = body['items']
     
-    response_df = pd.DataFrame(items)
-    response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
+    response_df = pd.DataFrame(body)
+    response_df['input_hashtag'] = response_df['input_hashtag'].apply(dict_to_String)
     
     ## other models
     model_name = 'All-MiniLM-L6-v2'
 
     start = time.time()
 
-    result = vectorized_hashtag(response_df['hashtag'], model_name)
+    result = vectorized_hashtag(response_df['input_hashtag'], model_name)
 
     end = time.time()
     print(model_name, ": ", end - start, "초")
