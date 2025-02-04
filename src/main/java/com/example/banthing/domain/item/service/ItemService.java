@@ -82,6 +82,10 @@ public class ItemService {
 
         FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(String.join(", ", request.getHashtags()));
 
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonPayload = mapper.writeValueAsString(request_body);
+        logger.info("Serialized JSON: " + jsonPayload);
+
         String flask_full_url = "http://" + flask_url + ":7000/vectorization";
         HttpEntity<FlaskVectorizationRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
         ResponseEntity<FlaskVectorizationResponseDto> flask_response = restTemplate.exchange(
