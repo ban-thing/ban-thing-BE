@@ -75,17 +75,34 @@ public class ItemService {
 
 //        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
 
+        RestTemplate restTemplate = new RestTemplate();
+                
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Accept", "application/json");
+
+        FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(request.getHashtags());
+
+        String flask_full_url = "http://" + flask_url + ":7000/vectorization";
+        HttpEntity<FlaskVectorizationRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
+        ResponseEntity<FlaskVectorizationResponseDto> flask_response = restTemplate.exchange(
+            flask_full_url, 
+            HttpMethod.POST,
+            requestHttp, 
+            new ParameterizedTypeReference<FlaskVectorizationResponseDto>() {}); // fromFlask()로 매핑해야함
+
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .price(request.getPrice())
                 .type(ItemType.valueOf(request.getType()))
-                .status(ItemStatus.판매중)
+                .status(ItemStatus.판매중) 
                 .address(request.getAddress())
                 .directLocation(request.getDirectLocation())
                 .seller(seller)
                 .cleaningDetail(cleaningDetail)
                 .isDirect(request.getIsDirect())
+                .vectorized_hashtags(flask_response.getBody().getVectorized_hashtags())
                 .build());
 
         hashtagService.save(request.getHashtags(), item.getId());
