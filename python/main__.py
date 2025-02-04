@@ -146,7 +146,11 @@ def vectorization():
 
     print(f"Received input_hashtag: {body['input_hashtag']}")
     print(type(body))
-    response_df = pd.DataFrame(body)
+
+    dict_body = dict()
+    dict_body['input_hashtag'] = [body['input_hashtag']]
+
+    response_df = pd.DataFrame(dict_body)
     response_df['input_hashtag'] = response_df['input_hashtag'].apply(dict_to_String)
     
     ## other models
