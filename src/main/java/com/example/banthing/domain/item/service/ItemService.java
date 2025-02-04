@@ -73,14 +73,14 @@ public class ItemService {
                 .expire(request.getClnExpire())
                 .build());
 
-
+        // ## 벡터 데이터베이스 적용 코드 ##
         RestTemplate restTemplate = new RestTemplate();
                 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Accept", "application/json");
 
-        FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(request.getHashtags().toString());
+        FlaskVectorizationRequestDto request_body = new FlaskVectorizationRequestDto(String.join(", ", request.getHashtags()));
 
         String flask_full_url = "http://" + flask_url + ":7000/vectorization";
         HttpEntity<FlaskVectorizationRequestDto> requestHttp = new HttpEntity<>(request_body, headers);
@@ -89,6 +89,7 @@ public class ItemService {
             HttpMethod.POST,
             requestHttp, 
             new ParameterizedTypeReference<FlaskVectorizationResponseDto>() {}); // fromFlask()로 매핑해야함
+        // ##
 
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
