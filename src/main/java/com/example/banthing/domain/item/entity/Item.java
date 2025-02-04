@@ -61,13 +61,16 @@ public class Item extends Timestamped {
     @OneToMany(mappedBy = "item")
     private List<Hashtag> hashtags = new ArrayList<>();
 
-    @JoinColumn(name = "vectorized_hashtags")
-    private List<Long> vectorized_hashtags;
+    @JoinColumn(name = "vectorized_hashtags1")
+    private String vectorized_hashtags1;
+
+    @JoinColumn(name = "vectorized_hashtags2")
+    private String vectorized_hashtags2;
 
     @Builder(toBuilder = true)
     public Item(String title, String content, Integer price, ItemType type, ItemStatus status, String address,
                 String directLocation, boolean isDirect, User buyer, User seller,
-                CleaningDetail cleaningDetail, List<Long> vectorized_hashtags) {
+                CleaningDetail cleaningDetail, String vectorized_hashtags1, String vectorized_hashtags2) {
         this.title = title;
         this.content = content;
         this.price = price;
@@ -79,7 +82,8 @@ public class Item extends Timestamped {
         this.buyer = buyer;
         this.seller = seller;
         this.cleaningDetail = cleaningDetail;
-        this.vectorized_hashtags = vectorized_hashtags;
+        this.vectorized_hashtags1 = vectorized_hashtags1;
+        this.vectorized_hashtags2 = vectorized_hashtags2;
     }
 
     public void addImage(ItemImg image) {
