@@ -47,7 +47,7 @@ def vectorized_hashtag(input_hashtag, model_name):
         model = model.to(device)  
 
     # 해시태그 데이터 vectorization
-    result = model.encode([input_hashtag], convert_to_tensor=True) 
+    result = model.encode(input_hashtag, convert_to_tensor=True) 
     result.to(device)
 
     # Find the best matches for each question with detailed information
