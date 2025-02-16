@@ -1,11 +1,18 @@
 package com.example.banthing.domain.user.service;
 
+import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
+import com.example.banthing.domain.chat.service.ChatMessageService;
+import com.example.banthing.domain.chat.service.ChatroomService;
+import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.entity.ProfileImage;
 import com.example.banthing.domain.user.entity.User;
+import com.example.banthing.domain.user.entity.UserDeletionReason;
 import com.example.banthing.domain.user.repository.ProfileRepository;
 import com.example.banthing.domain.user.repository.UserRepository;
+import com.example.banthing.domain.wishlist.service.WishlistService;
 import com.example.banthing.global.common.Timestamped;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +29,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ChatroomRepository chatroomRepository;
+    private final ChatroomService chatroomService;
     private final ProfileRepository profileRepository;
+    private final UserDeletionReasonService userDeletionReasonService;
+    private final WishlistService wishlistService;
+    private final ChatMessageService chatMessageService;
+    private final ItemService itemService;
 
     public ProfileResponseDto findMyProfile(Long userId) {
         return new ProfileResponseDto(findById(userId));
@@ -79,5 +91,22 @@ public class UserService {
     private User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NullPointerException("해당 유저는 존재하지 않습니다."));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId, String reason) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
+
+        UserDeletionReason deletionReason = new UserDeletionReason(reason);
+        userDeletionReasonService.save(deletionReason);
+
+        // 관련된 데이터 삭제
+        chatMessageService.deleteBySenderId(userId);
+        wishlistService.deleteByUserId(userId);
+        chatroomService.deleteByBuyerOrSeller(user);
+        itemService.deleteByBuyerOrSeller(user);
+        //사용자 삭제
+        userRepository.delete(user);
     }
 }

@@ -49,4 +49,16 @@ public class UserController {
                                                                                  @RequestBody UpdateAddressRequestDto request) {
         return ResponseEntity.ok().body(successResponse(userService.updateAddress(Long.valueOf(userId), request)));
     }
+
+    /**
+     *
+     * 회원 탈퇴
+     *
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<?>> deleteUser(@AuthenticationPrincipal String userId,
+                                                     @RequestBody UserDeletionRequestDto request) {
+        userService.deleteUser(Long.valueOf(userId), request.getReason());
+        return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
+    }
 }

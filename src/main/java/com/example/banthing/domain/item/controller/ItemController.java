@@ -132,8 +132,6 @@ public class ItemController {
 
             return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         }
-
-        
     }
 
 }
