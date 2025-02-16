@@ -22,22 +22,13 @@ from sentence_transformers import SentenceTransformer, models
 
 app = Flask(__name__)
 
-def adv_search(question, trait_data, model_name):
+# Check if CUDA is available and set the device accordingly
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    # Check if CUDA is available and set the device accordingly
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+## other models
+model_name = 'All-MiniLM-L6-v2'
 
-    trait_data.head()
-
-    # 모든 텍스트 소문자로 전환하기
-
-
-    # 행동 특성의 이름과 질문 텍스트 소문자화
-    trait_data['Processed_Hashtag'] = trait_data['hashtag']
-
-    # 질문 텍스트 vectorization
-
-    if model_name == 'monologg/koalbert-tiny':
+if model_name == 'monologg/koalbert-tiny':
         # Define the transformer and pooling layers
         word_embedding_model = models.Transformer(model_name, max_seq_length=128)
         pooling_model = models.Pooling(
@@ -50,10 +41,20 @@ def adv_search(question, trait_data, model_name):
         # Combine into a Sentence Transformer model
         model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
         
-    else:
-        # sentence transformer 모델 불러오기
-        model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
-        model = model.to(device)  
+else:
+    # sentence transformer 모델 불러오기
+    model = SentenceTransformer(model_name) # sentence transfomers 모델 불러오기
+    model = model.to(device)  
+
+def adv_search(question, trait_data):
+
+    trait_data.head()
+
+    # 모든 텍스트 소문자로 전환하기
+
+
+    # 행동 특성의 이름과 질문 텍스트 소문자화
+    trait_data['Processed_Hashtag'] = trait_data['hashtag']
 
     # 해시태그 데이터 vectorization
     X_full = model.encode(trait_data['Processed_Hashtag'].tolist(), convert_to_tensor=True) 
@@ -126,14 +127,11 @@ def advanced_search():
     response_df = pd.DataFrame(items)
     response_df['hashtag'] = response_df['hashtag'].apply(dict_to_String)
 
-    ## other models
-    model_name = 'All-MiniLM-L6-v2'
-
     for i in range(1): 
         
         start = time.time()
         
-        df = adv_search(hashtag, response_df, model_name)
+        df = adv_search(hashtag, response_df)
 
         print("---------------------------------")
         print("::::::",model_name,"::::::")
@@ -155,4 +153,3 @@ def advanced_search():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=7000, debug = True)
-

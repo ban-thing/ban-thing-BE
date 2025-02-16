@@ -73,14 +73,12 @@ public class ItemService {
                 .expire(request.getClnExpire())
                 .build());
 
-//        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
-
         Item item = itemRepository.save(Item.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .price(request.getPrice())
                 .type(ItemType.valueOf(request.getType()))
-                .status(ItemStatus.판매중)
+                .status(ItemStatus.판매중) 
                 .address(request.getAddress())
                 .directLocation(request.getDirectLocation())
                 .seller(seller)

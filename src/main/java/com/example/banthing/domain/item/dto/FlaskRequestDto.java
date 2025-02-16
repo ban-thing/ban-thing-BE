@@ -1,10 +1,12 @@
 package com.example.banthing.domain.item.dto;
 
 import java.util.List;
+
 import lombok.Getter;
 
 @Getter
 public class FlaskRequestDto {
+
     private String input_hashtag;
     List<ItemSearchResponseDto> items;
 
