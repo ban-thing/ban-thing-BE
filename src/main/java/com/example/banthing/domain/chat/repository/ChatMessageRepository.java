@@ -1,6 +1,7 @@
 package com.example.banthing.domain.chat.repository;
 
 import com.example.banthing.domain.chat.entity.ChatMessage;
+import com.example.banthing.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Slice<ChatMessage> findAllByChatroomIdOrderByCreatedAtDesc(Long ChatroomId, Pageable page);
 
     void deleteAllByChatroomId(Long ChatroomId);
+
+    void deleteBySenderId(Long userId);
 }

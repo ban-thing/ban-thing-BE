@@ -253,4 +253,8 @@ public class ItemService {
         return new ItemListResponseDto(result);
 
     }
+
+    public void deleteByBuyerOrSeller(User user) {
+        itemRepository.deleteByBuyerOrSeller(user, user);
+    }
 }

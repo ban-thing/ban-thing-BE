@@ -1,6 +1,7 @@
 package com.example.banthing.domain.chat.repository;
 
 import com.example.banthing.domain.chat.entity.Chatroom;
+import com.example.banthing.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,4 +35,6 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
     List<Chatroom> findAllByBuyerId(Long buyerId);
 
     List<Chatroom> findAllBySellerId(Long sellerId);
+
+    void deleteByBuyerOrSeller(User buyer, User seller);
 }

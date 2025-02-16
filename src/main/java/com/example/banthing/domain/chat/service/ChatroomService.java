@@ -107,4 +107,7 @@ public class ChatroomService {
                 .orElseThrow(() -> new NullPointerException("해당 유저는 존재하지 않습니다."));
     }
 
+    public void deleteByBuyerOrSeller(User user) {
+        chatroomRepository.deleteByBuyerOrSeller(user, user);
+    }
 }
