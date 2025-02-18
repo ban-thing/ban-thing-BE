@@ -1,7 +1,6 @@
 package com.example.banthing.domain.item.service;
 
 import com.example.banthing.domain.chat.entity.Chatroom;
-import com.example.banthing.domain.chat.repository.ChatMessageRepository;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.domain.item.dto.*;
@@ -12,17 +11,14 @@ import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.mapper.ItemMapper;
 import com.example.banthing.domain.item.repository.CleaningDetailRepository;
 import com.example.banthing.domain.item.repository.HashtagRepository;
-import com.example.banthing.domain.item.repository.ItemImgRepository;
 import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -34,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.banthing.domain.item.entity.ItemStatus.판매완료;
@@ -254,5 +251,9 @@ public class ItemService {
 
     public void deleteByBuyerOrSeller(User user) {
         itemRepository.deleteByBuyerOrSeller(user, user);
+    }
+
+    public Optional<Item> findById(Long itemId) {
+        return itemRepository.findById(itemId);
     }
 }

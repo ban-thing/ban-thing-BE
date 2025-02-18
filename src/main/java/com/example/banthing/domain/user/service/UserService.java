@@ -88,7 +88,7 @@ public class UserService {
         return response;
     }
 
-    private User findById(Long userId) {
+    public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NullPointerException("해당 유저는 존재하지 않습니다."));
     }
@@ -109,4 +109,5 @@ public class UserService {
         //사용자 삭제
         userRepository.delete(user);
     }
+
 }
