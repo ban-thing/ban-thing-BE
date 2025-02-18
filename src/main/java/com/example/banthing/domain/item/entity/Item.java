@@ -61,6 +61,9 @@ public class Item extends Timestamped {
     @OneToMany(mappedBy = "item")
     private List<Hashtag> hashtags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item")
+    private List<ItemReport> itemReports = new ArrayList<>();
+
     @Builder(toBuilder = true)
     public Item(String title, String content, Integer price, ItemType type, ItemStatus status, String address,
                 String directLocation, boolean isDirect, User buyer, User seller,

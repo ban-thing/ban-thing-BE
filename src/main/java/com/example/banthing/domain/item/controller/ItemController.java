@@ -36,7 +36,6 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 public class ItemController {
 
     private final ItemService itemService;
-    private final ItemRepository itemRepository;
     public static Logger logger = LoggerFactory.getLogger("Item 관련 로그");
     private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
     
