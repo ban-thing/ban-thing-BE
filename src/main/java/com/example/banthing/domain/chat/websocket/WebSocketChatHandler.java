@@ -3,6 +3,7 @@ package com.example.banthing.domain.chat.websocket;
 
 import com.example.banthing.domain.chat.dto.ChatMessageDto;
 import com.example.banthing.domain.chat.service.ChatService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,12 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,17 +56,40 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         log.info("payload {}", payload);
+        
+        JsonNode jsonNode = mapper.readTree(payload);
+        Long chatRoomId = jsonNode.get("chatRoomId").asLong();
+        String sender = jsonNode.get("sender").asText();
+        String messageText = jsonNode.has("message") ? jsonNode.get("message").asText() : "";
+        String imageBase64 = jsonNode.has("image") ? jsonNode.get("image").asText() : null;
 
         // 클라이언트로부터 받은 메세지를 ChatMessageDto로 변환
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
+        // 이미지 여부 확인 
+        List<String> imageList = new ArrayList<>();
+        if (jsonNode.has("images")) {
+            for (JsonNode imageNode : jsonNode.get("images")) {
+                imageList.add(imageNode.asText());
+            }
+        }
+
+        chatMessageDto.setImages(imageList);
+
+
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
 
+        // 메세지 전송
+        String responseJson = mapper.writeValueAsString(response);
+        TextMessage responseMessage = new TextMessage(responseJson);
+
         // 채팅 메세지 전송
-        for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
-            webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
+        if (chatRoomSessionMap.containsKey(chatRoomId)) {
+            for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
+                webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
+            }
         }
     }
 
