@@ -7,12 +7,12 @@ import java.util.Base64;
 
 @Getter
 public class UpdateProfileResponseDto {
-
     private final String nickname;
-    private final String profileImg;
+    private final String profileImgUrl;
 
     public UpdateProfileResponseDto(User user) {
         this.nickname = user.getNickname();
-        this.profileImg = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
+        this.profileImgUrl = user.getProfileImg();
     }
 }
+

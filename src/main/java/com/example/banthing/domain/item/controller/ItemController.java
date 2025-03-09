@@ -78,7 +78,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ResponseEntity<ApiResponse<ItemDto>> getItemById(@PathVariable Long itemId) {
         itemService.checkItem(itemId);
-        return ResponseEntity.ok().body(successResponse(itemService.get(Long.valueOf(itemId))));
+        return ResponseEntity.ok().body(successResponse(itemService.get(itemId)));
     }
 
     /***
