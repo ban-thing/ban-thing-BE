@@ -51,8 +51,8 @@ public class Item extends Timestamped {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
-    @OneToMany(mappedBy = "item")
-    private List<ItemImg> images = new ArrayList<>(); ;
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<ItemImg> images = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cleaning_detail_id")

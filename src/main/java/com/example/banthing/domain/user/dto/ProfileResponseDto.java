@@ -15,13 +15,14 @@ public class ProfileResponseDto {
     private final String address2;
     private final String address3;
 
-    public ProfileResponseDto(User user) {
+    public ProfileResponseDto(User user, String base64ProfileImg) {
         this.userId = user.getId();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
-        this.profileImg = Base64.getEncoder().encodeToString(user.getProfileImg().getData());
+        this.profileImg = base64ProfileImg;
         this.address1 = user.getAddress1();
         this.address2 = user.getAddress2();
         this.address3 = user.getAddress3();
     }
 }
+
