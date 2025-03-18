@@ -107,13 +107,10 @@ public class UserService {
 
         UserDeletionReason deletionReason = new UserDeletionReason(reason);
         userDeletionReasonService.save(deletionReason);
-
-        // 관련된 데이터 삭제
         chatMessageService.deleteBySenderId(userId);
+        chatroomService.deleteByBuyerOrSeller(user,user);
         wishlistService.deleteByUserId(userId);
-        chatroomService.deleteByBuyerOrSeller(user);
-        itemService.deleteByBuyerOrSeller(user);
-        //사용자 삭제
+        itemService.deleteAllItemDataByUser(user);
         userRepository.delete(user);
     }
 

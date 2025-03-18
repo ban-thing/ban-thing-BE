@@ -44,17 +44,17 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    @OneToMany(mappedBy = "buyer")
-    private List<Item> purchases = new ArrayList<>(); // 구매목록
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Item> purchases = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
-    private List<Item> sales = new ArrayList<>(); // 판매목록
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Item> sales = new ArrayList<>();
 
-    @OneToMany(mappedBy = "buyer")
-    private List<Chatroom> buyerChats = new ArrayList<>(); // 구매 채팅 리스트
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Chatroom> buyerChats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
-    private List<Chatroom> sellerChats = new ArrayList<>(); // 판매 채팅 리스트
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Chatroom> sellerChats = new ArrayList<>();
 
     @Builder
     public User(String nickname, Long socialId, String email, String profileImg,
