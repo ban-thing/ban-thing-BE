@@ -9,9 +9,7 @@ import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.entity.ItemStatus;
 import com.example.banthing.domain.item.entity.ItemType;
 import com.example.banthing.domain.item.mapper.ItemMapper;
-import com.example.banthing.domain.item.repository.CleaningDetailRepository;
-import com.example.banthing.domain.item.repository.HashtagRepository;
-import com.example.banthing.domain.item.repository.ItemRepository;
+import com.example.banthing.domain.item.repository.*;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
 import com.example.banthing.global.s3.S3Service;
@@ -59,6 +57,8 @@ public class ItemService {
     private final ChatroomRepository chatroomRepository;
     private final ChatroomService chatroomService;
     private final S3Service s3Service;
+    private final ItemImgRepository itemImgRepository;
+    private final ItemReportRepository itemReportRepository;
 
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
 //        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
@@ -272,8 +272,15 @@ public class ItemService {
 
     }
 
-    public void deleteByBuyerOrSeller(User user) {
-        itemRepository.deleteByBuyerOrSeller(user, user);
+    @Transactional
+    public void deleteAllItemDataByUser(User user) {
+        List<Item> items = itemRepository.findByBuyerOrSeller(user,user);
+        for (Item item : items) {
+            itemImgRepository.deleteByItem(item);
+            hashtagRepository.deleteByItem(item);
+            itemReportRepository.deleteByItem(item);
+        }
+        itemRepository.deleteAll(items);
     }
 
     public Optional<Item> findById(Long itemId) {
