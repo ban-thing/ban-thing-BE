@@ -36,7 +36,6 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 public class ItemController {
 
     private final ItemService itemService;
-    private final ItemRepository itemRepository;
     public static Logger logger = LoggerFactory.getLogger("Item 관련 로그");
     private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
     
@@ -79,7 +78,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ResponseEntity<ApiResponse<ItemDto>> getItemById(@PathVariable Long itemId) {
         itemService.checkItem(itemId);
-        return ResponseEntity.ok().body(successResponse(itemService.get(Long.valueOf(itemId))));
+        return ResponseEntity.ok().body(successResponse(itemService.get(itemId)));
     }
 
     /***
@@ -132,8 +131,6 @@ public class ItemController {
 
             return ResponseEntity.ok(successResponse(itemService.listItems(keyword, minPrice, maxPrice, address)));
         }
-
-        
     }
 
 }

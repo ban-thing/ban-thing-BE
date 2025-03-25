@@ -4,9 +4,7 @@ import com.example.banthing.domain.user.dto.KakaoLoginResponseDto;
 import com.example.banthing.domain.user.dto.KakaoUserInfoDto;
 import com.example.banthing.domain.user.dto.SignUpResponseDto;
 import com.example.banthing.domain.user.entity.LoginType;
-import com.example.banthing.domain.user.entity.ProfileImage;
 import com.example.banthing.domain.user.entity.User;
-import com.example.banthing.domain.user.repository.ProfileRepository;
 import com.example.banthing.domain.user.repository.UserRepository;
 import com.example.banthing.global.security.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Random;
 
 @Slf4j(topic = "KAKAO Login")
@@ -39,7 +36,6 @@ public class KakaoService {
     public static Logger logger = LoggerFactory.getLogger("로그인 관련 로그");
 
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
@@ -164,17 +160,8 @@ public class KakaoService {
         return new SignUpResponseDto(kakaoUser.getId(), "로그인 되었습니다");
     }
 
-    private ProfileImage getRandomDefaultProfileImage() {
-        List<ProfileImage> defaultImages = profileRepository.findByType("default");
-
-        if (defaultImages.isEmpty()) {
-            log.info("No default profile images available.");
-            return new ProfileImage();
-        }
-
-        Random random = new Random();
-        int randomIndex = random.nextInt(defaultImages.size());
-
-        return defaultImages.get(randomIndex);
+    private String getRandomDefaultProfileImage() {
+        int randomNum = new Random().nextInt(7) + 1;
+        return "defaultProfileImage/" + randomNum + ".png";
     }
 }

@@ -28,9 +28,12 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String email;
 
-    @OneToOne
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "profile_image_id")
+//    private ProfileImage profileImg;
+
     @JoinColumn(name = "profile_image_id")
-    private ProfileImage profileImg;
+    private String profileImg;
 
     private String address1;
 
@@ -41,20 +44,20 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    @OneToMany(mappedBy = "buyer")
-    private List<Item> purchases = new ArrayList<>(); // 구매목록
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Item> purchases = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
-    private List<Item> sales = new ArrayList<>(); // 판매목록
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Item> sales = new ArrayList<>();
 
-    @OneToMany(mappedBy = "buyer")
-    private List<Chatroom> buyerChats = new ArrayList<>(); // 구매 채팅 리스트
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Chatroom> buyerChats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
-    private List<Chatroom> sellerChats = new ArrayList<>(); // 판매 채팅 리스트
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Chatroom> sellerChats = new ArrayList<>();
 
     @Builder
-    public User(String nickname, Long socialId, String email, ProfileImage profileImg,
+    public User(String nickname, Long socialId, String email, String profileImg,
                 String address1, String address2, String address3, LoginType loginType) {
         this.nickname = nickname;
         this.socialId = socialId;
@@ -72,8 +75,8 @@ public class User extends Timestamped {
         if (request.getAddress3() != null) this.address3 = request.getAddress3();
     }
 
-    public void updateProfileImg(ProfileImage profileImg) {
-        if (profileImg != null) this.profileImg = profileImg;
+    public void updateProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 
     public void updateNickname(String nickname) {

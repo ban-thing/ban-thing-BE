@@ -74,5 +74,8 @@ public class WishlistService {
                 .toList();
     }
 
+    public void deleteByUserId(Long userId) {
+        wishlistRepository.deleteByUserId(userId);
+    }
 }
 

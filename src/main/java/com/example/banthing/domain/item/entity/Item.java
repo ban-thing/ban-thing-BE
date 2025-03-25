@@ -51,8 +51,8 @@ public class Item extends Timestamped {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
-    @OneToMany(mappedBy = "item")
-    private List<ItemImg> images = new ArrayList<>(); ;
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<ItemImg> images = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cleaning_detail_id")
@@ -60,6 +60,9 @@ public class Item extends Timestamped {
 
     @OneToMany(mappedBy = "item")
     private List<Hashtag> hashtags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item")
+    private List<ItemReport> itemReports = new ArrayList<>();
 
     @Builder(toBuilder = true)
     public Item(String title, String content, Integer price, ItemType type, ItemStatus status, String address,

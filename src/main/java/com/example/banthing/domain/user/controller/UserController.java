@@ -28,9 +28,10 @@ public class UserController {
     }
 
     @PatchMapping("/profile")
-    public ResponseEntity<ApiResponse<UpdateProfileResponseDto>> updateMyProfile(@AuthenticationPrincipal String userId,
-                                                                                 @RequestPart(required = false, name = "profileImg") MultipartFile file,
-                                                                                 @RequestPart(required = false, name = "nickname") String nickname)  throws IOException {
+    public ResponseEntity<ApiResponse<UpdateProfileResponseDto>> updateMyProfile(
+            @AuthenticationPrincipal String userId,
+            @RequestPart(required = false, name = "profileImg") MultipartFile file,
+            @RequestPart(required = false, name = "nickname") String nickname)  throws IOException {
         return ResponseEntity.ok().body(successResponse(userService.updateMyProfile(Long.valueOf(userId), file, nickname)));
     }
 
@@ -45,8 +46,21 @@ public class UserController {
     }
 
     @PatchMapping("/address")
-    public ResponseEntity<ApiResponse<UpdateAddressResponseDto>> updateMyAddress(@AuthenticationPrincipal String userId,
-                                                                                 @RequestBody UpdateAddressRequestDto request) {
+    public ResponseEntity<ApiResponse<UpdateAddressResponseDto>> updateMyAddress(
+            @AuthenticationPrincipal String userId,
+            @RequestBody UpdateAddressRequestDto request) {
         return ResponseEntity.ok().body(successResponse(userService.updateAddress(Long.valueOf(userId), request)));
+    }
+
+    /**
+     *
+     * 회원 탈퇴
+     *
+     */
+    @PostMapping("/delete")
+    public ResponseEntity<ApiResponse<?>> deleteUser(@AuthenticationPrincipal String userId,
+                                                     @RequestBody UserDeletionRequestDto request) {
+        userService.deleteUser(Long.valueOf(userId), request.getReason());
+        return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
     }
 }

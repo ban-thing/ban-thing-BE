@@ -27,9 +27,6 @@ public class FileService {
     @Value("${spring.s3.bucket}")
     private String bucketName;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
     public String getUuidFileName(String fileName) {
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
         return UUID.randomUUID().toString() + "." + ext;
