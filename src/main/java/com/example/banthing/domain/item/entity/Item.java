@@ -96,7 +96,8 @@ public class Item extends Timestamped {
     @PrePersist
     public void prePersist() {
         ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
-        updatedAt = LocalDateTime.now(koreanTimeZone);
+        createdAt = LocalDateTime.now(koreanTimeZone);
+        updatedAt = createdAt;
     }
 
     @PreUpdate
