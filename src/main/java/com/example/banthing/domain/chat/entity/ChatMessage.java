@@ -2,6 +2,7 @@ package com.example.banthing.domain.chat.entity;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -35,12 +36,16 @@ public class ChatMessage extends Timestamped {
     @Column(nullable = false)
     private Long senderId;
 
+    @Column(name = "images")
+    private List<String> images;
+
     @Builder
-    public ChatMessage(String content, String imgUrl, boolean isRead, Chatroom chatroom, Long senderId) {
+    public ChatMessage(String content, String imgUrl, boolean isRead, Chatroom chatroom, Long senderId, List<String> images) {
         this.content = content;
         this.imgUrl = imgUrl;
         this.isRead = isRead;
         this.senderId = senderId;
+        this.images = images;
 
         if (chatroom != null) {
             chatroom.addChatMessage(this); // Chatroom에 메시지를 추가
