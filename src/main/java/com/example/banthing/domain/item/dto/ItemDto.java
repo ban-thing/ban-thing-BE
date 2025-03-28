@@ -18,21 +18,23 @@ public class ItemDto {
     private String title;
     private String content;
     private Long sellerId;
-    private String sellerImgUrl;  // Base64 이미지 URL을 받도록 수정
+    private String sellerImgUrl;
     private String sellerNickname;
     private ItemType type;
     private Integer price;
     private String directLocation;
     private String address;
     private List<String> itemImgNames;
-    private List<String> itemImgs;  // Base64로 변환된 이미지들을 받을 필드
+    private List<String> itemImgs;
     private List<HashtagDto> hashtags;
     private CleaningDetailDto cleaningDetail;
     private boolean isDirect;
+    private int wishlistCount;
+    private boolean isWishlisted;
     private ItemStatus status;
     private LocalDateTime updateTime;
 
-    public static ItemDto fromEntity(Item item, ItemImgService itemImgService, String sellerImgUrl, List<String> base64Images) {
+    public static ItemDto fromEntity(Item item, ItemImgService itemImgService, String sellerImgUrl, List<String> base64Images, boolean isWishlisted) {
         List<String> imageNames = itemImgService.getImgNames(item.getId());
 
         return new ItemDto(
@@ -46,12 +48,14 @@ public class ItemDto {
                 item.getDirectLocation(),
                 item.getAddress(),
                 imageNames,
-                base64Images,  // Base64로 변환된 이미지들을 넣음
+                base64Images,
                 item.getHashtags().stream()
                         .map(HashtagDto::fromEntity)
                         .collect(Collectors.toList()),
                 item.getCleaningDetail() != null ? CleaningDetailDto.fromEntity(item.getCleaningDetail()) : null,
                 item.getIsDirect(),
+                item.getWishlistCount(),
+                isWishlisted,
                 item.getStatus(),
                 item.getUpdatedAt()
         );
