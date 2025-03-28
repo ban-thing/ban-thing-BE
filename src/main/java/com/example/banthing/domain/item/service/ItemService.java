@@ -12,6 +12,7 @@ import com.example.banthing.domain.item.mapper.ItemMapper;
 import com.example.banthing.domain.item.repository.*;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.repository.UserRepository;
+import com.example.banthing.domain.wishlist.service.WishlistService;
 import com.example.banthing.global.s3.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -59,6 +60,7 @@ public class ItemService {
     private final S3Service s3Service;
     private final ItemImgRepository itemImgRepository;
     private final ItemReportRepository itemReportRepository;
+    private final WishlistService wishlistService;
 
     public ItemResponseDto save(Long id, CreateItemRequestDto request) throws IOException {
 //        logger.info("cleaning detail in Service: {}", objectMapper.writeValueAsString(request));
@@ -135,8 +137,9 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
-    public ItemDto get(Long id) {
-        Item item = itemRepository.findById(id).orElseThrow(RuntimeException::new);
+    public ItemDto get(Long itemId, Long userId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(RuntimeException::new);
+        boolean isWishlisted = (userId != null) && wishlistService.isItemWishlisted(userId, item.getId());
         String base64ProfileImg = null;
         if (item.getSeller().getProfileImg() != null && !item.getSeller().getProfileImg().isEmpty()) {
             try {
@@ -156,7 +159,7 @@ public class ItemService {
                 })
                 .collect(Collectors.toList());
 
-        return ItemDto.fromEntity(item, itemImgsService, base64ProfileImg, base64Images);
+        return ItemDto.fromEntity(item, itemImgsService, base64ProfileImg, base64Images, isWishlisted);
     }
 
     public void delete(Long id) {
@@ -274,7 +277,7 @@ public class ItemService {
 
     @Transactional
     public void deleteAllItemDataByUser(User user) {
-        List<Item> items = itemRepository.findByBuyerOrSeller(user,user);
+        List<Item> items = itemRepository.findByBuyerOrSeller(user, user);
         for (Item item : items) {
             itemImgRepository.deleteByItem(item);
             hashtagRepository.deleteByItem(item);

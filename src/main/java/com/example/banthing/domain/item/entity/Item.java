@@ -64,6 +64,9 @@ public class Item extends Timestamped {
     @OneToMany(mappedBy = "item")
     private List<ItemReport> itemReports = new ArrayList<>();
 
+    @Column(nullable = false)
+    private int wishlistCount = 0;
+
     @Builder(toBuilder = true)
     public Item(String title, String content, Integer price, ItemType type, ItemStatus status, String address,
                 String directLocation, boolean isDirect, User buyer, User seller,
@@ -79,11 +82,6 @@ public class Item extends Timestamped {
         this.buyer = buyer;
         this.seller = seller;
         this.cleaningDetail = cleaningDetail;
-    }
-
-    public void addImage(ItemImg image) {
-        this.images.add(image);
-        image.setItem(this); // 양방향 연관관계 설정
     }
 
     @CreationTimestamp
@@ -104,6 +102,20 @@ public class Item extends Timestamped {
     public void preUpdate() {
         ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
         updatedAt = LocalDateTime.now(koreanTimeZone);
+    }
+
+    public void addImage(ItemImg image) {
+        this.images.add(image);
+        image.setItem(this); // 양방향 연관관계 설정
+    }
+    public void addWishlist() {
+        this.wishlistCount++;
+    }
+
+    public void removeWishlist() {
+        if (this.wishlistCount > 0) {
+            this.wishlistCount--;
+        }
     }
 
 }

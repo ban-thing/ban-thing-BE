@@ -9,6 +9,7 @@ import com.example.banthing.domain.wishlist.entity.UserWishlist;
 import com.example.banthing.domain.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +22,7 @@ public class WishlistService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    // 찜 추가 메서드
+    @Transactional
     public void requestWishlist(Long userId, Long itemId) {
 
         User user = userRepository.findById(userId)
@@ -41,24 +42,24 @@ public class WishlistService {
                 .build();
 
         wishlistRepository.save(userWishlist);
+        item.addWishlist();
+        itemRepository.save(item);
     }
 
-    // 찜 삭제 메서드
+    @Transactional
     public void deleteWishlist(Long userId, Long itemId) {
-        // 1. 사용자 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
-        // 2. 아이템 확인
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 존재하지 않습니다."));
 
-        // 3. Wishlist 존재 확인
-        UserWishlist userWishlist = (UserWishlist) wishlistRepository.findByUserAndItem(user, item)
+        UserWishlist userWishlist = wishlistRepository.findByUserAndItem(user, item)
                 .orElseThrow(() -> new IllegalArgumentException("찜 목록에 존재하지 않는 아이템입니다."));
 
-        // 4. 삭제 처리
         wishlistRepository.delete(userWishlist);
+        item.removeWishlist();
+        itemRepository.save(item);
     }
 
     public List<WishlistResponseDTO> findUserWishlist(Long userId) {
@@ -74,8 +75,18 @@ public class WishlistService {
                 .toList();
     }
 
+    @Transactional
     public void deleteByUserId(Long userId) {
+        List<UserWishlist> userWishlists = wishlistRepository.findByUserId(userId);
+        userWishlists.forEach(userWishlist -> {
+            Item item = userWishlist.getItem();
+            item.removeWishlist();
+            itemRepository.save(item);
+        });
         wishlistRepository.deleteByUserId(userId);
     }
-}
 
+    public boolean isItemWishlisted(Long userId, Long itemId) {
+        return wishlistRepository.existsByUserIdAndItemId(userId, itemId);
+    }
+}

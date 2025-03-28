@@ -29,5 +29,4 @@ public class ItemImg {
         this.item = item;
         item.addImage(this); // 양방향 연관관계 설정
     }
-
 }
