@@ -158,8 +158,9 @@ public class ItemService {
                     }
                 })
                 .collect(Collectors.toList());
-
-        return ItemDto.fromEntity(item, itemImgsService, base64ProfileImg, base64Images, isWishlisted);
+        String nickname = item.getSeller().getNickname();
+        String shortNickname = nickname.length() > 7 ? nickname.substring(0, 7) : nickname;
+        return ItemDto.fromEntity(item, itemImgsService, base64ProfileImg, base64Images, isWishlisted, shortNickname);
     }
 
     public void delete(Long id) {

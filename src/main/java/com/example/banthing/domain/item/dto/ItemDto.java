@@ -34,7 +34,7 @@ public class ItemDto {
     private ItemStatus status;
     private LocalDateTime updateTime;
 
-    public static ItemDto fromEntity(Item item, ItemImgService itemImgService, String sellerImgUrl, List<String> base64Images, boolean isWishlisted) {
+    public static ItemDto fromEntity(Item item, ItemImgService itemImgService, String sellerImgUrl, List<String> base64Images, boolean isWishlisted, String shortNickname) {
         List<String> imageNames = itemImgService.getImgNames(item.getId());
 
         return new ItemDto(
@@ -42,7 +42,7 @@ public class ItemDto {
                 item.getContent(),
                 item.getSeller().getId(),
                 sellerImgUrl,
-                item.getSeller().getNickname(),
+                shortNickname,
                 item.getType(),
                 item.getPrice(),
                 item.getDirectLocation(),
@@ -60,4 +60,5 @@ public class ItemDto {
                 item.getUpdatedAt()
         );
     }
+
 }
