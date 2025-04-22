@@ -60,8 +60,8 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         JsonNode jsonNode = mapper.readTree(payload);
         Long chatRoomId = jsonNode.get("chatRoomId").asLong();
         log.info("chatRoomId {}", jsonNode.get("chatRoomId").asLong());
-        String sender = jsonNode.get("senderId").asText();
-        log.info("sender {}", jsonNode.get("sender").asText());
+        //String sender = jsonNode.get("senderId").asText();
+        //log.info("sender {}", jsonNode.get("sender").asText());
         String messageText = jsonNode.has("message") ? jsonNode.get("message").asText() : "";
         //String imageBase64 = jsonNode.has("image") ? jsonNode.get("image").asText() : null;
 
