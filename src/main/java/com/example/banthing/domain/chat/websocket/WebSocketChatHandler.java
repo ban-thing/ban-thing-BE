@@ -61,21 +61,22 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         Long chatRoomId = jsonNode.get("chatRoomId").asLong();
         String sender = jsonNode.get("sender").asText();
         String messageText = jsonNode.has("message") ? jsonNode.get("message").asText() : "";
-        String imageBase64 = jsonNode.has("image") ? jsonNode.get("image").asText() : null;
+        //String imageBase64 = jsonNode.has("image") ? jsonNode.get("image").asText() : null;
 
         // 클라이언트로부터 받은 메세지를 ChatMessageDto로 변환
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
         // 이미지 여부 확인 
+        /*
         List<String> imageList = new ArrayList<>();
         if (jsonNode.has("images")) {
             for (JsonNode imageNode : jsonNode.get("images")) {
                 imageList.add(imageNode.asText());
             }
         }
-
-        chatMessageDto.setImages(imageList);
+        */
+        //chatMessageDto.setImages(imageList);
 
 
         // 메시지 db 저장

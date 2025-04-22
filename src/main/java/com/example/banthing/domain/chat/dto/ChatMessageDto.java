@@ -17,17 +17,19 @@ public class ChatMessageDto {
     private Long senderId;
     private String message;
     private LocalDateTime time;
-    private List<String> images;
+    //private List<String> images;
 
     public ChatMessageDto(ChatMessage chatMessage) {
         this.chatRoomId = chatMessage.getChatroom().getId();
         this.senderId = chatMessage.getSenderId();
         this.message = chatMessage.getContent();
         this.time = chatMessage.getUpdatedAt();
-        this.images = chatMessage.getImages();
+        //this.images = chatMessage.getImages();
     }
 
+    /*
     public void setImages(List<String> images) {
         this.images = images;
     }
+    */
 }
