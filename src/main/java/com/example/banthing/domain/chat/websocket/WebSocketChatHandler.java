@@ -69,24 +69,8 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
-        // 이미지 여부 확인 
-        /*
-        List<String> imageList = new ArrayList<>();
-        if (jsonNode.has("images")) {
-            for (JsonNode imageNode : jsonNode.get("images")) {
-                imageList.add(imageNode.asText());
-            }
-        }
-        */
-        //chatMessageDto.setImages(imageList);
-
-
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
-
-        // 메세지 전송
-        String responseJson = mapper.writeValueAsString(response);
-        TextMessage responseMessage = new TextMessage(responseJson);
 
         // 채팅 메세지 전송
         if (chatRoomSessionMap.containsKey(chatRoomId)) {
