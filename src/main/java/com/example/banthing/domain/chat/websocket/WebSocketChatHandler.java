@@ -56,25 +56,21 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         log.info("payload {}", payload);
-        
-        JsonNode jsonNode = mapper.readTree(payload);
-        Long chatRoomId = jsonNode.get("chatRoomId").asLong();
-        log.info("chatRoomId {}", jsonNode.get("chatRoomId").asLong());
-        
+
         // 클라이언트로부터 받은 메세지를 ChatMessageDto로 변환
-        log.info("Payload: {}", payload);
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
 
+
         // 채팅 메세지 전송
-        if (chatRoomSessionMap.containsKey(chatRoomId)) {
-            for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
-                webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
-            }
+    
+        for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
+            webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
         }
+
     }
 
     // 소켓 연결 종료
