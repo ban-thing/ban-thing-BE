@@ -34,6 +34,9 @@ public class Chatroom extends Timestamped {
     @OneToMany(mappedBy = "chatroom")
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "chatroom_images", fetch = FetchType.LAZY)
+    private List<ChatImg> chatroomImgs = new ArrayList<>();
+
     @Builder
     public Chatroom(User buyer, User seller, Item item) {
         this.buyer = buyer;
@@ -52,5 +55,12 @@ public class Chatroom extends Timestamped {
     public void addChatMessage(ChatMessage chatMessage) {
         this.chatMessages.add(chatMessage);
         chatMessage.setChatroom(this);
+    }
+
+    public void addImage(ChatImg image) {
+
+        this.chatroomImgs.add(image);
+        image.setChatroom(this);
+
     }
 }

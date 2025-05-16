@@ -1,5 +1,6 @@
 package com.example.banthing.domain.chat.controller;
 
+import com.example.banthing.domain.chat.dto.ChatMessageDto;
 import com.example.banthing.domain.chat.dto.CreateRoomRequestDto;
 import com.example.banthing.domain.chat.dto.CreateRoomResponseDto;
 import com.example.banthing.domain.chat.dto.FindMessageAndItemResponseDto;
@@ -41,4 +42,5 @@ public class ChatController {
                                                                                       Pageable pageable) {
         return ResponseEntity.ok().body(successResponse(chatroomService.getChatMessages(roomId, pageable)));
     }
+
 }
