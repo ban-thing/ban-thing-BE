@@ -43,4 +43,9 @@ public class ChatController {
         return ResponseEntity.ok().body(successResponse(chatroomService.getChatMessages(roomId, pageable)));
     }
 
+    @PostMapping("/{roomId}/message")
+    public ResponseEntity<ApiResponse<?>> postToChatRoom(@PathVariable Long roomId, @RequestBody ChatMessageDto messageDto) {
+        return ResponseEntity.ok().body("Message received");
+    }
+
 }
