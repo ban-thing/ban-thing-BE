@@ -19,7 +19,6 @@ public class FindMessageAndItemResponseDto {
     private final Integer price;
     private final String seller;
     private final String buyer;
-    private String itemImage;
     private List<MessagesDto> messages = new ArrayList<>();
     private final boolean hasNext;
 
@@ -35,9 +34,6 @@ public class FindMessageAndItemResponseDto {
         ? chatroom.getBuyer().getNickname().substring(0, chatroom.getBuyer().getNickname().length() - 6)
         : chatroom.getBuyer().getNickname();
         
-        if (item.getImages().size() > 0)
-            this.itemImage = item.getImages().get(0).getImgUrl();
-
         this.messages = messages.getContent().stream()
                 .map(MessagesDto::new)
                 .collect(Collectors.toList());
@@ -49,11 +45,13 @@ public class FindMessageAndItemResponseDto {
         private final Long senderId;
         private final String message;
         private final LocalDateTime time;
+        private final String imgUrl;
 
         public MessagesDto(ChatMessage chatMessage) {
             this.senderId = chatMessage.getSenderId();
             this.message = chatMessage.getContent();
             this.time = chatMessage.getCreatedAt();
+            this.imgUrl = chatMessage.getImgUrl();
         }
     }
 }

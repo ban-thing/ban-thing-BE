@@ -33,7 +33,7 @@ public class ChatImgService {
 
         List<ChatImg> chatImgs = new ArrayList<>();
         String chatFolderPath = folderName + "/" + chatroomId; // 삭제시에 모든 파일 제거
-
+        
         for (MultipartFile image: images) {
 
             String imgUrl = s3Service.uploadImage(chatFolderPath, image);
@@ -72,6 +72,5 @@ public class ChatImgService {
                 .collect(Collectors.toList());
 
     }
-
 
 }

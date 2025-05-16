@@ -45,7 +45,6 @@ public class ChatMessage extends Timestamped {
         this.imgUrl = imgUrl;
         this.isRead = isRead;
         this.senderId = senderId;
-        //this.images = images;
 
         if (chatroom != null) {
             chatroom.addChatMessage(this); // Chatroom에 메시지를 추가
