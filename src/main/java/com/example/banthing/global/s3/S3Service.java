@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 public class S3Service {
 
     private static final Logger logger = LoggerFactory.getLogger(S3Service.class);
+    public static Logger logger2 = LoggerFactory.getLogger("S3 관련 로그");
 
     @Value("${spring.s3.endpoint}")
     private String endPoint;
@@ -88,8 +89,10 @@ public class S3Service {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(bytes.length);
         metadata.setContentType(contentType);
-
+        
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        logger2.info(inputStream.toString());
+        
         try {
             s3.putObject(new PutObjectRequest(bucketName, key, inputStream, metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
