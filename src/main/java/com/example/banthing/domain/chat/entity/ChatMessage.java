@@ -75,4 +75,5 @@ public class ChatMessage extends Timestamped {
         ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
         updatedAt = LocalDateTime.now(koreanTimeZone);
     }
+
 }

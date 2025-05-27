@@ -3,17 +3,22 @@ package com.example.banthing.domain.chat.websocket;
 
 import com.example.banthing.domain.chat.dto.ChatMessageDto;
 import com.example.banthing.domain.chat.service.ChatService;
+import com.example.banthing.global.s3.S3Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -31,6 +36,8 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     private final Set<WebSocketSession> sessions = new HashSet<>();     // 소켓 세션을 저장
     private final Map<Long, Set<WebSocketSession>> chatRoomSessionMap = new HashMap<>();    // 채팅방 id와 소켓 세션
+
+    private final S3Service s3Service;
 
     // 소켓 연결 확인
     @Override
@@ -61,12 +68,17 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
+        byte[] imgBytes = Base64.getDecoder().decode(chatMessageDto.getData());
+        
+        // 이미지 저장
+        String imageUrl = s3Service.uploadImageFromBytes("chatImage", chatMessageDto.getImgUrl(), imgBytes);
+
+        chatMessageDto.setImgUrl(imageUrl);
+        
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
 
-
-        // 채팅 메세지 전송
-    
+        // 채팅 메세지 전송    
         for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
             webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
         }

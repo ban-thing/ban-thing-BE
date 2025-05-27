@@ -10,17 +10,21 @@ import com.amazonaws.services.s3.model.*;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+
+import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,6 +77,28 @@ public class S3Service {
             throw new IOException("Error uploading file to S3: " + e.getMessage());
         }
         return newFileName;
+    }
+
+    public String uploadImageFromBytes(String folderPath, String originalFileName, byte[] bytes) throws IOException {
+        String key = folderPath + "/" + UUID.randomUUID() + "_" + originalFileName;
+
+        Tika tika = new Tika();
+        String contentType = tika.detect(bytes);
+        
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(bytes.length);
+        metadata.setContentType(contentType);
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        try {
+            s3.putObject(new PutObjectRequest(bucketName, key, inputStream, metadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            logger.info("Object {} uploaded to NCP S3.", originalFileName);
+        } catch (SdkClientException e) {
+            logger.error("S3 Upload Error: {}", e.getMessage());
+            throw new IOException("Error uploading file to S3: " + e.getMessage());
+        }
+        return s3.getUrl(bucketName, key).toString();
     }
 
     public void deleteImage(String imagePath) {
