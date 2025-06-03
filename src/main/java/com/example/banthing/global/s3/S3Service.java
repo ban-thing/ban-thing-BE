@@ -81,10 +81,22 @@ public class S3Service {
     }
 
     public String uploadImageFromBytes(String folderPath, String originalFileName, byte[] bytes) throws IOException {
-        String key = folderPath + "/" + UUID.randomUUID() + "_" + originalFileName;
+        
 
         Tika tika = new Tika();
         String contentType = tika.detect(bytes);
+        
+        String extension = "";
+        if ("image/png".equals(contentType)) {
+            extension = "png";
+        } else if ("image/jpeg".equals(contentType)) {
+            extension = "jpg";
+        } else {
+            extension = "bin"; // fallback
+        }
+        
+        String key = folderPath + "/" + UUID.randomUUID() + "_" + originalFileName + "." + extension;
+        
         
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(bytes.length);

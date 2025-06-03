@@ -62,7 +62,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        log.info("payload {}", payload);
+        //log.info("payload {}", payload);
 
         // 클라이언트로부터 받은 메세지를 ChatMessageDto로 변환
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
