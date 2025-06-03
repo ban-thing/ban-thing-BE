@@ -97,7 +97,6 @@ public class S3Service {
         
         String key = folderPath + "/" + UUID.randomUUID() + "_" + originalFileName + "." + extension;
         
-        
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(bytes.length);
         metadata.setContentType(contentType);
