@@ -74,7 +74,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String imageUrl = s3Service.uploadImageFromBytes("chatImage", chatMessageDto.getImgUrl(), imgBytes);
 
         chatMessageDto.setImgUrl(imageUrl);
-        
+        log.info("img Url:: {}", imageUrl);
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
 
