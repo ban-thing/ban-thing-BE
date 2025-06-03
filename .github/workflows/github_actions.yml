@@ -51,7 +51,7 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/cicdjava
         
     - name: Python-Docker build & push to prod
-      if: contains(github.ref, '99-chat-error')
+      if: contains(github.ref, 'main')
       run: |
         docker build -f ./dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cicdpython .
         docker push ${{ secrets.DOCKER_USERNAME }}/cicdpython
