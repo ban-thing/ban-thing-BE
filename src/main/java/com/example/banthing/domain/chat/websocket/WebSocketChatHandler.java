@@ -69,7 +69,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         log.info("session {}", chatMessageDto.toString());
 
         byte[] imgBytes = Base64.getDecoder().decode(chatMessageDto.getData());
-        log.info("img Url:: {}", imgBytes);
+        //log.info("img Url:: {}", imgBytes);
         // 이미지 저장
         String imageUrl = s3Service.uploadImageFromBytes("chatImage", chatMessageDto.getImgUrl(), imgBytes);
 
