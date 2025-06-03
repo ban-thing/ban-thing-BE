@@ -77,7 +77,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         log.info("img Url:: {}", imageUrl);
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
-
+        log.info("response {}", response);
         // 채팅 메세지 전송    
         for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
             webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
