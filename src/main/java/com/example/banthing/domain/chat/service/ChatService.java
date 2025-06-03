@@ -26,6 +26,7 @@ public class ChatService {
 
         ChatMessage chatMessage = ChatMessage.builder()
                 .content(chatMessageDto.getMessage())
+                .imgUrl(chatMessageDto.getImgUrl())
                 .senderId(chatMessageDto.getSenderId())
                 .chatroom(chatroom)
                 .build();
