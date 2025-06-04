@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "user_wishlist", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "item_id"})
+})
 public class UserWishlist {
 
     @Id

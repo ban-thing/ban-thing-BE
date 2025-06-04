@@ -1,10 +1,12 @@
 package com.example.banthing.domain.user.service;
 
+import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.chat.service.ChatMessageService;
 import com.example.banthing.domain.chat.service.ChatroomService;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.dto.*;
+import com.example.banthing.domain.user.entity.ReportFilterType;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.entity.UserDeletionReason;
 import com.example.banthing.domain.user.repository.UserRepository;
@@ -12,11 +14,14 @@ import com.example.banthing.domain.wishlist.service.WishlistService;
 import com.example.banthing.global.common.Timestamped;
 import com.example.banthing.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
@@ -33,6 +38,10 @@ public class UserService {
     private final ItemService itemService;
     private final S3Service s3Service;
 
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
     public ProfileResponseDto findMyProfile(Long userId) {
         User user = findById(userId);
 
@@ -112,6 +121,11 @@ public class UserService {
         wishlistService.deleteByUserId(userId);
         itemService.deleteAllItemDataByUser(user);
         userRepository.delete(user);
+    }
+
+
+    public Page<AdminUserResponseDto> findFilteredUsers(LocalDate startDate, LocalDate endDate, String status, ReportFilterType reportFilterType, Pageable pageable) {
+        return userRepository.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
     }
 
 }
