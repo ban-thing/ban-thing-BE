@@ -38,6 +38,7 @@ public class SecurityConfig{
             "/image/upload",
             "/ws/chat/**",
             "/items/**",
+            "/admin/**"
     };
 
     @Bean
