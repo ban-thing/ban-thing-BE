@@ -18,15 +18,19 @@ public class ItemReportService {
     private final UserService userService;
 
     public void save(Long userId, Long itemId, ItemReportRequestDto itemReportRequestDto) {
+
         Item item = itemService.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("아이템이 존재하지 않습니다."));
         User user = userService.findById(userId);
 
-        ItemReport itemReport = itemReportRepository.save(ItemReport.builder()
+        user.increaseReportCount();
+        userService.save(user);
+
+        ItemReport itemReport = ItemReport.builder()
                 .item(item)
                 .reporter(user)
                 .reason(itemReportRequestDto.getReason())
-                .build());
+                .build();
 
         itemReportRepository.save(itemReport);
     }

@@ -4,16 +4,12 @@ import com.example.banthing.domain.item.dto.CreateItemRequestDto;
 import com.example.banthing.domain.item.dto.ItemDto;
 import com.example.banthing.domain.item.dto.ItemListResponseDto;
 import com.example.banthing.domain.item.dto.ItemResponseDto;
-import com.example.banthing.domain.item.entity.Item;
-import com.example.banthing.domain.item.repository.ItemRepository;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.global.common.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 

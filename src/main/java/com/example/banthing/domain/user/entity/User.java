@@ -10,6 +10,8 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.banthing.domain.user.entity.UserStatus.ACTIVE;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -56,6 +58,16 @@ public class User extends Timestamped {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Chatroom> sellerChats = new ArrayList<>();
 
+    /** 회원 상태 **/
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus userStatus;
+
+    /** 신고 횟수 **/
+    @Column(nullable = false)
+    private int reportCount;
+
+
     @Builder
     public User(String nickname, Long socialId, String email, String profileImg,
                 String address1, String address2, String address3, LoginType loginType) {
@@ -67,6 +79,8 @@ public class User extends Timestamped {
         this.address2 = address2;
         this.address3 = address3;
         this.loginType = loginType;
+        this.userStatus = ACTIVE;
+        this.reportCount = 0;
     }
 
     public void updateAddress(UpdateAddressRequestDto request) {
@@ -87,5 +101,9 @@ public class User extends Timestamped {
         return this.nickname.contains("#") 
                         ? this.nickname.substring(0, this.nickname.length() - 6)
                         : this.nickname;
+    }
+
+    public void increaseReportCount() {
+        this.reportCount += 1;
     }
 }
