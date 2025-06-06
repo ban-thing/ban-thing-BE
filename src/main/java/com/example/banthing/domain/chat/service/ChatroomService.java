@@ -3,6 +3,7 @@ package com.example.banthing.domain.chat.service;
 import com.example.banthing.domain.chat.dto.*;
 import com.example.banthing.domain.chat.entity.ChatMessage;
 import com.example.banthing.domain.chat.entity.Chatroom;
+import com.example.banthing.domain.chat.repository.ChatImgRepository;
 import com.example.banthing.domain.chat.repository.ChatMessageRepository;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.item.entity.Item;
@@ -32,6 +33,7 @@ public class ChatroomService {
 
     private final ChatroomRepository chatroomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatImgRepository chatImgRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
@@ -76,6 +78,9 @@ public class ChatroomService {
 
         // Optionally delete associated chat messages
         chatMessageRepository.deleteAllByChatroomId(chatroom.getId());
+        
+        // Delete Imges from the Chatroom
+        chatImgRepository.deleteByChatroom(chatroom);
 
         // Delete the chatroom
         chatroomRepository.delete(chatroom);

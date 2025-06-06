@@ -6,6 +6,9 @@ import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.chat.repository.ChatMessageRepository;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +20,13 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Transactional
-    public ChatMessage saveChatMessage(ChatMessageDto chatMessageDto) {
+    public ChatMessage saveChatMessage(ChatMessageDto chatMessageDto)  throws IOException {
         Chatroom chatroom = chatroomRepository.findById(chatMessageDto.getChatRoomId())
                 .orElseThrow(() -> new RuntimeException("Chatroom not found"));
 
         ChatMessage chatMessage = ChatMessage.builder()
                 .content(chatMessageDto.getMessage())
+                .imgUrl(chatMessageDto.getImgUrl())
                 .senderId(chatMessageDto.getSenderId())
                 .chatroom(chatroom)
                 .build();

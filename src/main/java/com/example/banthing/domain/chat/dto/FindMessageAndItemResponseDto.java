@@ -49,11 +49,13 @@ public class FindMessageAndItemResponseDto {
         private final Long senderId;
         private final String message;
         private final LocalDateTime time;
+        private final String imgUrl;
 
         public MessagesDto(ChatMessage chatMessage) {
             this.senderId = chatMessage.getSenderId();
             this.message = chatMessage.getContent();
             this.time = chatMessage.getCreatedAt();
+            this.imgUrl = chatMessage.getImgUrl();
         }
     }
 }

@@ -36,8 +36,8 @@ public class ChatMessage extends Timestamped {
     @Column(nullable = false)
     private Long senderId;
 
-    @Column(name = "images")
-    private List<String> images;
+    //@Column(name = "images")
+    //private List<String> images;
 
     @Builder
     public ChatMessage(String content, String imgUrl, boolean isRead, Chatroom chatroom, Long senderId, List<String> images) {
@@ -45,7 +45,6 @@ public class ChatMessage extends Timestamped {
         this.imgUrl = imgUrl;
         this.isRead = isRead;
         this.senderId = senderId;
-        this.images = images;
 
         if (chatroom != null) {
             chatroom.addChatMessage(this); // Chatroom에 메시지를 추가
@@ -76,4 +75,5 @@ public class ChatMessage extends Timestamped {
         ZoneId koreanTimeZone = ZoneId.of("Asia/Seoul");
         updatedAt = LocalDateTime.now(koreanTimeZone);
     }
+
 }

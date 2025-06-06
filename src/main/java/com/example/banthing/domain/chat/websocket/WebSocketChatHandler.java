@@ -3,17 +3,22 @@ package com.example.banthing.domain.chat.websocket;
 
 import com.example.banthing.domain.chat.dto.ChatMessageDto;
 import com.example.banthing.domain.chat.service.ChatService;
+import com.example.banthing.global.s3.S3Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -31,6 +36,8 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     private final Set<WebSocketSession> sessions = new HashSet<>();     // 소켓 세션을 저장
     private final Map<Long, Set<WebSocketSession>> chatRoomSessionMap = new HashMap<>();    // 채팅방 id와 소켓 세션
+
+    private final S3Service s3Service;
 
     // 소켓 연결 확인
     @Override
@@ -55,42 +62,27 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        log.info("payload {}", payload);
-        
-        JsonNode jsonNode = mapper.readTree(payload);
-        Long chatRoomId = jsonNode.get("chatRoomId").asLong();
-        String sender = jsonNode.get("sender").asText();
-        String messageText = jsonNode.has("message") ? jsonNode.get("message").asText() : "";
-        String imageBase64 = jsonNode.has("image") ? jsonNode.get("image").asText() : null;
+        //log.info("payload {}", payload);
 
         // 클라이언트로부터 받은 메세지를 ChatMessageDto로 변환
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
-        // 이미지 여부 확인 
-        List<String> imageList = new ArrayList<>();
-        if (jsonNode.has("images")) {
-            for (JsonNode imageNode : jsonNode.get("images")) {
-                imageList.add(imageNode.asText());
-            }
-        }
+        byte[] imgBytes = Base64.getDecoder().decode(chatMessageDto.getData());
+        //log.info("img Url:: {}", imgBytes);
+        // 이미지 저장
+        String imageUrl = s3Service.uploadImageFromBytes("chatImage", chatMessageDto.getImgUrl(), imgBytes);
 
-        chatMessageDto.setImages(imageList);
-
-
+        chatMessageDto.setImgUrl(imageUrl);
+        log.info("img Url:: {}", imageUrl);
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
-
-        // 메세지 전송
-        String responseJson = mapper.writeValueAsString(response);
-        TextMessage responseMessage = new TextMessage(responseJson);
-
-        // 채팅 메세지 전송
-        if (chatRoomSessionMap.containsKey(chatRoomId)) {
-            for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
-                webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
-            }
+        log.info("response {}", response);
+        // 채팅 메세지 전송    
+        for (WebSocketSession webSocketSession : chatRoomSessionMap.get(chatMessageDto.getChatRoomId())) {
+            webSocketSession.sendMessage(new TextMessage(mapper.writeValueAsString(response)));
         }
+
     }
 
     // 소켓 연결 종료
