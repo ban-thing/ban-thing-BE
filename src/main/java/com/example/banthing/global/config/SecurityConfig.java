@@ -75,7 +75,8 @@ public class SecurityConfig{
                 "http://banthing.net",
                 "http://localhost:7000",
                 "http://localhost:3306",
-                "http://211.188.62.82:3000"
+                "http://211.188.62.82:3000",
+                "https://ban-thing-admin.vercel.app/"
         );
         config.setAllowedOrigins(allowedOrigins);
 
