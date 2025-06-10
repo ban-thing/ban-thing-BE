@@ -41,24 +41,10 @@ public class ItemReportController {
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("아이템 신고가 완료되었습니다."));
     }
 
-    @GetMapping("/account/{userId}")
-    public ResponseEntity<ApiResponse<User>> getUserInfo(
-        @PathVariable Long userId
-    ) throws IOException {
-        return ResponseEntity.ok().body(successResponse(userService.findById(userId)));
-        //return ResponseEntity.ok().body(successResponse(new User()));
-    }
-
-    @GetMapping("/account/{itemId}")
-    public ResponseEntity<ApiResponse<ItemDto>> getItemInfo(
-        @PathVariable Long itemId,
-        @RequestParam(required = true) Long userId
-    ) {
-        return ResponseEntity.ok().body(successResponse(itemService.get(itemId, userId)));
-    }
-
-    
-    @PostMapping("/account/delete")
+    /*
+     * 신고 삭제
+     */
+    @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> deleteReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
@@ -69,7 +55,10 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("삭제 처리"));
     }
     
-    @PostMapping("/account/adminDelete")
+    /*
+     * 신고 어드민 삭제
+     */
+    @PostMapping("/adminDelete")
     public ResponseEntity<ApiResponse<?>> adminDeleteReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
@@ -80,7 +69,10 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("삭제 처리"));
     }
 
-    @PostMapping("/account/adminInvalid")
+    /*
+     * 신고 어드민 무효
+     */
+    @PostMapping("/adminInvalid")
     public ResponseEntity<ApiResponse<?>> adminInvalidReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
@@ -91,7 +83,10 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("무효 처리"));
     }
 
-    @PostMapping("/account/adminCheck")
+    /*
+     * 신고 어드민 검토
+     */
+    @PostMapping("/adminCheck")
     public ResponseEntity<ApiResponse<?>> adminCheckReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
