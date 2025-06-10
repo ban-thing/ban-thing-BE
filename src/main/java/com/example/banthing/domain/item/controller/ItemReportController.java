@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.*;
 public class ItemReportController {
 
     private final ItemReportService itemReportService;
-    private final UserService userService;
-    private final ItemService itemService;
-
 
     /*
      * 신고 등록
