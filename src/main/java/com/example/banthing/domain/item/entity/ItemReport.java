@@ -31,10 +31,14 @@ public class ItemReport extends Timestamped {
     @Column(nullable = false)
     private String reason;  // 신고 이유
 
+    @Column(nullable = false)
+    private ReportStatus reportStatus;
+
     @Builder
-    public ItemReport(Item item, User reporter, String reason) {
+    public ItemReport(Item item, User reporter, String reason, ReportStatus reportStatus) {
         this.item = item;
         this.reporter = reporter;
+        this.reportStatus = reportStatus;
         this.reason = reason;
     }
 

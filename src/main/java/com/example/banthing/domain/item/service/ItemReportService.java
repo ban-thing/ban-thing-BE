@@ -3,6 +3,8 @@ package com.example.banthing.domain.item.service;
 import com.example.banthing.domain.item.dto.ItemReportRequestDto;
 import com.example.banthing.domain.item.entity.Item;
 import com.example.banthing.domain.item.entity.ItemReport;
+import com.example.banthing.domain.item.entity.ItemStatus;
+import com.example.banthing.domain.item.entity.ReportStatus;
 import com.example.banthing.domain.item.repository.ItemReportRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.service.UserService;
@@ -17,7 +19,11 @@ public class ItemReportService {
     private final ItemService itemService;
     private final UserService userService;
 
-    public void save(Long userId, Long itemId, ItemReportRequestDto itemReportRequestDto) {
+    public void save(
+        Long userId, 
+        Long itemId, 
+        ItemReportRequestDto itemReportRequestDto
+    ) {
 
         Item item = itemService.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("아이템이 존재하지 않습니다."));
@@ -30,9 +36,64 @@ public class ItemReportService {
                 .item(item)
                 .reporter(user)
                 .reason(itemReportRequestDto.getReason())
+                .reportStatus(ReportStatus.미처리) // 초기 생성시 미처리로 초기화
                 .build();
 
         itemReportRepository.save(itemReport);
     }
 
+
+    /*
+     * 신고 삭제
+     */
+    public void deleteReport(
+            Long reportId
+    ) {
+        ItemReport report = itemReportRepository.findById(reportId)
+            .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+
+        itemReportRepository.delete(report);
+    }
+
+    /*
+     * 어드민 신고 삭제
+     */
+    public void adminDeleteReport(
+            Long reportId
+    ) {
+        ItemReport report = itemReportRepository.findById(reportId)
+            .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+        
+        Item item = report.getItem();
+
+        item.setStatus(ItemStatus.삭제); // 삭제 대신 이력을 남김
+
+        report.setReportStatus(ReportStatus.처리완료);
+    }
+
+    /*
+     * 어드민 신고 무효
+     */
+    public void adminInvalidReport(
+        Long reportId
+    ) {
+        ItemReport report = itemReportRepository.findById(reportId)
+            .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+
+        report.setReportStatus(ReportStatus.무효처리);
+
+    }
+
+    /*
+     * 어드민 신고 검토
+     */
+    public void adminCheckReport(
+        Long reportId
+    ) {        
+        ItemReport report = itemReportRepository.findById(reportId)
+            .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+
+        report.setReportStatus(ReportStatus.처리중);
+
+    }
 }
