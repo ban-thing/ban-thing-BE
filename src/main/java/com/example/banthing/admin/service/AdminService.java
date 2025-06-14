@@ -37,7 +37,7 @@ public class AdminService {
 
         if(request.getUsername() != "banthing-admin")
         {
-            throw new IllegalArgumentException("아이디가 일치하지 않습니다.");
+            throw new IllegalArgumentException(request.getUsername());
         }
         else if(request.getPassword() != "banthing-admin123")
         {
