@@ -37,6 +37,7 @@ public class AdminService {
         return userService.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
     }
 
+    @Autowired
     public AdminLoginResponseDto login(AdminLoginRequestDto request) {
 
         if(request.getUsername() != "banthing-admin")
