@@ -8,6 +8,7 @@ import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.security.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AdminService {
 
     private final UserService userService;
@@ -35,12 +37,15 @@ public class AdminService {
 
     public AdminLoginResponseDto login(AdminLoginRequestDto request) {
 
+
         if(request.getUsername() != "banthing-admin")
         {
-            throw new IllegalArgumentException(request.getUsername());
+            log.info(request.getUsername());
+            throw new IllegalArgumentException("아이디가 일치하지 않습니다.");
         }
         else if(request.getPassword() != "banthing-admin123")
         {
+            log.info(request.getPassword());
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         else
