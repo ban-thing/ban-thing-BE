@@ -76,11 +76,7 @@ public class SecurityConfig{
                 "http://localhost:7000",
                 "http://localhost:3306",
                 "http://211.188.62.82:3000",
-<<<<<<< HEAD
-                "https://ban-thing-admin.vercel.app/"
-=======
                 "https://ban-thing-admin.vercel.app"
->>>>>>> 82030a56f0626409daa1ca3830524e682a7cc766
         );
         config.setAllowedOrigins(allowedOrigins);
 
