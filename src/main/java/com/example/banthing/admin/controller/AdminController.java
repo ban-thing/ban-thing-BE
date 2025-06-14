@@ -1,5 +1,7 @@
 package com.example.banthing.admin.controller;
 
+import com.example.banthing.admin.dto.AdminLoginRequestDto;
+import com.example.banthing.admin.dto.AdminLoginResponseDto;
 import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.admin.service.AdminService;
 import com.example.banthing.domain.item.service.ItemService;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,10 +34,7 @@ import java.time.LocalDate;
 @RequestMapping("/admin")
 public class AdminController {
 
-
     private final AdminService adminService;
-    private final UserService userService;
-    private final ItemService itemService;
 
     @GetMapping("/account")
     public ResponseEntity<ApiResponse<Page<AdminUserResponseDto>>> getAccounts(
@@ -46,6 +47,15 @@ public class AdminController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok().body(successResponse( adminService.getFilteredAccounts(startDate, endDate, status, reportFilterType, pageable)));
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
+        @ModelAttribute AdminLoginRequestDto request
+    ) {
+        AdminLoginResponseDto response = adminService.login(request);
+    
+        return ResponseEntity.ok().body(successResponse(response));
     }
 
 }
