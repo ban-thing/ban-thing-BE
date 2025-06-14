@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,7 +33,6 @@ public class AdminService {
         return userService.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
     }
 
-    @Autowired
     public AdminLoginResponseDto login(AdminLoginRequestDto request) {
 
         if(request.getUsername() != "banthing-admin")
