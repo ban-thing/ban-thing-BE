@@ -38,12 +38,12 @@ public class AdminService {
     public AdminLoginResponseDto login(AdminLoginRequestDto request) {
 
 
-        if(request.getUsername() != "banthing-admin")
+        if(!"banthing-admin".equals(request.getUsername()))
         {
             log.info(request.getUsername());
             throw new IllegalArgumentException("아이디가 일치하지 않습니다.");
         }
-        else if(request.getPassword() != "banthing-admin123")
+        else if(!"banthing-admin123".equals(request.getPassword()))
         {
             log.info(request.getPassword());
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
