@@ -51,7 +51,7 @@ public class AdminController {
 
     @GetMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
-        @ModelAttribute AdminLoginRequestDto request
+        @RequestBody AdminLoginRequestDto request
     ) {
         AdminLoginResponseDto response = adminService.login(request);
     
