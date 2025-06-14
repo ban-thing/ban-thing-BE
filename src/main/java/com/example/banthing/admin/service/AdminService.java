@@ -24,9 +24,6 @@ public class AdminService {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     public Page<AdminUserResponseDto> getFilteredAccounts(
             LocalDate startDate,
             LocalDate endDate,
