@@ -10,18 +10,14 @@ import com.example.banthing.domain.chat.dto.CreateRoomRequestDto;
 import com.example.banthing.domain.chat.dto.CreateRoomResponseDto;
 import com.example.banthing.domain.chat.dto.FindMessageAndItemResponseDto;
 import com.example.banthing.domain.chat.dto.FindRoomsResponseDto;
-import com.example.banthing.domain.chat.service.ChatService;
 import com.example.banthing.domain.chat.service.ChatroomService;
-import com.example.banthing.domain.chat.service.ChatImgService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
@@ -34,8 +30,6 @@ import static com.example.banthing.global.common.ApiResponse.successWithDataAndM
 public class ChatController {
 
     private final ChatroomService chatroomService;
-    private final ChatService chatService;
-    private final ChatImgService chatImgService;
 
     /* createRoom (userId, request)
      * 채팅방을 생성하는 기능입니다. 
@@ -77,7 +71,6 @@ public class ChatController {
      * Undefined function that does nothing but takes the request from the front end
      * The previous employee installed this feature for some reason.
      * Later, figured it out that it was a dummy function. Will be elimincated in a near future
-     * 
      */
     @PostMapping(value = "/{roomId}/message")
     public ResponseEntity<?> postToChatRoom(@PathVariable Long roomId, @RequestBody ChatMessageDto messageDto) {

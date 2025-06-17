@@ -1,7 +1,12 @@
 package com.example.banthing.domain.item.controller;
 
 import com.example.banthing.domain.item.dto.ItemDto;
+import com.example.banthing.domain.item.dto.ItemReportDetailResponseDto;
 import com.example.banthing.domain.item.dto.ItemReportRequestDto;
+import com.example.banthing.domain.item.entity.CleaningDetail;
+import com.example.banthing.domain.item.entity.Item;
+import com.example.banthing.domain.item.entity.ItemReport;
+import com.example.banthing.domain.item.repository.ItemReportRepository;
 import com.example.banthing.domain.item.service.ItemReportService;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.entity.User;
@@ -24,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 public class ItemReportController {
 
     private final ItemReportService itemReportService;
+    private final ItemReportRepository itemReportRepository;
+    private final ItemService itemService;
 
     /*
      * 신고 등록
@@ -39,23 +46,9 @@ public class ItemReportController {
     }
 
     /*
-     * 신고 삭제
-     */
-    @PostMapping("/delete")
-    public ResponseEntity<ApiResponse<?>> deleteReport(
-        @RequestBody(required = true) List<Long> reportIdList
-    ) {
-        for(int i = 0; i < reportIdList.size() ; i++) {
-            itemReportService.deleteReport(reportIdList.get(i));
-        }
-
-        return ResponseEntity.ok().body(successResponse("삭제 처리"));
-    }
-    
-    /*
      * 신고 어드민 삭제
      */
-    @PostMapping("/adminDelete")
+    @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> adminDeleteReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
@@ -69,7 +62,7 @@ public class ItemReportController {
     /*
      * 신고 어드민 무효
      */
-    @PostMapping("/adminInvalid")
+    @PostMapping("/invalid")
     public ResponseEntity<ApiResponse<?>> adminInvalidReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
@@ -83,7 +76,7 @@ public class ItemReportController {
     /*
      * 신고 어드민 검토
      */
-    @PostMapping("/adminCheck")
+    @PostMapping("/check")
     public ResponseEntity<ApiResponse<?>> adminCheckReport(
         @RequestBody(required = true) List<Long> reportIdList
     ) {
@@ -94,5 +87,36 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("검토"));
     }
     
+
+    /*
+     * 신고 이력 상세보기 
+     */
+    @GetMapping("/detail")
+    public ResponseEntity<ApiResponse<?>> reportDetail(
+        @RequestBody(required = true) Long userId
+    ) {
+
+        List<ItemReport> itemReportList = itemReportRepository.findAllByUserId(userId);
+
+        return ResponseEntity.ok().body(successResponse(itemReportList));
+    }
+
+    /*
+     * 신고한 글 상세보기 
+     */
+    @GetMapping("/info")
+    public ResponseEntity<ApiResponse<?>> reportInfo(
+        @RequestBody(required = true) Long reportId
+    ) {
+        
+        ItemReport itemReport = itemReportRepository.findById(reportId)
+        .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+
+        Item item = itemReport.getItem();
+        CleaningDetail cleaningDetail = item.getCleaningDetail();
+
+        return ResponseEntity.ok().body(successResponse(new ItemReportDetailResponseDto(itemReport, item, cleaningDetail)));
+
+    }
 
 }
