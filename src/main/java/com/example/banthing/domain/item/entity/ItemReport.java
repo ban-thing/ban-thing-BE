@@ -33,6 +33,9 @@ public class ItemReport extends Timestamped {
     private User reporter;  // 신고한 유저
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private String reason;  // 신고 이유
 
     @Column(nullable = false)
@@ -48,6 +51,7 @@ public class ItemReport extends Timestamped {
         this.reporter = reporter;
         this.reportStatus = reportStatus;
         this.reason = reason;
+        this.userId = reporter.getId();
     }
 
 }

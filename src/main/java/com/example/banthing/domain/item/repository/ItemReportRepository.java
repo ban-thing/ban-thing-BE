@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ItemReportRepository extends JpaRepository<ItemReport, Long> {
     void deleteByItem(Item item);
 
-    //List<ItemReport> findAllByReporter
+    List<ItemReport> findAllByUserId(Long userId);
 }
