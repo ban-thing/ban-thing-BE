@@ -54,8 +54,9 @@ public class AdminController {
         @RequestBody AdminLoginRequestDto request
     ) {
         AdminLoginResponseDto response = adminService.login(request);
-    
+        log.info(response.getToken());
         return ResponseEntity.ok().body(successResponse(response));
     }
+
 
 }
