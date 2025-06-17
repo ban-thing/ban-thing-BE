@@ -87,10 +87,10 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("검토"));
     }
     
-
-    /*
+/*
+    *
      * 신고 이력 상세보기 
-     */
+     *
     @GetMapping("/detail")
     public ResponseEntity<ApiResponse<?>> reportDetail(
         @RequestBody(required = true) Long userId
@@ -100,7 +100,7 @@ public class ItemReportController {
 
         return ResponseEntity.ok().body(successResponse(itemReportList));
     }
-
+ */
     /*
      * 신고한 글 상세보기 
      */
