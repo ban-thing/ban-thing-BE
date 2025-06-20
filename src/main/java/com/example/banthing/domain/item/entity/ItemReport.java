@@ -28,13 +28,18 @@ public class ItemReport extends Timestamped {
     @JoinColumn(name = "reporter_id", nullable = false)
     private User reporter;  // 신고한 유저
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reported_user_id", nullable = false)
+    private User reportedUser;  // 신고당한 유저
+
     @Column(nullable = false)
     private String reason;  // 신고 이유
 
     @Builder
-    public ItemReport(Item item, User reporter, String reason) {
+    public ItemReport(Item item, User reporter, User reportedUser, String reason) {
         this.item = item;
         this.reporter = reporter;
+        this.reportedUser = reportedUser;
         this.reason = reason;
     }
 

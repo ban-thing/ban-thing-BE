@@ -1,5 +1,6 @@
 package com.example.banthing.domain.item.service;
 
+import com.example.banthing.admin.dto.AdminReportResponseDto;
 import com.example.banthing.domain.chat.entity.Chatroom;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.chat.service.ChatroomService;
@@ -22,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -290,4 +294,6 @@ public class ItemService {
     public Optional<Item> findById(Long itemId) {
         return itemRepository.findById(itemId);
     }
+
+
 }
