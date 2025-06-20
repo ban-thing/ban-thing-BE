@@ -34,27 +34,25 @@ public class AdminService {
         return userService.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
     }
 
-    public AdminLoginResponseDto login(AdminLoginRequestDto request) {
+    public String login(String username, String password) {
 
 
-        if(!"banthing-admin".equals(request.getUsername()))
+        if(!"banthing-admin".equals(username))
         {
-            log.info(request.getUsername());
+            log.info(username);
             throw new IllegalArgumentException("아이디가 일치하지 않습니다.");
         }
-        else if(!"banthing-admin123".equals(request.getPassword()))
+        else if(!"banthing-admin123".equals(password))
         {
-            log.info(request.getPassword());
+            log.info(password);
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         else
         {
-            String token = jwtUtil.createToken(String.valueOf(request.getUsername()));
-            return new AdminLoginResponseDto(token);
+            return jwtUtil.createToken(username);
+            
         }
         
     }
-
-
 
 }

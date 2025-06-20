@@ -53,9 +53,9 @@ public class AdminController {
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
         @RequestBody AdminLoginRequestDto request
     ) {
-        AdminLoginResponseDto response = adminService.login(request);
-        log.info(response.getToken());
-        return ResponseEntity.ok().body(successResponse(response));
+        String response = adminService.login(request.getUsername(), request.getPassword());
+        log.info(response);
+        return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(response)));
     }
 
 
