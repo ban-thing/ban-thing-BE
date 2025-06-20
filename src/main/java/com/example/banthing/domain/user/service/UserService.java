@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class UserService {
     public void save(User user) {
         userRepository.save(user);
     }
+
     public ProfileResponseDto findMyProfile(Long userId) {
         User user = findById(userId);
 
@@ -114,7 +116,18 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
 
-        UserDeletionReason deletionReason = new UserDeletionReason(reason);
+        // 탈퇴 이력 저장
+        UserDeletionReason deletionReason = UserDeletionReason.builder()
+                .userId(user.getId())
+                .socialId(user.getSocialId())
+                .email(user.getEmail())
+                .joinedAt(user.getCreatedAt())  // 가입일
+                .deletedAt(LocalDateTime.now())
+                .lastLoginAt(user.getLastLoginAt())
+                .reason(reason)
+                .memo(null)  // 관리자 메모 저장 UI가 있다면
+                .isRejoinRestricted(false) // 조건에 따라 true로 설정
+                .build();
         userDeletionReasonService.save(deletionReason);
         chatMessageService.deleteBySenderId(userId);
         chatroomService.deleteByBuyerOrSeller(user,user);
