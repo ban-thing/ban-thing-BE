@@ -1,4 +1,4 @@
-package com.example.banthing.admin.dto;
+package com.example.banthing.domain.item.dto;
 
 import java.io.ObjectInputFilter.Status;
 import java.security.cert.CertPathValidatorException.Reason;
