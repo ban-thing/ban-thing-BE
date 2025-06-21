@@ -56,7 +56,7 @@ public class AdminController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
-        @RequestBody AdminLoginRequestDto request,
+        @RequestParam AdminLoginRequestDto request,
         HttpServletResponse httpResponse
     ) {
         String token = adminService.login(request.getUsername(), request.getPassword());
