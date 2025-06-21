@@ -50,17 +50,10 @@ public class ItemReport extends Timestamped {
     private LocalDateTime createdAt;
 
     @Builder
-<<<<<<< HEAD
-    public ItemReport(Item item, User reporter, String reason, ReportStatus reportStatus) {
-        this.item = item;
-        this.reporter = reporter;
-        this.reportStatus = reportStatus;
-=======
     public ItemReport(Item item, User reporter, User reportedUser, String reason) {
         this.item = item;
         this.reporter = reporter;
         this.reportedUser = reportedUser;
->>>>>>> 01f8b7d5247c6d9c8627d1942075a2a2e1d6b899
         this.reason = reason;
         this.userId = reporter.getId();
     }
