@@ -1,6 +1,10 @@
 package com.example.banthing.domain.item.entity;
 
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.global.common.Timestamped;
 import jakarta.persistence.*;
@@ -33,14 +37,26 @@ public class ItemReport extends Timestamped {
     private User reportedUser;  // 신고당한 유저
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private String reason;  // 신고 이유
 
+    @Column(nullable = false)
+    private ReportStatus reportStatus;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
     @Builder
-    public ItemReport(Item item, User reporter, User reportedUser, String reason) {
+    public ItemReport(Item item, User reporter, User reportedUser, ReportStatus reportStatus, String reason) {
         this.item = item;
         this.reporter = reporter;
         this.reportedUser = reportedUser;
         this.reason = reason;
+        this.reportStatus = reportStatus;
+        this.userId = reporter.getId();
     }
 
 }

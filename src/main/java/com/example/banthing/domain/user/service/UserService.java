@@ -141,4 +141,6 @@ public class UserService {
         return userRepository.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
     }
 
+    //public void updateReportStatus() 
+
 }

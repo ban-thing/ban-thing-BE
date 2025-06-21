@@ -47,6 +47,9 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    //@Enumerated(EnumType.STRING)
+    //private UserType userType;
+
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Item> purchases = new ArrayList<>();
 

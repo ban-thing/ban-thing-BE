@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 
@@ -33,6 +34,9 @@ public class JwtUtil {
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
+
+        // debug hash 로그
+        logger.info("✅ [KEY_HASH] jwt.secret.key hash: {}", Arrays.hashCode(bytes));
     }
 
     // 토큰 생성
