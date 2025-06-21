@@ -63,6 +63,7 @@ public class AdminService {
             return jwtUtil.createToken(username);
             
         }
+    }
        
     public Page<AdminReportResponseDto> getFilteredReports(
             LocalDate startDate,
