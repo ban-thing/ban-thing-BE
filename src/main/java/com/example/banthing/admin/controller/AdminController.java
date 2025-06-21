@@ -8,7 +8,9 @@ import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.entity.ReportFilterType;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
+import com.example.banthing.global.security.JwtUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,11 +53,13 @@ public class AdminController {
 
     @GetMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
-        @RequestBody AdminLoginRequestDto request
+        @RequestBody AdminLoginRequestDto request,
+        HttpServletResponse httpResponse
     ) {
-        String response = adminService.login(request.getUsername(), request.getPassword());
-        log.info(response);
-        return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(response)));
+        String token = adminService.login(request.getUsername(), request.getPassword());
+        log.info(token);
+        httpResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(token)));
     }
 
 
