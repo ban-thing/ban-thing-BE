@@ -56,10 +56,11 @@ public class AdminController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
-        @RequestParam AdminLoginRequestDto request,
+        @RequestParam String username,
+        @RequestParam String password,
         HttpServletResponse httpResponse
     ) {
-        String token = adminService.login(request.getUsername(), request.getPassword());
+        String token = adminService.login(username, password);
         logger.info(token);
         httpResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(token)));
