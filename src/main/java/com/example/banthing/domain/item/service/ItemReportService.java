@@ -42,7 +42,7 @@ public class ItemReportService {
                 .reporter(user) // 신고자
                 .reportedUser(item.getSeller()) // 신고당한 유저 (판매자)
                 .reason(itemReportRequestDto.getReason())
-                .reportStatus(ReportStatus.미처리) // 초기 생성시 미처리로 초기화
+                .reportStatus("미처리") // 초기 생성시 미처리로 초기화
                 .build();
 
         itemReportRepository.save(itemReport);
