@@ -49,6 +49,8 @@ public class AdminService {
         }
         else
         {
+            log.info(username);
+            log.info(password);
             return jwtUtil.createToken(username);
             
         }
