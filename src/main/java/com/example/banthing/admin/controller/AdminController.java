@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,13 +32,13 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 
 import java.time.LocalDate;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
     private final AdminService adminService;
+    public static Logger logger = LoggerFactory.getLogger("어드민 관련 로그");
 
     @GetMapping("/account")
     public ResponseEntity<ApiResponse<Page<AdminUserResponseDto>>> getAccounts(
@@ -57,7 +59,7 @@ public class AdminController {
         HttpServletResponse httpResponse
     ) {
         String token = adminService.login(request.getUsername(), request.getPassword());
-        log.info(token);
+        logger.info(token);
         httpResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(token)));
     }
