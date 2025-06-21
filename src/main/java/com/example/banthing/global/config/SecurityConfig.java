@@ -35,7 +35,8 @@ public class SecurityConfig{
             "/user/kakao/**",
             "/image/upload",
             "/ws/chat/**",
-            "/items/**"
+            "/items/**",
+            "/admin/**"
     };
 
     @Bean
