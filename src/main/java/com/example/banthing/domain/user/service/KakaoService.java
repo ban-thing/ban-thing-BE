@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Slf4j(topic = "KAKAO Login")
@@ -152,9 +153,14 @@ public class KakaoService {
                     .loginType(LoginType.kakao)
                     .build());
             log.info("회원가입");
+            kakaoUser.updateLastLoginAt(LocalDateTime.now());
+            userRepository.save(kakaoUser);
             return new SignUpResponseDto(kakaoUser.getId(), "회원가입 되었습니다");
         } else {
             logger.info("기존 회원 로그인");
+            kakaoUser.updateLastLoginAt(LocalDateTime.now());
+            userRepository.save(kakaoUser);
+
         }
         log.info("로그인 userId: " + kakaoUser.getId() + ", name: " + kakaoUser.getNickname());
         return new SignUpResponseDto(kakaoUser.getId(), "로그인 되었습니다");

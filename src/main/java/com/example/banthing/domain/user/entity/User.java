@@ -7,6 +7,7 @@ import com.example.banthing.global.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,9 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private int reportCount;
 
+    /** 마지막 로그인 시간 **/
+    @Column
+    private LocalDateTime lastLoginAt;
 
     @Builder
     public User(String nickname, Long socialId, String email, String profileImg,
@@ -109,4 +113,9 @@ public class User extends Timestamped {
     public void increaseReportCount() {
         this.reportCount += 1;
     }
+
+    public void updateLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
+    }
+
 }
