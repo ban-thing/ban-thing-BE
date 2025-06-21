@@ -23,6 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,9 +54,9 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse( adminService.getFilteredAccounts(startDate, endDate, status, reportFilterType, pageable)));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
-        @RequestParam AdminLoginRequestDto request,
+        @RequestBody AdminLoginRequestDto request,
         HttpServletResponse httpResponse
     ) {
         String token = adminService.login(request.getUsername(), request.getPassword());
