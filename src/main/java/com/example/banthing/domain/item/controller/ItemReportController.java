@@ -50,6 +50,20 @@ public class ItemReportController {
     /*
      * 신고 어드민 삭제
      */
+    @PostMapping("/noramlDelete")
+    public ResponseEntity<ApiResponse<?>> deleteReport(
+        @RequestParam(required = true) List<Long> reportIdList
+    ) {
+        for(int i = 0; i < reportIdList.size() ; i++) {
+            itemReportService.deleteReport(reportIdList.get(i));
+        }
+
+        return ResponseEntity.ok().body(successResponse("삭제 처리"));
+    }
+
+    /*
+     * 신고 어드민 삭제
+     */
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> adminDeleteReport(
         @RequestParam(required = true) List<Long> reportIdList
