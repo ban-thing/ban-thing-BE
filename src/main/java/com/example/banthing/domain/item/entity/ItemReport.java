@@ -43,14 +43,15 @@ public class ItemReport extends Timestamped {
     private String reason;  // 신고 이유
 
     @Column(nullable = false)
-    private String reportStatus;
+    @Enumerated(EnumType.STRING)
+    private ReportStatus reportStatus;
 
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public ItemReport(Item item, User reporter, User reportedUser, String reportStatus, String reason) {
+    public ItemReport(Item item, User reporter, User reportedUser, ReportStatus reportStatus, String reason) {
         this.item = item;
         this.reporter = reporter;
         this.reportedUser = reportedUser;
