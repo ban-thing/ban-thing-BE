@@ -9,6 +9,8 @@ import com.example.banthing.domain.item.entity.ReportStatus;
 import com.example.banthing.domain.item.repository.ItemReportRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.service.UserService;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +52,7 @@ public class ItemReportService {
     /*
      * 신고 삭제
      */
+    @Transactional
     public void deleteReport(
             Long reportId
     ) {
@@ -62,6 +65,7 @@ public class ItemReportService {
     /*
      * 어드민 신고 삭제
      */
+    @Transactional
     public void adminDeleteReport(
             Long reportId
     ) {
@@ -78,6 +82,7 @@ public class ItemReportService {
     /*
      * 어드민 신고 무효
      */
+    @Transactional
     public void adminInvalidReport(
         Long reportId
     ) {
@@ -91,6 +96,7 @@ public class ItemReportService {
     /*
      * 어드민 신고 검토
      */
+    @Transactional
     public void adminCheckReport(
         Long reportId
     ) {        
