@@ -42,7 +42,7 @@ public class ItemReportService {
                 .reporter(user) // 신고자
                 .reportedUser(item.getSeller()) // 신고당한 유저 (판매자)
                 .reason(itemReportRequestDto.getReason())
-                .reportStatus(ReportStatus.미처리) // 초기 생성시 미처리로 초기화
+                .reportStatus(ReportStatus.PENDING) // 초기 생성시 미처리로 초기화
                 .build();
 
         itemReportRepository.save(itemReport);
@@ -72,7 +72,7 @@ public class ItemReportService {
 
         item.setStatus(ItemStatus.삭제); // 삭제 대신 이력을 남김
 
-        report.setReportStatus(ReportStatus.처리완료);
+        report.setReportStatus(ReportStatus.DONE);
     }
 
     /*
@@ -84,7 +84,7 @@ public class ItemReportService {
         ItemReport report = itemReportRepository.findById(reportId)
             .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
 
-        report.setReportStatus(ReportStatus.무효처리);
+        report.setReportStatus(ReportStatus.INVALID);
 
     }
 
@@ -97,7 +97,7 @@ public class ItemReportService {
         ItemReport report = itemReportRepository.findById(reportId)
             .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
 
-        report.setReportStatus(ReportStatus.처리중);
+        report.setReportStatus(ReportStatus.IN_PROGRESS);
 
     }
 
