@@ -37,7 +37,7 @@ public class ItemReportController {
      */
     @PostMapping("/{itemId}")
     public ResponseEntity<ApiResponse<?>> reportItem(
-            @AuthenticationPrincipal String id,
+            @RequestParam String id,
             @PathVariable Long itemId,
             @RequestParam String reason) {
     
