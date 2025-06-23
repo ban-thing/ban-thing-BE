@@ -43,7 +43,7 @@ public class ItemReport extends Timestamped {
     private String reason;  // 신고 이유
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private ReportStatus reportStatus;
 
     @CreationTimestamp
