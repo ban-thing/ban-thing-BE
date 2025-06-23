@@ -70,6 +70,12 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
         if(chatMessageDto.getData() == null)
         {
+            chatMessageDto.setImgUrl("");
+            log.info("img Url:: {}", "");
+            
+        }
+        else
+        {
             byte[] imgBytes = Base64.getDecoder().decode(chatMessageDto.getData());
 
 
@@ -79,11 +85,6 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
             chatMessageDto.setImgUrl(imageUrl);
             log.info("img Url:: {}", imageUrl);
-        }
-        else
-        {
-            chatMessageDto.setImgUrl("");
-            log.info("img Url:: {}", "");
         }
         
 
