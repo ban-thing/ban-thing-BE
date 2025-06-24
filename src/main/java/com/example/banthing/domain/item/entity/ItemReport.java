@@ -46,14 +46,6 @@ public class ItemReport extends Timestamped {
     @Enumerated(EnumType.ORDINAL)
     private ReportStatus reportStatus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @CreationTimestamp
-    @Column(updatable = true)
-    private LocalDateTime updatedAt;
-
     @Builder
     public ItemReport(Item item, User reporter, User reportedUser, ReportStatus reportStatus, String reason) {
         this.item = item;
