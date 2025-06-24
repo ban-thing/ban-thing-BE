@@ -48,7 +48,7 @@ public class ItemReportController {
     /*
      * 신고 어드민 삭제
      */
-    @PostMapping("/noramlDelete")
+    @PostMapping("/normalDelete")
     public ResponseEntity<ApiResponse<?>> deleteReport(
         @RequestParam(required = true) List<Long> reportIdList
     ) {
