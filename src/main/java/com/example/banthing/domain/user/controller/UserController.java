@@ -71,8 +71,8 @@ public class UserController {
      */
     @PostMapping("/forcedDelete")
     public ResponseEntity<ApiResponse<?>> forcedDeleteUser(@RequestParam String userId,
-                                                     @RequestParam UserDeletionRequestDto request) {
-        userService.deleteUser(Long.valueOf(userId), request.getReason());
+                                                     @RequestParam String reason) {
+        userService.deleteUser(Long.valueOf(userId), reason);
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
     }
 }
