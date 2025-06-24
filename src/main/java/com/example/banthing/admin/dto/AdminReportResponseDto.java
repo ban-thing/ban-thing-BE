@@ -15,7 +15,8 @@ import jakarta.persistence.Column;
 public class AdminReportResponseDto {
     private Long reportId;
     private String itemTitle;
-    private String reason;
+    private String hiReason;
+    private String loReason;
     private LocalDateTime createdAt;
     private Long reporterId;
     private Long reportedUserId;

@@ -39,9 +39,10 @@ public class ItemReportController {
     public ResponseEntity<ApiResponse<?>> reportItem(
             @AuthenticationPrincipal String id,
             @PathVariable Long itemId,
-            @RequestParam String reason) {
+            @RequestParam String hiReason,
+            @RequestParam String loReason) {
     
-        itemReportService.save(Long.valueOf(id),itemId,new ItemReportRequestDto(reason));
+        itemReportService.save(Long.valueOf(id),itemId,new ItemReportRequestDto(hiReason, loReason));
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("아이템 신고가 완료되었습니다."));
     }
 

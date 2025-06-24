@@ -36,7 +36,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
             builder.and(report.createdAt.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
         }
         if (reason != null && !reason.isBlank()) {
-            builder.and(report.reason.containsIgnoreCase(reason));
+            builder.and(report.loReason.containsIgnoreCase(reason));
         }
 
         List<ItemReport> reports = queryFactory
@@ -72,7 +72,8 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
             return new AdminReportResponseDto(
                     r.getId(),
                     i.getTitle(),
-                    r.getReason(),
+                    r.getHiReason(),
+                    r.getLoReason(),
                     r.getCreatedAt(),
                     r.getReporter().getId(),
                     r.getReportedUser().getId(),
