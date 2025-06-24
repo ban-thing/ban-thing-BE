@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
@@ -65,10 +66,18 @@ public class AdminController {
         Page<AdminUserResponseDto> result = adminService.getFilteredAccounts(startDate, endDate, status, reportFilterType, pageable);
         return ResponseEntity.ok().body(successResponse(result));
     }
+/* 
+    @PostMapping("/withdraw")
+    public ResponseEntity<ApiResponse<?>> deleteAccounts(
+        @RequestParam(required = false) List<Long> userIdList
+    ) {
+        for()
+    }
+*/
 
     /**
      *
-     * 신고내역
+     * 신고내역 조회
      *
      */
     @GetMapping("/reports")
