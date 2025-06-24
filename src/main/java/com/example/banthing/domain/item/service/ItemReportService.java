@@ -63,6 +63,20 @@ public class ItemReportService {
     }
 
     /*
+     * 어드민 신고 완전삭제 (백엔드용)
+     */
+    @Transactional
+    public void adminAbsoluteDeleteReport(
+            Long reportId
+    ) {
+        ItemReport report = itemReportRepository.findById(reportId)
+            .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+        
+        itemReportRepository.delete(report);
+
+    }
+
+    /*
      * 어드민 신고 삭제
      */
     @Transactional
