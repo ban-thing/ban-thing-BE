@@ -21,20 +21,15 @@ public class AdminReportResponseDto {
     private Long reportedUserId;
     private String status;
 
-    private LocalDateTime createdAt_item;
-    private String nickname_item;
-    private String address_item;
-    private String content_item;
-    
+    private String itemContent;
+    private LocalDateTime itemCreatedAt;
+    private String sellerNickname;
+    private List<String> hashtags;
+
     private String pollution;
     private String timeUsed;
     private String purchasedDate;
     private String cleaned;
 
-    private String itemContent;
-    private LocalDateTime itemCreatedAt;
-    private String sellerNickname;
-    private List<String> hashtags;
-    private CleaningDetailDto cleaningDetail;
 }
 
