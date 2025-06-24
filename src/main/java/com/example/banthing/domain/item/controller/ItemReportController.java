@@ -105,7 +105,7 @@ public class ItemReportController {
     /*
      * 신고 이력 상세보기 
      */
-    @GetMapping("/detail")
+    @GetMapping("/detail") 
     public ResponseEntity<ApiResponse<?>> reportDetail(
         @RequestParam(required = true) Long userId
     ) {
