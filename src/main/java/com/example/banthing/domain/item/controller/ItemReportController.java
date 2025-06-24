@@ -46,6 +46,21 @@ public class ItemReportController {
     }
 
     /*
+     * 신고 어드민 완전삭제
+     */
+
+    @DeleteMapping("/absDelete")
+    public ResponseEntity<ApiResponse<?>> absDeleteReport(
+        @RequestParam(required = true) List<Long> reportIdList
+    ) {
+        for(int i = 0; i < reportIdList.size() ; i++) {
+            itemReportService.adminAbsoluteDeleteReport(reportIdList.get(i));
+        }
+
+        return ResponseEntity.ok().body(successResponse("삭제 처리"));
+    }
+
+    /*
      * 신고 어드민 삭제
      */
     @PostMapping("/normalDelete")
