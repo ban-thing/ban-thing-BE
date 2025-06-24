@@ -66,14 +66,7 @@ public class AdminController {
         Page<AdminUserResponseDto> result = adminService.getFilteredAccounts(startDate, endDate, status, reportFilterType, pageable);
         return ResponseEntity.ok().body(successResponse(result));
     }
-/* 
-    @PostMapping("/withdraw")
-    public ResponseEntity<ApiResponse<?>> deleteAccounts(
-        @RequestParam(required = false) List<Long> userIdList
-    ) {
-        for()
-    }
-*/
+
 
     /**
      *
