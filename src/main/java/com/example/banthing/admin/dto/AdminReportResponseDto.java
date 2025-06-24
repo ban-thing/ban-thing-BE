@@ -6,6 +6,8 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.banthing.domain.item.entity.Item;
+
 @Getter
 @AllArgsConstructor
 public class AdminReportResponseDto {
@@ -16,6 +18,8 @@ public class AdminReportResponseDto {
     private Long reporterId;
     private Long reportedUserId;
     private String status;
+
+    private Item item;
 
     private String itemContent;
     private LocalDateTime itemCreatedAt;

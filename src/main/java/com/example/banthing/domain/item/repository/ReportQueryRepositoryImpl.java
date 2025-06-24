@@ -77,7 +77,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                     r.getReporter().getId(),
                     r.getReportedUser().getId(),
                     r.getReportedUser().getUserStatus().toString(),
-
+                    i,
                     // 상세 항목
                     i.getContent(),
                     i.getCreatedAt(),
