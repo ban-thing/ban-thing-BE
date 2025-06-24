@@ -48,7 +48,6 @@ public class ItemReportController {
     /*
      * 신고 어드민 완전삭제
      */
-
     @DeleteMapping("/absDelete")
     public ResponseEntity<ApiResponse<?>> absDeleteReport(
         @RequestParam(required = true) List<Long> reportIdList
