@@ -15,8 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ReportQueryRepositoryImpl implements ReportQueryRepository {
@@ -68,7 +71,18 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                             d.getCleaned(),
                             d.getExpire()
                     );
-
+/* 
+            List<String> base64Images = item.getImages().stream()
+                .filter(Objects::nonNull)
+                .map(img -> {
+                    try {
+                        return s3Service.encodeImageToBase64(img.getImgUrl(), "itemImage");
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to encode item image to Base64", e);
+                    }
+                })
+                .collect(Collectors.toList());
+*/
             return new AdminReportResponseDto(
                     r.getId(),
                     i.getTitle(),
@@ -77,7 +91,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                     r.getCreatedAt(),
                     r.getReporter().getId(),
                     r.getReportedUser().getId(),
-                    r.getReportedUser().getUserStatus().toString(),
+                    r.getReportStatus().toString(),
                     // 상세 항목
                     i.getContent(),
                     i.getCreatedAt(),
