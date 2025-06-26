@@ -58,12 +58,16 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         }
 
         if (keyword != null && !keyword.isBlank()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            
             try{
                 Long userId = Long.valueOf(keyword);
-                builder.and(report.reporter.id.eq(userId));
+                keywordBuilder.or(report.reporter.id.eq(userId));
+                keywordBuilder.or(report.reportedUser.id.eq(userId));
             } catch (NumberFormatException ignored) {}
 
-            builder.and(report.item.title.containsIgnoreCase(keyword));
+            keywordBuilder.or(report.item.title.containsIgnoreCase(keyword));
+            builder.and(keywordBuilder);
         }
 
         List<ItemReport> reports = queryFactory
