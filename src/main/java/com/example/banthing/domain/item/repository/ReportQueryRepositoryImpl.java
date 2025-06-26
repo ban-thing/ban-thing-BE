@@ -60,10 +60,10 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         if (keyword != null && !keyword.isBlank()) {
             try{
                 Long userId = Long.valueOf(keyword);
-                builder.or(report.reporter.id.eq(userId));
+                builder.and(report.reporter.id.eq(userId));
             } catch (NumberFormatException ignored) {}
 
-            builder.or(report.item.title.containsIgnoreCase(keyword));
+            builder.and(report.item.title.containsIgnoreCase(keyword));
         }
 
         List<ItemReport> reports = queryFactory
