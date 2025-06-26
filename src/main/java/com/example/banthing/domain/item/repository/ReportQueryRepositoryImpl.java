@@ -50,7 +50,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         }
 
         if (status != null && !status.isBlank()) {
-            builder.and(report.reportStatus.eq(ReportStatus.valueOf(keyword)));
+            builder.and(report.reportStatus.eq(ReportStatus.valueOf(status)));
             
         }
 
