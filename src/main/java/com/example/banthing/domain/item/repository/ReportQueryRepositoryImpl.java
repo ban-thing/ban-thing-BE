@@ -49,22 +49,18 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
             builder.and(report.loReason.containsIgnoreCase(loReason));
         }
 
-        /* 
         if (status != null && !status.isBlank()) {
-            if(status.equals("미처리")) builder.and(report.reportStatus.eq(ReportStatus.미처리));
-            else if(status.equals("처리완료")) builder.and(report.reportStatus.eq(ReportStatus.처리완료));
-            else if(status.equals("무효처리")) builder.and(report.reportStatus.eq(ReportStatus.무효처리));
-            else if(status.equals("처리중")) builder.and(report.reportStatus.eq(ReportStatus.처리중));
+            builder.and(report.reportStatus.eq(ReportStatus.valueOf(keyword)));
             
         }
-*/
+
         if (keyword != null && !keyword.isBlank()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
             
             try{
                 Long userId = Long.valueOf(keyword);
-                keywordBuilder.or(report.reporter.id.eq(userId));
-                keywordBuilder.or(report.reportedUser.id.eq(userId));
+                keywordBuilder.and(report.reporter.id.eq(userId));
+                keywordBuilder.and(report.reportedUser.id.eq(userId));
             } catch (NumberFormatException ignored) {}
 
             keywordBuilder.or(report.item.title.containsIgnoreCase(keyword));
