@@ -50,10 +50,10 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         }
 
         if (status != null && !status.isBlank()) {
-            if(status == "미처리") builder.and(report.reportStatus.eq(ReportStatus.미처리));
-            else if(status == "처리완료") builder.and(report.reportStatus.eq(ReportStatus.처리완료));
-            else if(status == "무효처리") builder.and(report.reportStatus.eq(ReportStatus.무효처리));
-            else if(status == "처리중") builder.and(report.reportStatus.eq(ReportStatus.처리중));
+            if(status.equals("미처리")) builder.and(report.reportStatus.eq(ReportStatus.미처리));
+            else if(status.equals("처리완료")) builder.and(report.reportStatus.eq(ReportStatus.처리완료));
+            else if(status.equals("무효처리")) builder.and(report.reportStatus.eq(ReportStatus.무효처리));
+            else if(status.equals("처리중")) builder.and(report.reportStatus.eq(ReportStatus.처리중));
             
         }
 
