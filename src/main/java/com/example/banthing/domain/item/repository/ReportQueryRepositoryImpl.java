@@ -4,6 +4,7 @@ import com.example.banthing.admin.dto.AdminReportResponseDto;
 import com.example.banthing.admin.dto.CleaningDetailDto;
 import com.example.banthing.domain.item.entity.*;
 import com.example.banthing.domain.user.entity.QUser;
+import com.example.banthing.global.s3.S3Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -25,21 +26,36 @@ import java.util.stream.Collectors;
 public class ReportQueryRepositoryImpl implements ReportQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final S3Service s3Service;
 
     @Override
-    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable) {
+    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String loReason, Pageable pageable, String keyword) {
         QItemReport report = QItemReport.itemReport;
         QItem item = QItem.item;
         QUser seller = QUser.user;
         QHashtag hashtag = new QHashtag("hashtag");
         QCleaningDetail detail = QCleaningDetail.cleaningDetail;
+        
 
         BooleanBuilder builder = new BooleanBuilder();
         if (startDate != null && endDate != null) {
             builder.and(report.createdAt.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
         }
-        if (reason != null && !reason.isBlank()) {
-            builder.and(report.loReason.containsIgnoreCase(reason));
+        if (hiReason != null && !hiReason.isBlank()) {
+            builder.and(report.hiReason.containsIgnoreCase(hiReason));
+        }
+
+        if (loReason != null && !loReason.isBlank()) {
+            builder.and(report.loReason.containsIgnoreCase(loReason));
+        }
+
+        if (keyword != null && !keyword.isBlank()) {
+            try{
+                Long userId = Long.valueOf(keyword);
+                builder.or(report.reporter.id.eq(userId));
+            } catch (NumberFormatException ignored) {}
+
+            builder.or(report.item.title.containsIgnoreCase(keyword));
         }
 
         List<ItemReport> reports = queryFactory
@@ -71,10 +87,10 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                             d.getCleaned(),
                             d.getExpire()
                     );
-/* 
-            List<String> base64Images = item.getImages().stream()
+
+            List<String> base64Images = i.getImages().stream()
                 .filter(Objects::nonNull)
-                .map(img -> {
+                .map((ItemImg img) -> {
                     try {
                         return s3Service.encodeImageToBase64(img.getImgUrl(), "itemImage");
                     } catch (IOException e) {
@@ -82,7 +98,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                     }
                 })
                 .collect(Collectors.toList());
-*/
+
             return new AdminReportResponseDto(
                     r.getId(),
                     i.getTitle(),
@@ -97,6 +113,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                     i.getCreatedAt(),
                     i.getSeller().getNickname(),
                     hashtags,
+                    base64Images,
                     cleaningDto.getPollution(),
                     cleaningDto.getTimeUsed(),
                     cleaningDto.getPurchasedDate(),

@@ -68,10 +68,12 @@ public class AdminService {
     public Page<AdminReportResponseDto> getFilteredReports(
             LocalDate startDate,
             LocalDate endDate,
-            String reason,
-            Pageable pageable
+            String hiReason,
+            String loReason,
+            Pageable pageable,
+            String keyword
     ) {
-        return itemReportService.findReportsByFilter(startDate, endDate, reason, pageable);
+        return itemReportService.findReportsByFilter(startDate, endDate, hiReason, loReason, pageable, keyword);
     }
 
 

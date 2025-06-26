@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.banthing.domain.user.entity.UserStatus.ACTIVE;
+import static com.example.banthing.domain.user.entity.UserStatus.정상;
 
 @Entity
 @Getter
@@ -86,7 +86,7 @@ public class User extends Timestamped {
         this.address2 = address2;
         this.address3 = address3;
         this.loginType = loginType;
-        this.userStatus = ACTIVE;
+        this.userStatus = 정상;
         this.reportCount = 0;
     }
 

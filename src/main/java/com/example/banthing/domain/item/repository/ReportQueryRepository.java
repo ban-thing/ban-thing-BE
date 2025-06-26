@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 
 public interface ReportQueryRepository {
-    Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable);
+    Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String loReason, Pageable pageable, String keyword);
 
 }
 

@@ -125,10 +125,12 @@ public class ItemReportService {
     public Page<AdminReportResponseDto> findReportsByFilter(
             LocalDate startDate,
             LocalDate endDate,
-            String reason,
-            Pageable pageable
+            String hiReason,
+            String loReason,
+            Pageable pageable,
+            String keyword
     ) {
-        return itemReportRepository.findReportsByFilter(startDate, endDate, reason, pageable);
+        return itemReportRepository.findReportsByFilter(startDate, endDate, hiReason, loReason, pageable, keyword);
     }
 
 

@@ -26,6 +26,7 @@ public class AdminReportResponseDto {
     private LocalDateTime itemCreatedAt;
     private String sellerNickname;
     private List<String> hashtags;
+    private List<String> images;
 
     private String pollution;
     private String timeUsed;

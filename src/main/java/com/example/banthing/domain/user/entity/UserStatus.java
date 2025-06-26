@@ -1,8 +1,8 @@
 package com.example.banthing.domain.user.entity;
 
 public enum UserStatus {
-    ACTIVE,
-    SUSPENDED,
-    DELETED
+    정상,
+    탈퇴,
+    정지
 }
 
