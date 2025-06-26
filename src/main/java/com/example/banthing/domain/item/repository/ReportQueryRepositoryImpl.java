@@ -29,7 +29,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
     private final S3Service s3Service;
 
     @Override
-    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String loReason, Pageable pageable, String keyword) {
+    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String loReason, String status, Pageable pageable, String keyword) {
         QItemReport report = QItemReport.itemReport;
         QItem item = QItem.item;
         QUser seller = QUser.user;
@@ -47,6 +47,14 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
 
         if (loReason != null && !loReason.isBlank()) {
             builder.and(report.loReason.containsIgnoreCase(loReason));
+        }
+
+        if (status != null && !status.isBlank()) {
+            if(status == "미처리") builder.and(report.reportStatus.eq(ReportStatus.미처리));
+            else if(status == "처리완료") builder.and(report.reportStatus.eq(ReportStatus.처리완료));
+            else if(status == "무효처리") builder.and(report.reportStatus.eq(ReportStatus.무효처리));
+            else if(status == "처리중") builder.and(report.reportStatus.eq(ReportStatus.처리중));
+            
         }
 
         if (keyword != null && !keyword.isBlank()) {

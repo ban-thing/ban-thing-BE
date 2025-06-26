@@ -79,12 +79,13 @@ public class AdminController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false, defaultValue = "") String hiReason,
             @RequestParam(required = false, defaultValue = "") String loReason,
+            @RequestParam(required = false, defaultValue = "") String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "") String keyword
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminReportResponseDto> result = adminService.getFilteredReports(startDate, endDate, hiReason, loReason, pageable, keyword);
+        Page<AdminReportResponseDto> result = adminService.getFilteredReports(startDate, endDate, hiReason, loReason, status, pageable, keyword);
         return ResponseEntity.ok().body(successResponse(result));
     }
 
