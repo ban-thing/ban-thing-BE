@@ -2,6 +2,7 @@ package com.example.banthing.domain.user.repository;
 
 import com.example.banthing.admin.dto.AdminUserDeletionResponseDto;
 import com.example.banthing.domain.user.entity.QUserDeletionReason;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,7 +20,7 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable) {
+    public Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable) {
         QUserDeletionReason qDeletion = QUserDeletionReason.userDeletionReason;
 
         BooleanExpression dateCondition = qDeletion.deletedAt.between(
@@ -30,6 +31,17 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
         BooleanExpression reasonCondition = reason != null && !reason.isBlank()
                 ? qDeletion.reason.containsIgnoreCase(reason)
                 : null;
+
+        BooleanBuilder builder = new BooleanBuilder();        
+        if (keyword != null && keyword.isBlank()) {
+
+
+                try {
+                        Long userId = Long.valueOf(keyword);
+                        builder.and(qDeletion.userId.eq(userId));
+                } catch (NumberFormatException ignored) {}
+                builder.and(qDeletion.memo.containsIgnoreCase(keyword));
+        }
 
         List<AdminUserDeletionResponseDto> content = queryFactory
                 .select(Projections.constructor(AdminUserDeletionResponseDto.class,
@@ -42,7 +54,7 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
                         qDeletion.isRejoinRestricted
                 ))
                 .from(qDeletion)
-                .where(dateCondition, reasonCondition)
+                .where(dateCondition, reasonCondition, builder)
                 .orderBy(qDeletion.deletedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

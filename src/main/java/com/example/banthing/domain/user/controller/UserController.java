@@ -4,12 +4,15 @@ import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
@@ -75,4 +78,19 @@ public class UserController {
         userService.deleteUser(Long.valueOf(userId), reason);
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
     }
+
+    /*
+     * 
+     * 탈퇴 내역 조회
+     * 
+     */
+    @GetMapping("/deletedUsers")
+    public ResponseEntity<ApiResponse<?>> deletedUsers(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+        @RequestParam(required = false, defaultValue = "") String reason,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "") String keyword
+    )
 }
