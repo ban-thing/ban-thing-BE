@@ -60,7 +60,8 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
                     .select(Projections.constructor(AdminUserResponseDto.ReportDetail.class,
                             report.id,                 // 신고 ID
                             report.createdAt,          // 신고일
-                            report.reason,             // 신고 사유
+                            report.hiReason,             // 신고 사유
+                            report.loReason,
                             report.reporter.id         // 신고자 ID
                     ))
                     .from(report)

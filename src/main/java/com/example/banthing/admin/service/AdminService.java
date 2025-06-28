@@ -68,15 +68,18 @@ public class AdminService {
     public Page<AdminReportResponseDto> getFilteredReports(
             LocalDate startDate,
             LocalDate endDate,
-            String reason,
-            Pageable pageable
+            String hiReason,
+            String loReason,
+            String status,
+            Pageable pageable,
+            String keyword
     ) {
-        return itemReportService.findReportsByFilter(startDate, endDate, reason, pageable);
+        return itemReportService.findReportsByFilter(startDate, endDate, hiReason, loReason, status, pageable, keyword);
     }
 
 
-    public Page<AdminUserDeletionResponseDto> getDeletions(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable) {
-        return userDeletionReasonService.findDeletionsByFilter(startDate, endDate, reason, pageable);
+    public Page<AdminUserDeletionResponseDto> getDeletions(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable) {
+        return userDeletionReasonService.findDeletionsByFilter(startDate, endDate, reason, keyword, pageable);
     }
 
 }

@@ -40,21 +40,22 @@ public class ItemReport extends Timestamped {
     private Long userId;
 
     @Column(nullable = false)
-    private String reason;  // 신고 이유
+    private String hiReason;  // 상위 신고 사유
 
     @Column(nullable = false)
+    private String loReason;  // 하위 신고 이유
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private ReportStatus reportStatus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
     @Builder
-    public ItemReport(Item item, User reporter, User reportedUser, ReportStatus reportStatus, String reason) {
+    public ItemReport(Item item, User reporter, User reportedUser, ReportStatus reportStatus, String hiReason, String loReason) {
         this.item = item;
         this.reporter = reporter;
         this.reportedUser = reportedUser;
-        this.reason = reason;
+        this.hiReason = hiReason;
+        this.loReason = loReason;
         this.reportStatus = reportStatus;
         this.userId = reporter.getId();
     }

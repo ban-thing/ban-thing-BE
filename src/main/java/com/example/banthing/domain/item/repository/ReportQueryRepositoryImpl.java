@@ -4,6 +4,7 @@ import com.example.banthing.admin.dto.AdminReportResponseDto;
 import com.example.banthing.admin.dto.CleaningDetailDto;
 import com.example.banthing.domain.item.entity.*;
 import com.example.banthing.domain.user.entity.QUser;
+import com.example.banthing.global.s3.S3Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -15,28 +16,55 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ReportQueryRepositoryImpl implements ReportQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final S3Service s3Service;
 
     @Override
-    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable) {
+    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String loReason, String status, Pageable pageable, String keyword) {
         QItemReport report = QItemReport.itemReport;
         QItem item = QItem.item;
         QUser seller = QUser.user;
         QHashtag hashtag = new QHashtag("hashtag");
         QCleaningDetail detail = QCleaningDetail.cleaningDetail;
+        
 
         BooleanBuilder builder = new BooleanBuilder();
         if (startDate != null && endDate != null) {
             builder.and(report.createdAt.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
         }
-        if (reason != null && !reason.isBlank()) {
-            builder.and(report.reason.containsIgnoreCase(reason));
+        if (hiReason != null && !hiReason.isBlank()) {
+            builder.and(report.hiReason.containsIgnoreCase(hiReason));
+        }
+
+        if (loReason != null && !loReason.isBlank()) {
+            builder.and(report.loReason.containsIgnoreCase(loReason));
+        }
+
+        if (status != null && !status.isBlank()) {
+            builder.and(report.reportStatus.eq(ReportStatus.valueOf(status)));
+            
+        }
+
+        if (keyword != null && !keyword.isBlank()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            
+            try{
+                Long userId = Long.valueOf(keyword);
+                keywordBuilder.and(report.reporter.id.eq(userId));
+                keywordBuilder.and(report.reportedUser.id.eq(userId));
+            } catch (NumberFormatException ignored) {}
+
+            keywordBuilder.or(report.item.title.containsIgnoreCase(keyword));
+            builder.and(keywordBuilder);
         }
 
         List<ItemReport> reports = queryFactory
@@ -69,21 +97,36 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                             d.getExpire()
                     );
 
+            List<String> base64Images = i.getImages().stream()
+                .filter(Objects::nonNull)
+                .map((ItemImg img) -> {
+                    try {
+                        return s3Service.encodeImageToBase64(img.getImgUrl(), "itemImage");
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to encode item image to Base64", e);
+                    }
+                })
+                .collect(Collectors.toList());
+
             return new AdminReportResponseDto(
                     r.getId(),
                     i.getTitle(),
-                    r.getReason(),
+                    r.getHiReason(),
+                    r.getLoReason(),
                     r.getCreatedAt(),
                     r.getReporter().getId(),
                     r.getReportedUser().getId(),
-                    r.getReportedUser().getUserStatus().toString(),
-
+                    r.getReportStatus().toString(),
                     // 상세 항목
                     i.getContent(),
                     i.getCreatedAt(),
                     i.getSeller().getNickname(),
                     hashtags,
-                    cleaningDto
+                    base64Images,
+                    cleaningDto.getPollution(),
+                    cleaningDto.getTimeUsed(),
+                    cleaningDto.getPurchasedDate(),
+                    cleaningDto.getCleaned()
             );
         }).toList();
 

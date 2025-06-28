@@ -39,10 +39,39 @@ public class ItemReportController {
     public ResponseEntity<ApiResponse<?>> reportItem(
             @AuthenticationPrincipal String id,
             @PathVariable Long itemId,
-            @RequestBody ItemReportRequestDto itemReportRequestDto) {
+            @RequestParam String hiReason,
+            @RequestParam String loReason) {
     
-        itemReportService.save(Long.valueOf(id),itemId,itemReportRequestDto);
+        itemReportService.save(Long.valueOf(id),itemId,new ItemReportRequestDto(hiReason, loReason));
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("아이템 신고가 완료되었습니다."));
+    }
+
+    /*
+     * 신고 어드민 완전삭제
+     */
+    @DeleteMapping("/absDelete")
+    public ResponseEntity<ApiResponse<?>> absDeleteReport(
+        @RequestParam(required = true) List<Long> reportIdList
+    ) {
+        for(int i = 0; i < reportIdList.size() ; i++) {
+            itemReportService.adminAbsoluteDeleteReport(reportIdList.get(i));
+        }
+
+        return ResponseEntity.ok().body(successResponse("삭제 처리"));
+    }
+
+    /*
+     * 신고 어드민 삭제
+     */
+    @PostMapping("/normalDelete")
+    public ResponseEntity<ApiResponse<?>> deleteReport(
+        @RequestParam(required = true) List<Long> reportIdList
+    ) {
+        for(int i = 0; i < reportIdList.size() ; i++) {
+            itemReportService.deleteReport(reportIdList.get(i));
+        }
+
+        return ResponseEntity.ok().body(successResponse("삭제 처리"));
     }
 
     /*
@@ -50,7 +79,7 @@ public class ItemReportController {
      */
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> adminDeleteReport(
-        @RequestBody(required = true) List<Long> reportIdList
+        @RequestParam(required = true) List<Long> reportIdList
     ) {
         for(int i = 0; i < reportIdList.size() ; i++) {
             itemReportService.adminDeleteReport(reportIdList.get(i));
@@ -64,7 +93,7 @@ public class ItemReportController {
      */
     @PostMapping("/invalid")
     public ResponseEntity<ApiResponse<?>> adminInvalidReport(
-        @RequestBody(required = true) List<Long> reportIdList
+        @RequestParam(required = true) List<Long> reportIdList
     ) {
         for(int i = 0; i < reportIdList.size() ; i++) {
             itemReportService.adminInvalidReport(reportIdList.get(i));
@@ -78,7 +107,7 @@ public class ItemReportController {
      */
     @PostMapping("/check")
     public ResponseEntity<ApiResponse<?>> adminCheckReport(
-        @RequestBody(required = true) List<Long> reportIdList
+        @RequestParam(required = true) List<Long> reportIdList
     ) {
         for(int i = 0; i < reportIdList.size() ; i++) {
             itemReportService.adminCheckReport(reportIdList.get(i));
@@ -91,9 +120,9 @@ public class ItemReportController {
     /*
      * 신고 이력 상세보기 
      */
-    @GetMapping("/detail")
+    @GetMapping("/detail") 
     public ResponseEntity<ApiResponse<?>> reportDetail(
-        @RequestBody(required = true) Long userId
+        @RequestParam(required = true) Long userId
     ) {
 
         List<ItemReport> itemReportList = itemReportRepository.findAllByUserId(userId);
@@ -106,7 +135,7 @@ public class ItemReportController {
      */
     @GetMapping("/info")
     public ResponseEntity<ApiResponse<?>> reportInfo(
-        @RequestBody(required = true) Long reportId
+        @RequestParam(required = true) Long reportId
     ) {
         
         ItemReport itemReport = itemReportRepository.findById(reportId)

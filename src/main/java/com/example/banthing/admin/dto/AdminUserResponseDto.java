@@ -36,7 +36,9 @@ public class AdminUserResponseDto {
     public static class ReportDetail {
         private Long reportId;         // 신고 ID
         private LocalDateTime createdAt;  // 신고 날짜
-        private String reason;         // 신고 사유
+        private String hiReason;
+        private String loReason;         // 신고 사유
+
         private Long reporterId;       // 신고자 ID
     }
 

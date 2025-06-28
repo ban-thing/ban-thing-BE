@@ -9,6 +9,8 @@ import com.example.banthing.domain.item.entity.ReportStatus;
 import com.example.banthing.domain.item.repository.ItemReportRepository;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.service.UserService;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +43,8 @@ public class ItemReportService {
                 .item(item)
                 .reporter(user) // 신고자
                 .reportedUser(item.getSeller()) // 신고당한 유저 (판매자)
-                .reason(itemReportRequestDto.getReason())
+                .hiReason(itemReportRequestDto.getHiReason())
+                .loReason(itemReportRequestDto.getLoReason())
                 .reportStatus(ReportStatus.미처리) // 초기 생성시 미처리로 초기화
                 .build();
 
@@ -50,6 +53,7 @@ public class ItemReportService {
     /*
      * 신고 삭제
      */
+    @Transactional
     public void deleteReport(
             Long reportId
     ) {
@@ -60,8 +64,23 @@ public class ItemReportService {
     }
 
     /*
+     * 어드민 신고 완전삭제 (백엔드용)
+     */
+    @Transactional
+    public void adminAbsoluteDeleteReport(
+            Long reportId
+    ) {
+        ItemReport report = itemReportRepository.findById(reportId)
+            .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
+        
+        itemReportRepository.delete(report);
+
+    }
+
+    /*
      * 어드민 신고 삭제
      */
+    @Transactional
     public void adminDeleteReport(
             Long reportId
     ) {
@@ -78,6 +97,7 @@ public class ItemReportService {
     /*
      * 어드민 신고 무효
      */
+    @Transactional
     public void adminInvalidReport(
         Long reportId
     ) {
@@ -91,6 +111,7 @@ public class ItemReportService {
     /*
      * 어드민 신고 검토
      */
+    @Transactional
     public void adminCheckReport(
         Long reportId
     ) {        
@@ -104,10 +125,13 @@ public class ItemReportService {
     public Page<AdminReportResponseDto> findReportsByFilter(
             LocalDate startDate,
             LocalDate endDate,
-            String reason,
-            Pageable pageable
+            String hiReason,
+            String loReason,
+            String status,
+            Pageable pageable,
+            String keyword
     ) {
-        return itemReportRepository.findReportsByFilter(startDate, endDate, reason, pageable);
+        return itemReportRepository.findReportsByFilter(startDate, endDate, hiReason, loReason, status, pageable, keyword);
     }
 
 

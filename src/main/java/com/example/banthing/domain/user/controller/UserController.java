@@ -4,12 +4,15 @@ import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
@@ -59,8 +62,21 @@ public class UserController {
      */
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> deleteUser(@AuthenticationPrincipal String userId,
-                                                     @RequestBody UserDeletionRequestDto request) {
+                                                     @RequestParam UserDeletionRequestDto request) {
         userService.deleteUser(Long.valueOf(userId), request.getReason());
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
     }
+
+    /**
+     *
+     * 회원 강제 탈퇴
+     *
+     */
+    @PostMapping("/forcedDelete")
+    public ResponseEntity<ApiResponse<?>> forcedDeleteUser(@RequestParam String userId,
+                                                     @RequestParam String reason) {
+        userService.deleteUser(Long.valueOf(userId), reason);
+        return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
+    }
+
 }

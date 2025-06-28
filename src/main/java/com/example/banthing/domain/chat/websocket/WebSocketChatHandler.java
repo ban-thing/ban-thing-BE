@@ -68,13 +68,26 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
         log.info("session {}", chatMessageDto.toString());
 
-        byte[] imgBytes = Base64.getDecoder().decode(chatMessageDto.getData());
-        //log.info("img Url:: {}", imgBytes);
-        // 이미지 저장
-        String imageUrl = s3Service.uploadImageFromBytes("chatImage", chatMessageDto.getImgUrl(), imgBytes);
+        if(chatMessageDto.getData() == null)
+        {
+            chatMessageDto.setImgUrl("");
+            log.info("img Url:: {}", "");
+            
+        }
+        else
+        {
+            byte[] imgBytes = Base64.getDecoder().decode(chatMessageDto.getData());
 
-        chatMessageDto.setImgUrl(imageUrl);
-        log.info("img Url:: {}", imageUrl);
+
+            //log.info("img Url:: {}", imgBytes);
+            // 이미지 저장
+            String imageUrl = s3Service.uploadImageFromBytes("chatImage", chatMessageDto.getImgUrl(), imgBytes);
+
+            chatMessageDto.setImgUrl(imageUrl);
+            log.info("img Url:: {}", imageUrl);
+        }
+        
+
         // 메시지 db 저장
         ChatMessageDto response = new ChatMessageDto(chatService.saveChatMessage(chatMessageDto));
         log.info("response {}", response);

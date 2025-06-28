@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
 
@@ -66,27 +67,31 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse(result));
     }
 
+
     /**
      *
-     * 신고내역
+     * 신고내역 조회
      *
      */
     @GetMapping("/reports")
     public ResponseEntity<ApiResponse<Page<AdminReportResponseDto>>> getReports(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(required = false, defaultValue = "") String reason,
+            @RequestParam(required = false, defaultValue = "") String hiReason,
+            @RequestParam(required = false, defaultValue = "") String loReason,
+            @RequestParam(required = false, defaultValue = "") String status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "") String keyword
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminReportResponseDto> result = adminService.getFilteredReports(startDate, endDate, reason, pageable);
+        Page<AdminReportResponseDto> result = adminService.getFilteredReports(startDate, endDate, hiReason, loReason, status, pageable, keyword);
         return ResponseEntity.ok().body(successResponse(result));
     }
 
     /**
      *
-     * 탈퇴내역
+     * 탈퇴내역 조회
      *
      */
     @GetMapping("/deletions")
@@ -94,11 +99,12 @@ public class AdminController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false, defaultValue = "") String reason,
+            @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminUserDeletionResponseDto> result = adminService.getDeletions(startDate, endDate, reason, pageable);
+        Page<AdminUserDeletionResponseDto> result = adminService.getDeletions(startDate, endDate, reason, keyword, pageable);
         return ResponseEntity.ok().body(successResponse(result));
     }
 

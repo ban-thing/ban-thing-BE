@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 
 public interface UserDeletionReasonQueryRepository {
-    Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable);
+    Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable);
 }
 

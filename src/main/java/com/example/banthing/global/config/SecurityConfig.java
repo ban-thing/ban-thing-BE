@@ -39,6 +39,10 @@ public class SecurityConfig{
             "/admin/**"
     };
 
+    private static final String[] AUTH_BLACKLIST = {
+        "/items/report",
+    };
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         
@@ -51,6 +55,7 @@ public class SecurityConfig{
 
         http.authorizeHttpRequests(auth -> {
                     auth.requestMatchers(AUTH_WHITELIST).permitAll();
+                    auth.requestMatchers(AUTH_BLACKLIST).authenticated();
                     auth.requestMatchers(HttpMethod.POST, "/items").authenticated();
                     auth.requestMatchers(HttpMethod.PATCH, "/items/**").authenticated();
                     auth.anyRequest().authenticated();
