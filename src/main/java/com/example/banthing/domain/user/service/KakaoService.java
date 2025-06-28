@@ -5,6 +5,7 @@ import com.example.banthing.domain.user.dto.KakaoUserInfoDto;
 import com.example.banthing.domain.user.dto.SignUpResponseDto;
 import com.example.banthing.domain.user.entity.LoginType;
 import com.example.banthing.domain.user.entity.User;
+import com.example.banthing.domain.user.entity.UserStatus;
 import com.example.banthing.domain.user.repository.UserRepository;
 import com.example.banthing.global.security.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,6 +38,7 @@ public class KakaoService {
     public static Logger logger = LoggerFactory.getLogger("로그인 관련 로그");
 
     private final UserRepository userRepository;
+    private final RejoinRestrictionService rejoinRestrictionService;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
@@ -133,12 +135,19 @@ public class KakaoService {
 
     // 회원가입 처리
     private SignUpResponseDto registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
-        // DB 에 중복된 Kakao Id 가 있는지 확인
         Long kakaoId = kakaoUserInfo.getId();
+
+        if (rejoinRestrictionService.existsBySocialId(kakaoId)) {
+            throw new IllegalArgumentException("해당 계정은 재가입이 제한되었습니다.");
+        }
 
         logger.info("kakao Id" + kakaoId);
 
         User kakaoUser = userRepository.findBySocialId(kakaoId).orElse(null);
+
+        if (kakaoUser != null && kakaoUser.getUserStatus() == UserStatus.SUSPENDED) {
+            throw new IllegalArgumentException("정지된 계정입니다.");
+        }
 
         // 신규 회원가입
         if (kakaoUser == null) {
