@@ -21,7 +21,7 @@ public class UserDeletionReasonService {
         userDeletionReasonRepository.save(deletionReason);
     }
 
-    public Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable) {
-        return userDeletionReasonRepository.findDeletionsByFilter(startDate, endDate, reason, pageable);
+    public Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable) {
+        return userDeletionReasonRepository.findDeletionsByFilter(startDate, endDate, reason, keyword, pageable);
     }
 }

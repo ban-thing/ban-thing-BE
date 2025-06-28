@@ -79,18 +79,4 @@ public class UserController {
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
     }
 
-    /*
-     * 
-     * 탈퇴 내역 조회
-     * 
-     */
-    @GetMapping("/deletedUsers")
-    public ResponseEntity<ApiResponse<?>> deletedUsers(
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-        @RequestParam(required = false, defaultValue = "") String reason,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(required = false, defaultValue = "") String keyword
-    )
 }

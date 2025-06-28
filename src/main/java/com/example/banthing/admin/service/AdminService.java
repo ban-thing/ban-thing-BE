@@ -78,8 +78,8 @@ public class AdminService {
     }
 
 
-    public Page<AdminUserDeletionResponseDto> getDeletions(LocalDate startDate, LocalDate endDate, String reason, Pageable pageable) {
-        return userDeletionReasonService.findDeletionsByFilter(startDate, endDate, reason, pageable);
+    public Page<AdminUserDeletionResponseDto> getDeletions(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable) {
+        return userDeletionReasonService.findDeletionsByFilter(startDate, endDate, reason, keyword, pageable);
     }
 
 }

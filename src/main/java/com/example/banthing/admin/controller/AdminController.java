@@ -91,7 +91,7 @@ public class AdminController {
 
     /**
      *
-     * 탈퇴내역
+     * 탈퇴내역 조회
      *
      */
     @GetMapping("/deletions")
@@ -99,11 +99,12 @@ public class AdminController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false, defaultValue = "") String reason,
+            @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminUserDeletionResponseDto> result = adminService.getDeletions(startDate, endDate, reason, pageable);
+        Page<AdminUserDeletionResponseDto> result = adminService.getDeletions(startDate, endDate, reason, keyword, pageable);
         return ResponseEntity.ok().body(successResponse(result));
     }
 
