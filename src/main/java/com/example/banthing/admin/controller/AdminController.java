@@ -8,12 +8,16 @@ import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.admin.service.AdminService;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.entity.ReportFilterType;
+import com.example.banthing.domain.user.service.UserDeletionReasonService;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.common.ApiResponse;
 import com.example.banthing.global.security.JwtUtil;
 
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.banthing.domain.user.entity.User;
+import com.example.banthing.domain.user.entity.UserDeletionReason;
+import com.example.banthing.domain.user.entity.UserStatus;
+import com.example.banthing.domain.user.repository.UserRepository;
 import com.example.banthing.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.banthing.global.common.ApiResponse.successResponse;
+import static com.example.banthing.global.common.ApiResponse.successWithMessage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,7 +51,10 @@ import static com.example.banthing.global.common.ApiResponse.successResponse;
 public class AdminController {
 
     private final AdminService adminService;
+    private final UserRepository userRepository;
     public static Logger logger = LoggerFactory.getLogger("어드민 관련 로그");
+    public final UserDeletionReasonService userDeletionReasonService;
+
 
     /**
      *
@@ -78,14 +86,13 @@ public class AdminController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false, defaultValue = "") String hiReason,
-            @RequestParam(required = false, defaultValue = "") String loReason,
             @RequestParam(required = false, defaultValue = "") String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "") String keyword
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminReportResponseDto> result = adminService.getFilteredReports(startDate, endDate, hiReason, loReason, status, pageable, keyword);
+        Page<AdminReportResponseDto> result = adminService.getFilteredReports(startDate, endDate, hiReason, status, pageable, keyword);
         return ResponseEntity.ok().body(successResponse(result));
     }
 
@@ -108,6 +115,11 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse(result));
     }
 
+    /*
+     * 
+     * 어드민 로그인
+     * 
+     */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
         @RequestParam String username,
@@ -120,5 +132,42 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(token)));
     }
 
+    /*
+     * 
+     * 어드민 회원 탈퇴
+     * 
+     */
+
+    @GetMapping("deactivate")
+    public ResponseEntity<ApiResponse<?>> deactivate(
+        @RequestParam Long userId
+    ) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+
+        user.setUserStatus(UserStatus.DELETED);
+        userDeletionReasonService.save(null);
+
+        return ResponseEntity.ok().body(successWithMessage("회원 탈퇴 성공"));
+
+    }
+
+    /*
+     * 
+     * 어드민 계정 정지
+     * 
+     */
+
+    @GetMapping("")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+    
+
+    /*
+     * 
+     * 어드민 활성화
+     * 
+     */
 
 }

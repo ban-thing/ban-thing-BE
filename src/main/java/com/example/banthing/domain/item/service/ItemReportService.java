@@ -126,12 +126,11 @@ public class ItemReportService {
             LocalDate startDate,
             LocalDate endDate,
             String hiReason,
-            String loReason,
             String status,
             Pageable pageable,
             String keyword
     ) {
-        return itemReportRepository.findReportsByFilter(startDate, endDate, hiReason, loReason, status, pageable, keyword);
+        return itemReportRepository.findReportsByFilter(startDate, endDate, hiReason, status, pageable, keyword);
     }
 
 

@@ -29,7 +29,7 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
     private final S3Service s3Service;
 
     @Override
-    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String loReason, String status, Pageable pageable, String keyword) {
+    public Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String status, Pageable pageable, String keyword) {
         QItemReport report = QItemReport.itemReport;
         QItem item = QItem.item;
         QUser seller = QUser.user;
@@ -43,10 +43,6 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         }
         if (hiReason != null && !hiReason.isBlank()) {
             builder.and(report.hiReason.containsIgnoreCase(hiReason));
-        }
-
-        if (loReason != null && !loReason.isBlank()) {
-            builder.and(report.loReason.containsIgnoreCase(loReason));
         }
 
         if (status != null && !status.isBlank()) {
