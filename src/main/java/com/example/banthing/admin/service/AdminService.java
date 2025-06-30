@@ -71,12 +71,11 @@ public class AdminService {
             LocalDate startDate,
             LocalDate endDate,
             String hiReason,
-            String loReason,
             String status,
             Pageable pageable,
             String keyword
     ) {
-        return itemReportService.findReportsByFilter(startDate, endDate, hiReason, loReason, status, pageable, keyword);
+        return itemReportService.findReportsByFilter(startDate, endDate, hiReason, status, pageable, keyword);
     }
 
 

@@ -118,6 +118,9 @@ public class User extends Timestamped {
         this.lastLoginAt = lastLoginAt;
     }
 
+    public void setUserStatus(UserStatus newStatus) {
+        this.userStatus = newStatus;
+    }
     public void suspend() {
         this.userStatus = UserStatus.SUSPENDED;
     }
