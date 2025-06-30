@@ -40,6 +40,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(TOKEN_ERROR_STATUS, null, message);
     }
 
+    public static <T> ApiResponse<T> error(String message) {
+        return new ApiResponse<>("error", null, message);
+    }
+
     private ApiResponse(String status, T data, String message) {
         this.status = status;
         this.data = data;

@@ -9,10 +9,13 @@ import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.domain.item.service.ItemReportService;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.entity.ReportFilterType;
+import com.example.banthing.domain.user.entity.User;
+import com.example.banthing.domain.user.entity.UserStatus;
 import com.example.banthing.domain.user.service.UserDeletionReasonService;
 import com.example.banthing.domain.user.service.UserService;
 import com.example.banthing.global.security.JwtUtil;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +32,6 @@ public class AdminService {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-
     private final ItemReportService itemReportService;
     private final UserDeletionReasonService userDeletionReasonService;
 
@@ -79,6 +81,20 @@ public class AdminService {
 
     public Page<AdminUserDeletionResponseDto> getDeletions(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable) {
         return userDeletionReasonService.findDeletionsByFilter(startDate, endDate, reason, keyword, pageable);
+    }
+
+    @Transactional
+    public void suspendUser(Long userId) {
+        User user = userService.findById(userId);
+        user.suspend();
+        userService.save(user);
+    }
+
+    @Transactional
+    public void activateUser(Long userId) {
+        User user = userService.findById(userId);
+        user.activate();
+        userService.save(user);
     }
 
 }

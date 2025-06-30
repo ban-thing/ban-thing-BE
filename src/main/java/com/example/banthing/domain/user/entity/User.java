@@ -121,4 +121,12 @@ public class User extends Timestamped {
     public void setUserStatus(UserStatus newStatus) {
         this.userStatus = newStatus;
     }
+    public void suspend() {
+        this.userStatus = UserStatus.SUSPENDED;
+    }
+
+    public void activate() {
+        this.userStatus = UserStatus.ACTIVE;
+    }
+
 }
