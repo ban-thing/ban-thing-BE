@@ -132,42 +132,4 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse(new AdminLoginResponseDto(token)));
     }
 
-    /*
-     * 
-     * 어드민 회원 탈퇴
-     * 
-     */
-
-    @GetMapping("deactivate")
-    public ResponseEntity<ApiResponse<?>> deactivate(
-        @RequestParam Long userId
-    ) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-
-        user.setUserStatus(UserStatus.DELETED);
-        userDeletionReasonService.save(null);
-
-        return ResponseEntity.ok().body(successWithMessage("회원 탈퇴 성공"));
-
-    }
-
-    /*
-     * 
-     * 어드민 계정 정지
-     * 
-     */
-
-    @GetMapping("")
-    public String getMethodName(@RequestParam String param) {
-        return new String();
-    }
-    
-
-    /*
-     * 
-     * 어드민 활성화
-     * 
-     */
-
 }
