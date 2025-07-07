@@ -27,11 +27,13 @@ public class AdminReportResponseDto {
     private String sellerNickname;
     private List<String> hashtags;
     private List<String> images;
+    private String address;
 
     private String pollution;
     private String timeUsed;
     private String purchasedDate;
     private String cleaned;
+    private String expire;
 
 }
 

@@ -119,10 +119,13 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                     i.getSeller().getNickname(),
                     hashtags,
                     base64Images,
+                    i.getAddress(),
+                    // 클린 체크리스트
                     cleaningDto.getPollution(),
                     cleaningDto.getTimeUsed(),
                     cleaningDto.getPurchasedDate(),
-                    cleaningDto.getCleaned()
+                    cleaningDto.getCleaned(),
+                    cleaningDto.getExpire()
             );
         }).toList();
 
