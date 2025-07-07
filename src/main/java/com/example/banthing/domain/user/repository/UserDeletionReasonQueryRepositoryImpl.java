@@ -31,17 +31,17 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
         BooleanExpression reasonCondition = reason != null && !reason.isBlank()
                 ? qDeletion.reason.containsIgnoreCase(reason)
                 : null;
-
-        BooleanBuilder builder = new BooleanBuilder();        
-        if (keyword != null && keyword.isBlank()) {
-
-
-                try {
-                        Long userId = Long.valueOf(keyword);
-                        builder.and(qDeletion.userId.eq(userId));
-                } catch (NumberFormatException ignored) {}
-                builder.and(qDeletion.memo.containsIgnoreCase(keyword));
-        }
+        
+        try {
+                Long userId = Long.valueOf(keyword);
+                BooleanExpression keywordCondition = keyword != null && !keyword.isBlank()
+                ? qDeletion.userId.eq(userId)
+                : null;
+        } catch (NumberFormatException ignored) {}
+        BooleanExpression keywordCondition = keyword != null && !keyword.isBlank()
+        ? qDeletion.memo.containsIgnoreCase(keyword)
+        : null;
+        
 
         List<AdminUserDeletionResponseDto> content = queryFactory
                 .select(Projections.constructor(AdminUserDeletionResponseDto.class,
@@ -54,7 +54,7 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
                         qDeletion.isRejoinRestricted
                 ))
                 .from(qDeletion)
-                .where(dateCondition, reasonCondition, builder)
+                .where(dateCondition, reasonCondition, keywordCondition)
                 .orderBy(qDeletion.deletedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
