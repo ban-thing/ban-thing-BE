@@ -36,7 +36,6 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         QHashtag hashtag = new QHashtag("hashtag");
         QCleaningDetail detail = QCleaningDetail.cleaningDetail;
         
-
         BooleanBuilder builder = new BooleanBuilder();
         if (startDate != null && endDate != null) {
             builder.and(report.createdAt.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
@@ -47,7 +46,6 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
 
         if (status != null && !status.isBlank()) {
             builder.and(report.reportStatus.eq(ReportStatus.valueOf(status)));
-            
         }
 
         if (keyword != null && !keyword.isBlank()) {

@@ -23,24 +23,28 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
     public Page<AdminUserDeletionResponseDto> findDeletionsByFilter(LocalDate startDate, LocalDate endDate, String reason, String keyword, Pageable pageable) {
         QUserDeletionReason qDeletion = QUserDeletionReason.userDeletionReason;
 
-        BooleanExpression dateCondition = qDeletion.deletedAt.between(
-                startDate.atStartOfDay(),
-                endDate.plusDays(1).atStartOfDay()
-        );
 
-        BooleanExpression reasonCondition = reason != null && !reason.isBlank()
-                ? qDeletion.reason.containsIgnoreCase(reason)
-                : null;
-        
-        try {
-                Long userId = Long.valueOf(keyword);
-                BooleanExpression keywordCondition = keyword != null && !keyword.isBlank()
-                ? qDeletion.userId.eq(userId)
-                : null;
-        } catch (NumberFormatException ignored) {}
-        BooleanExpression keywordCondition = keyword != null && !keyword.isBlank()
-        ? qDeletion.memo.containsIgnoreCase(keyword)
-        : null;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(startDate != null && endDate != null) {
+                builder.and(qDeletion.deletedAt.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
+        }
+
+        if(reason != null && !reason.isBlank()) {
+                builder.and(qDeletion.reason.containsIgnoreCase(reason));
+        }
+
+        if (keyword != null && !keyword.isBlank()) {
+                BooleanBuilder keywordBuilder = new BooleanBuilder();
+                
+                try{
+                    Long userId = Long.valueOf(keyword);
+                    keywordBuilder.and(qDeletion.userId.eq(userId));
+                } catch (NumberFormatException ignored) {}
+    
+                keywordBuilder.or(qDeletion.memo.containsIgnoreCase(keyword));
+                builder.and(keywordBuilder);
+            }
         
 
         List<AdminUserDeletionResponseDto> content = queryFactory
@@ -54,7 +58,7 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
                         qDeletion.isRejoinRestricted
                 ))
                 .from(qDeletion)
-                .where(dateCondition, reasonCondition, keywordCondition)
+                .where(builder)
                 .orderBy(qDeletion.deletedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -63,7 +67,7 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
         Long total = queryFactory
                 .select(qDeletion.count())
                 .from(qDeletion)
-                .where(dateCondition, reasonCondition)
+                .where(builder)
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
