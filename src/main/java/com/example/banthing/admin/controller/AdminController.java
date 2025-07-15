@@ -120,11 +120,11 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse(result));
     }
 
-    /*
+    /**
      * 
      * 어드민 로그인
      * 
-     */
+     **/
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
         @RequestParam String username,
