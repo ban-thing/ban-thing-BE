@@ -35,8 +35,6 @@ public class ItemReportService {
         Item item = itemService.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("아이템이 존재하지 않습니다."));
         User user = userService.findById(userId);
-
-        user.increaseReportCount();
         userService.save(user);
 
         ItemReport itemReport = ItemReport.builder()
