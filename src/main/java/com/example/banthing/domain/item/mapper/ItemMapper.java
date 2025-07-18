@@ -40,6 +40,7 @@ public interface ItemMapper {
         FROM items i
         LEFT JOIN hashtags h ON i.id = h.item_id
         WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
+        AND i.status != '삭제'
         AND i.address LIKE CONCAT(#{address}, '%')
         GROUP BY i.id
         """)
