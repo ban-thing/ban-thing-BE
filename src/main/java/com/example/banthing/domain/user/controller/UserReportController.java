@@ -15,6 +15,11 @@ public class UserReportController {
 
     private final UserReportService userReportService;
 
+    /**
+     *
+     * 작성자 신고
+     *
+     */
     @PostMapping("/{reportedUserId}")
     public ResponseEntity<ApiResponse<?>> reportUser(
             @AuthenticationPrincipal String userId,  // 로그인한 사용자 ID (신고자)

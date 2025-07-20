@@ -2,12 +2,10 @@ package com.example.banthing.domain.user.repository;
 
 import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.domain.item.entity.QItemReport;
-import com.example.banthing.domain.user.entity.QUser;
-import com.example.banthing.domain.user.entity.ReportFilterType;
-import com.example.banthing.domain.user.entity.User;
-import com.example.banthing.domain.user.entity.UserStatus;
+import com.example.banthing.domain.user.entity.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,9 +22,10 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
 
     @Override
     public Page<AdminUserResponseDto> findFilteredUsers(LocalDate startDate, LocalDate endDate,
-                                                        String status, ReportFilterType reportFilterType, Pageable pageable) {
+                                                        String status, ReportFilterType reportFilterType,
+                                                        String keyword, Pageable pageable) {
         QUser user = QUser.user;
-        QItemReport report = QItemReport.itemReport;
+        QUserReport userReport = QUserReport.userReport;
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -47,6 +46,18 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
             }
         }
 
+        if (keyword != null && !keyword.isBlank()) {
+            BooleanBuilder keywordBuilder = new BooleanBuilder();
+            keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
+            try {
+                Long userId = Long.parseLong(keyword);
+                keywordBuilder.or(user.id.eq(userId));
+            } catch (NumberFormatException ignored) {
+                // 무시
+            }
+            builder.and(keywordBuilder);
+        }
+
         List<User> users = queryFactory
                 .selectFrom(user)
                 .where(builder)
@@ -58,14 +69,14 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
         List<AdminUserResponseDto> dtos = users.stream().map(u -> {
             List<AdminUserResponseDto.ReportDetail> reportDetails = queryFactory
                     .select(Projections.constructor(AdminUserResponseDto.ReportDetail.class,
-                            report.id,                 // 신고 ID
-                            report.createdAt,          // 신고일
-                            report.hiReason,             // 신고 사유
-                            report.loReason,
-                            report.reporter.id         // 신고자 ID
+                            userReport.id,
+                            userReport.createdAt,
+                            userReport.reason,
+                            Expressions.constant(""), // loReason 비워둠 (UserReport에는 없음)
+                            userReport.reporter.id
                     ))
-                    .from(report)
-                    .where(report.reportedUser.id.eq(u.getId()))
+                    .from(userReport)
+                    .where(userReport.reportedUser.id.eq(u.getId()))
                     .fetch();
 
             return new AdminUserResponseDto(

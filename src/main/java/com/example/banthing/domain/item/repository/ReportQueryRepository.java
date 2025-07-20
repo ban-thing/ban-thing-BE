@@ -8,6 +8,4 @@ import java.time.LocalDate;
 
 public interface ReportQueryRepository {
     Page<AdminReportResponseDto> findReportsByFilter(LocalDate startDate, LocalDate endDate, String hiReason, String status, Pageable pageable, String keyword);
-
 }
-
