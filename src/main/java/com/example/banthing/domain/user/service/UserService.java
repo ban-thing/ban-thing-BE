@@ -137,9 +137,17 @@ public class UserService {
     }
 
 
-    public Page<AdminUserResponseDto> findFilteredUsers(LocalDate startDate, LocalDate endDate, String status, ReportFilterType reportFilterType, Pageable pageable) {
-        return userRepository.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
+    public Page<AdminUserResponseDto> findFilteredUsers(
+            LocalDate startDate,
+            LocalDate endDate,
+            String status,
+            ReportFilterType reportFilterType,
+            String keyword,
+            Pageable pageable
+    ) {
+        return userRepository.findFilteredUsers(startDate, endDate, status, reportFilterType, keyword, pageable);
     }
+
 
     //public void updateReportStatus() 
 

@@ -25,11 +25,22 @@ public class UserController {
 
     private final UserService userService;
 
+
+    /**
+     *
+     * 내 프로필 조회
+     *
+     */
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<ProfileResponseDto>> findMyProfile(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findMyProfile(Long.valueOf(userId))));
     }
 
+    /**
+     *
+     * 내 프로필 수정
+     *
+     */
     @PatchMapping("/profile")
     public ResponseEntity<ApiResponse<UpdateProfileResponseDto>> updateMyProfile(
             @AuthenticationPrincipal String userId,
@@ -38,16 +49,31 @@ public class UserController {
         return ResponseEntity.ok().body(successResponse(userService.updateMyProfile(Long.valueOf(userId), file, nickname)));
     }
 
+    /**
+     *
+     * 구매목록 조회
+     *
+     */
     @GetMapping("/purchases")
     public ResponseEntity<ApiResponse<List<PurchaseResponseDto>>> findMyPurchases(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findPurchasesById(Long.valueOf(userId))));
     }
 
+    /**
+     *
+     * 판매목록 조회
+     *
+     */
     @GetMapping("/sales")
     public ResponseEntity<ApiResponse<List<SalesResponseDto>>> findMySales(@AuthenticationPrincipal String userId) {
         return ResponseEntity.ok().body(successResponse(userService.findSalesById(Long.valueOf(userId))));
     }
 
+    /**
+     *
+     * 주소변경
+     *
+     */
     @PatchMapping("/address")
     public ResponseEntity<ApiResponse<UpdateAddressResponseDto>> updateMyAddress(
             @AuthenticationPrincipal String userId,

@@ -135,5 +135,3 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         return new PageImpl<>(dtos, pageable, total);
     }
 }
-
-
