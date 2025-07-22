@@ -53,8 +53,8 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
             
             try{
                 Long userId = Long.valueOf(keyword);
-                keywordBuilder.and(report.reporter.id.eq(userId));
-                keywordBuilder.and(report.reportedUser.id.eq(userId));
+                keywordBuilder.or(report.reporter.id.eq(userId));
+                keywordBuilder.or(report.reportedUser.id.eq(userId));
             } catch (NumberFormatException ignored) {}
 
             keywordBuilder.or(report.item.title.containsIgnoreCase(keyword));
