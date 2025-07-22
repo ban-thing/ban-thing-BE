@@ -76,6 +76,7 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
                     ))
                     .from(userReport)
                     .where(userReport.reportedUser.id.eq(u.getId()))
+                    .orderBy(userReport.createdAt.desc())
                     .fetch();
 
             return new AdminUserResponseDto(
