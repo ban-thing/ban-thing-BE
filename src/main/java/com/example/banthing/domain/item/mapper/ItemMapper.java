@@ -77,6 +77,7 @@ public interface ItemMapper {
         LEFT JOIN hashtags h ON i.id = h.item_id
         WHERE i.title LIKE CONCAT('%', #{keyword}, '%')
         AND i.price BETWEEN #{minPrice} AND #{maxPrice}
+        AND i.status != '삭제'
         AND i.address LIKE CONCAT(#{address}, '%')
         GROUP BY i.id
         """)
