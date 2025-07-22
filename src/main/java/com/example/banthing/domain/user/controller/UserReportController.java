@@ -25,7 +25,7 @@ public class UserReportController {
             @AuthenticationPrincipal String userId,  // 로그인한 사용자 ID (신고자)
             @PathVariable Long reportedUserId,       // 신고당한 사용자 ID
             @RequestParam String reason,
-            @RequestParam String detailed_reason
+            @RequestParam(required = false, defaultValue = "") String detailed_reason
     ) {
         userReportService.reportUser(Long.valueOf(userId), reportedUserId, reason, detailed_reason);
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 신고가 완료되었습니다."));
