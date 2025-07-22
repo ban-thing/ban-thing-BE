@@ -40,10 +40,12 @@ public class AdminService {
             LocalDate endDate,
             String status,
             ReportFilterType reportFilterType,
+            String keyword,
             Pageable pageable
     ) {
-        return userService.findFilteredUsers(startDate, endDate, status, reportFilterType, pageable);
+        return userService.findFilteredUsers(startDate, endDate, status, reportFilterType, keyword, pageable);
     }
+
 
     public String login(String username, String password) {
 

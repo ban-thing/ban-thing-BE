@@ -72,13 +72,15 @@ public class AdminController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) ReportFilterType reportFilterType,
+            @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminUserResponseDto> result = adminService.getFilteredAccounts(startDate, endDate, status, reportFilterType, pageable);
+        Page<AdminUserResponseDto> result = adminService.getFilteredAccounts(startDate, endDate, status, reportFilterType, keyword, pageable);
         return ResponseEntity.ok().body(successResponse(result));
     }
+
 
 
     /**
@@ -120,11 +122,11 @@ public class AdminController {
         return ResponseEntity.ok().body(successResponse(result));
     }
 
-    /*
+    /**
      * 
      * 어드민 로그인
      * 
-     */
+     **/
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AdminLoginResponseDto>> adminLogin(
         @RequestParam String username,
@@ -155,8 +157,10 @@ public class AdminController {
     }
 
     /**
+     *
      * 계정 정지 (SUSPENDED)
-     */
+     *
+     **/
     @PostMapping("/{userId}/suspend")
     public ResponseEntity<ApiResponse<?>> suspendUser(@PathVariable Long userId) {
         try {
@@ -168,8 +172,10 @@ public class AdminController {
     }
 
     /**
+     *
      * 계정 활성화 (ACTIVE)
-     */
+     *
+     **/
     @PostMapping("/{userId}/activate")
     public ResponseEntity<ApiResponse<?>> activateUser(@PathVariable Long userId) {
         try {

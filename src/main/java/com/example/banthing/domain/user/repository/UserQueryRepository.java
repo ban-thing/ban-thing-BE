@@ -9,6 +9,9 @@ import java.time.LocalDate;
 
 public interface UserQueryRepository {
     Page<AdminUserResponseDto> findFilteredUsers(LocalDate startDate, LocalDate endDate,
-                                                 String status, ReportFilterType reportFilterType, Pageable pageable);
+                                                 String status, ReportFilterType reportFilterType,
+                                                 String keyword, Pageable pageable);
+
 }
+
 

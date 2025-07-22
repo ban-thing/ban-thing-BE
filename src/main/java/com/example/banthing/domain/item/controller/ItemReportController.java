@@ -32,9 +32,11 @@ public class ItemReportController {
     private final ItemReportRepository itemReportRepository;
     private final ItemService itemService;
 
-    /*
+    /**
+     *
      * 신고 등록
-     */
+     *
+     **/
     @PostMapping("/{itemId}")
     public ResponseEntity<ApiResponse<?>> reportItem(
             @AuthenticationPrincipal String id,
@@ -46,9 +48,11 @@ public class ItemReportController {
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("아이템 신고가 완료되었습니다."));
     }
 
-    /*
+    /**
+     *
      * 신고 어드민 완전삭제
-     */
+     *
+     **/
     @DeleteMapping("/absDelete")
     public ResponseEntity<ApiResponse<?>> absDeleteReport(
         @RequestParam(required = true) List<Long> reportIdList
@@ -60,9 +64,11 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("삭제 처리"));
     }
 
-    /*
+    /**
+     *
      * 신고 어드민 삭제
-     */
+     *
+     **/
     @PostMapping("/normalDelete")
     public ResponseEntity<ApiResponse<?>> deleteReport(
         @RequestParam(required = true) List<Long> reportIdList
@@ -74,9 +80,11 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("삭제 처리"));
     }
 
-    /*
+    /**
+     *
      * 신고 어드민 삭제
-     */
+     *
+     **/
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> adminDeleteReport(
         @RequestParam(required = true) List<Long> reportIdList
@@ -88,9 +96,11 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("삭제 처리"));
     }
 
-    /*
+    /**
+     *
      * 신고 어드민 무효
-     */
+     *
+     **/
     @PostMapping("/invalid")
     public ResponseEntity<ApiResponse<?>> adminInvalidReport(
         @RequestParam(required = true) List<Long> reportIdList
@@ -102,9 +112,11 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse("무효 처리"));
     }
 
-    /*
+    /**
+     *
      * 신고 어드민 검토
-     */
+     *
+     **/
     @PostMapping("/check")
     public ResponseEntity<ApiResponse<?>> adminCheckReport(
         @RequestParam(required = true) List<Long> reportIdList
@@ -117,9 +129,11 @@ public class ItemReportController {
     }
     
 
-    /*
-     * 신고 이력 상세보기 
-     */
+    /**
+     *
+     * 신고 이력 상세보기
+     *
+     **/
     @GetMapping("/detail") 
     public ResponseEntity<ApiResponse<?>> reportDetail(
         @RequestParam(required = true) Long userId
@@ -130,9 +144,11 @@ public class ItemReportController {
         return ResponseEntity.ok().body(successResponse(itemReportList));
     }
 
-    /*
-     * 신고한 글 상세보기 
-     */
+    /**
+     *
+     * 신고한 글 상세보기
+     * 
+     **/
     @GetMapping("/info")
     public ResponseEntity<ApiResponse<?>> reportInfo(
         @RequestParam(required = true) Long reportId

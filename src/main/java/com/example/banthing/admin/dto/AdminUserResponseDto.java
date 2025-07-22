@@ -34,13 +34,11 @@ public class AdminUserResponseDto {
     @Getter
     @AllArgsConstructor
     public static class ReportDetail {
-        private Long reportId;         // 신고 ID
-        private LocalDateTime createdAt;  // 신고 날짜
-        private String hiReason;
-        private String loReason;         // 신고 사유
-
-        private Long reporterId;       // 신고자 ID
+        private Long reportId;
+        private LocalDateTime createdAt;
+        private String reason;
+        private String reporterNickname;  // 추가
+        private Long reporterId;
     }
 
 }
-
