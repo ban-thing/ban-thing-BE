@@ -50,7 +50,7 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
 
             try {
-                Long userId = Long.parseLong(keyword);
+                Long userId = Long.valueOf(keyword);
                 keywordBuilder.or(user.id.eq(userId));
             } catch (NumberFormatException ignored) {}
             keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
