@@ -23,7 +23,7 @@ public class UserReportController {
     @PostMapping("/{reportedUserId}")
     public ResponseEntity<ApiResponse<?>> reportUser(
             @AuthenticationPrincipal String userId,  // 로그인한 사용자 ID (신고자)
-            @RequestParam Long reportedUserId,       // 신고당한 사용자 ID
+            @PathVariable Long reportedUserId,       // 신고당한 사용자 ID
             @RequestParam String reason,
             @RequestParam String detailed_reason
     ) {
