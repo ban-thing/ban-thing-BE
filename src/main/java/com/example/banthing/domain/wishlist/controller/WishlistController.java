@@ -43,6 +43,17 @@ public class WishlistController {
 
     /**
      *
+     * 찜 삭제 (백엔드용)
+     *
+     */
+    @DeleteMapping("/items/{itemId}/wishlist")
+    public ResponseEntity<ApiResponse<?>> deleteAdminWishlist(@PathVariable Long itemId) {
+        wishlistService.deleteAdminWishlist(itemId);
+        return ResponseEntity.ok(ApiResponse.successWithMessage("찜 삭제 성공"));
+    }
+
+    /**
+     *
      * 찜 목록 조회
      *
      */
