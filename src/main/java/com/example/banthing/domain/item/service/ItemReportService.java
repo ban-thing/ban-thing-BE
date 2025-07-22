@@ -74,6 +74,7 @@ public class ItemReportService {
             .orElseThrow(() -> new IllegalArgumentException("신고글이 존재하지 않습니다."));
         
         itemReportRepository.delete(report);
+        itemService.delete(report.getItem().getId());
 
     }
 
