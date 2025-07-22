@@ -39,7 +39,7 @@ public class UserDeletionReasonQueryRepositoryImpl implements UserDeletionReason
                 
                 try{
                     Long userId = Long.valueOf(keyword);
-                    keywordBuilder.and(qDeletion.userId.eq(userId));
+                    keywordBuilder.or(qDeletion.userId.eq(userId));
                 } catch (NumberFormatException ignored) {}
     
                 keywordBuilder.or(qDeletion.memo.containsIgnoreCase(keyword));
