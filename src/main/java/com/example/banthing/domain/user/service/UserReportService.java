@@ -27,6 +27,7 @@ public class UserReportService {
                 .reporter(reporter)
                 .reportedUser(reportedUser)
                 .reason(dto.getReason())
+                .detailed_reason(dto.getDetailed_reason())
                 .build();
 
         userReportRepository.save(report);
