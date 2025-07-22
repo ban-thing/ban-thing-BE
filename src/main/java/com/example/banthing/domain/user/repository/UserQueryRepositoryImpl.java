@@ -52,9 +52,8 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
             try {
                 Long userId = Long.parseLong(keyword);
                 keywordBuilder.or(user.id.eq(userId));
-            } catch (NumberFormatException ignored) {
-                keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
-            }
+            } catch (NumberFormatException ignored) {}
+            keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
             builder.and(keywordBuilder);
         }
 
