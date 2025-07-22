@@ -48,12 +48,12 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
 
         if (keyword != null && !keyword.isBlank()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
-            keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
+
             try {
                 Long userId = Long.parseLong(keyword);
                 keywordBuilder.or(user.id.eq(userId));
             } catch (NumberFormatException ignored) {
-                // 무시
+                keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
             }
             builder.and(keywordBuilder);
         }
