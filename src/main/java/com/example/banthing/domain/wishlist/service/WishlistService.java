@@ -68,7 +68,7 @@ public class WishlistService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 아이템이 존재하지 않습니다."));
 
-        List<UserWishlist> userWishlists = wishlistRepository.findByItem(item)
+        List<UserWishlist> userWishlists = wishlistRepository.findAllByItem(item)
                 .orElseThrow(() -> new IllegalArgumentException("찜 목록에 존재하지 않는 아이템입니다."));
 
         for (int i = 0; i < userWishlists.size(); i++){
