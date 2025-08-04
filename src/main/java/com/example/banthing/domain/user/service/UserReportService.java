@@ -20,7 +20,7 @@ public class UserReportService {
         User reporter = userService.findById(reporterId);
         User reportedUser = userService.findById(reportedUserId);
 
-        reportedUser.increaseReportCount(); // 신고당한 사람의 신고 수 증가
+        reportedUser.increaseReportCount();
         userService.save(reportedUser);
 
         UserReport report = UserReport.builder()
@@ -32,4 +32,7 @@ public class UserReportService {
         userReportRepository.save(report);
     }
 
+    public void nullifyReportedUser(User user) {
+        userReportRepository.nullifyReportedUser(user);
+    }
 }
