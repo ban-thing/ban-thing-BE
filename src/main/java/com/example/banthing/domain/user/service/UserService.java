@@ -9,6 +9,7 @@ import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.entity.ReportFilterType;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.entity.UserDeletionReason;
+import com.example.banthing.domain.user.repository.UserReportRepository;
 import com.example.banthing.domain.user.repository.UserRepository;
 import com.example.banthing.domain.wishlist.service.WishlistService;
 import com.example.banthing.global.common.Timestamped;
@@ -38,6 +39,7 @@ public class UserService {
     private final ChatMessageService chatMessageService;
     private final ItemService itemService;
     private final S3Service s3Service;
+    private final UserReportRepository userReportRepository;
 
 
     public void save(User user) {
@@ -121,18 +123,21 @@ public class UserService {
                 .userId(user.getId())
                 .socialId(user.getSocialId())
                 .email(user.getEmail())
-                .joinedAt(user.getCreatedAt())  // 가입일
+                .joinedAt(user.getCreatedAt())
                 .deletedAt(LocalDateTime.now())
                 .lastLoginAt(user.getLastLoginAt())
                 .reason(reason)
-                .memo(null)  // 관리자 메모 저장 UI가 있다면
-                .isRejoinRestricted(false) // 조건에 따라 true로 설정
                 .build();
         userDeletionReasonService.save(deletionReason);
+
+        userReportRepository.nullifyReporter(user);
+        userReportRepository.nullifyReportedUser(user);
+
         chatMessageService.deleteBySenderId(userId);
-        chatroomService.deleteByBuyerOrSeller(user,user);
+        chatroomService.deleteByBuyerOrSeller(user, user);
         wishlistService.deleteByUserId(userId);
         itemService.deleteAllItemDataByUser(user);
+
         userRepository.delete(user);
     }
 
