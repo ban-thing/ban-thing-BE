@@ -4,6 +4,8 @@ import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.chat.service.ChatMessageService;
 import com.example.banthing.domain.chat.service.ChatroomService;
+import com.example.banthing.domain.item.repository.ItemReportRepository;
+import com.example.banthing.domain.item.service.ItemReportService;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.entity.ReportFilterType;
@@ -38,6 +40,7 @@ public class UserService {
     private final WishlistService wishlistService;
     private final ChatMessageService chatMessageService;
     private final ItemService itemService;
+    private final ItemReportRepository itemReportRepository;
     private final S3Service s3Service;
     private final UserReportRepository userReportRepository;
 
@@ -132,6 +135,9 @@ public class UserService {
 
         userReportRepository.nullifyReporter(user);
         userReportRepository.nullifyReportedUser(user);
+
+        itemReportRepository.nullifyReporter(user);
+        itemReportRepository.nullifyReportedUser(user);
 
         chatMessageService.deleteBySenderId(userId);
         chatroomService.deleteByBuyerOrSeller(user, user);
