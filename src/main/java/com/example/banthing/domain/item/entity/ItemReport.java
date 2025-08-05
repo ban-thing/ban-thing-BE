@@ -29,11 +29,11 @@ public class ItemReport extends Timestamped {
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reporter_id", nullable = false)
+    @JoinColumn(name = "reporter_id", nullable = true)
     private User reporter;  // 신고한 유저
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reported_user_id", nullable = false)
+    @JoinColumn(name = "reported_user_id", nullable = true)
     private User reportedUser;  // 신고당한 유저
 
     @Column(nullable = false)
