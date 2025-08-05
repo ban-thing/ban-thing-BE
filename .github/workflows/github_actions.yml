@@ -3,7 +3,7 @@ name: Execute python, Spring, MySQL server
 on: 
   push:
     branches:
-      - 109-feat-회원-탈퇴-계정-정지-활성화
+      - main
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
         ./gradlew dependencies
     
     - name: Spring-Docker build & push to prod
-      if: contains(github.ref, '109-feat-회원-탈퇴-계정-정지-활성화')
+      if: contains(github.ref, 'main')
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PWD }}
         docker build -f ./dockerfilejava -t ${{ secrets.DOCKER_USERNAME }}/cicdjava .
