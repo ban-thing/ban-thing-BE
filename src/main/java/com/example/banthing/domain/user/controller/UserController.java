@@ -88,7 +88,7 @@ public class UserController {
      */
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<?>> deleteUser(@AuthenticationPrincipal String userId,
-                                                     @RequestParam String memo,
+                                                     @RequestParam(defaultValue = "") String memo,
                                                      @RequestParam String reason) {
         userService.deleteUser(Long.valueOf(userId), memo, reason);
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
@@ -102,7 +102,7 @@ public class UserController {
      */
     @PostMapping("/forcedDelete")
     public ResponseEntity<ApiResponse<?>> forcedDeleteUser(@RequestParam String userId,
-                                                    @RequestParam String memo,   
+                                                    @RequestParam(defaultValue = "") String memo,   
                                                      @RequestParam String reason) {
         userService.deleteUser(Long.valueOf(userId), memo, reason);
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("회원 탈퇴가 완료되었습니다."));
