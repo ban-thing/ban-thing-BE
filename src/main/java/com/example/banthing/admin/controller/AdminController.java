@@ -63,7 +63,7 @@ public class AdminController {
 
     /**
      *
-     * 계정관리
+     * 계정관리 조회
      *
      */
     @GetMapping("/account")

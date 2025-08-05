@@ -3,7 +3,11 @@ name: Execute python, Spring, MySQL server
 on: 
   push:
     branches:
+<<<<<<< HEAD
       - 112-fix-신고-내역-유통기한-지역-추가
+=======
+      - main
+>>>>>>> 859a94862380bcd63c81d2433990d645d29a8ec9
 
 jobs:
   build:
@@ -44,7 +48,11 @@ jobs:
         ./gradlew dependencies
     
     - name: Spring-Docker build & push to prod
+<<<<<<< HEAD
       if: contains(github.ref, '112-fix-신고-내역-유통기한-지역-추가')
+=======
+      if: contains(github.ref, 'main')
+>>>>>>> 859a94862380bcd63c81d2433990d645d29a8ec9
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PWD }}
         docker build -f ./dockerfilejava -t ${{ secrets.DOCKER_USERNAME }}/cicdjava .

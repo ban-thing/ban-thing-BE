@@ -4,11 +4,14 @@ import com.example.banthing.admin.dto.AdminUserResponseDto;
 import com.example.banthing.domain.chat.repository.ChatroomRepository;
 import com.example.banthing.domain.chat.service.ChatMessageService;
 import com.example.banthing.domain.chat.service.ChatroomService;
+import com.example.banthing.domain.item.repository.ItemReportRepository;
+import com.example.banthing.domain.item.service.ItemReportService;
 import com.example.banthing.domain.item.service.ItemService;
 import com.example.banthing.domain.user.dto.*;
 import com.example.banthing.domain.user.entity.ReportFilterType;
 import com.example.banthing.domain.user.entity.User;
 import com.example.banthing.domain.user.entity.UserDeletionReason;
+import com.example.banthing.domain.user.repository.UserReportRepository;
 import com.example.banthing.domain.user.repository.UserRepository;
 import com.example.banthing.domain.wishlist.service.WishlistService;
 import com.example.banthing.global.common.Timestamped;
@@ -37,7 +40,9 @@ public class UserService {
     private final WishlistService wishlistService;
     private final ChatMessageService chatMessageService;
     private final ItemService itemService;
+    private final ItemReportRepository itemReportRepository;
     private final S3Service s3Service;
+    private final UserReportRepository userReportRepository;
 
 
     public void save(User user) {
@@ -112,7 +117,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long userId, String reason) {
+    public void deleteUser(Long userId, String memo, String reason) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
 
@@ -121,18 +126,25 @@ public class UserService {
                 .userId(user.getId())
                 .socialId(user.getSocialId())
                 .email(user.getEmail())
-                .joinedAt(user.getCreatedAt())  // 가입일
+                .joinedAt(user.getCreatedAt())
                 .deletedAt(LocalDateTime.now())
                 .lastLoginAt(user.getLastLoginAt())
+                .memo(memo)
                 .reason(reason)
-                .memo(null)  // 관리자 메모 저장 UI가 있다면
-                .isRejoinRestricted(false) // 조건에 따라 true로 설정
                 .build();
         userDeletionReasonService.save(deletionReason);
+
+        userReportRepository.nullifyReporter(user);
+        userReportRepository.nullifyReportedUser(user);
+
+        itemReportRepository.nullifyReporter(user);
+        itemReportRepository.nullifyReportedUser(user);
+
         chatMessageService.deleteBySenderId(userId);
-        chatroomService.deleteByBuyerOrSeller(user,user);
+        chatroomService.deleteByBuyerOrSeller(user, user);
         wishlistService.deleteByUserId(userId);
         itemService.deleteAllItemDataByUser(user);
+
         userRepository.delete(user);
     }
 
