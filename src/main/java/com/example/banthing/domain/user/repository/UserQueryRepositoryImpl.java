@@ -48,13 +48,12 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
 
         if (keyword != null && !keyword.isBlank()) {
             BooleanBuilder keywordBuilder = new BooleanBuilder();
-            keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
+
             try {
-                Long userId = Long.parseLong(keyword);
+                Long userId = Long.valueOf(keyword);
                 keywordBuilder.or(user.id.eq(userId));
-            } catch (NumberFormatException ignored) {
-                // 무시
-            }
+            } catch (NumberFormatException ignored) {}
+            keywordBuilder.or(user.nickname.containsIgnoreCase(keyword));
             builder.and(keywordBuilder);
         }
 
@@ -77,6 +76,7 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
                     ))
                     .from(userReport)
                     .where(userReport.reportedUser.id.eq(u.getId()))
+                    .orderBy(userReport.createdAt.desc())
                     .fetch();
 
             return new AdminUserResponseDto(

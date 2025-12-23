@@ -36,7 +36,6 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
         QHashtag hashtag = new QHashtag("hashtag");
         QCleaningDetail detail = QCleaningDetail.cleaningDetail;
         
-
         BooleanBuilder builder = new BooleanBuilder();
         if (startDate != null && endDate != null) {
             builder.and(report.createdAt.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay()));
@@ -47,7 +46,6 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
 
         if (status != null && !status.isBlank()) {
             builder.and(report.reportStatus.eq(ReportStatus.valueOf(status)));
-            
         }
 
         if (keyword != null && !keyword.isBlank()) {
@@ -55,8 +53,8 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
             
             try{
                 Long userId = Long.valueOf(keyword);
-                keywordBuilder.and(report.reporter.id.eq(userId));
-                keywordBuilder.and(report.reportedUser.id.eq(userId));
+                keywordBuilder.or(report.reporter.id.eq(userId));
+                keywordBuilder.or(report.reportedUser.id.eq(userId));
             } catch (NumberFormatException ignored) {}
 
             keywordBuilder.or(report.item.title.containsIgnoreCase(keyword));
@@ -119,10 +117,13 @@ public class ReportQueryRepositoryImpl implements ReportQueryRepository {
                     i.getSeller().getNickname(),
                     hashtags,
                     base64Images,
+                    i.getAddress(),
+                    // 클린 체크리스트
                     cleaningDto.getPollution(),
                     cleaningDto.getTimeUsed(),
                     cleaningDto.getPurchasedDate(),
-                    cleaningDto.getCleaned()
+                    cleaningDto.getCleaned(),
+                    cleaningDto.getExpire()
             );
         }).toList();
 

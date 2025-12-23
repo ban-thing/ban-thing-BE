@@ -16,7 +16,7 @@ public class UserReportService {
     private final UserService userService;
 
     @Transactional
-    public void reportUser(Long reporterId, Long reportedUserId, UserReportRequestDto dto) {
+    public void reportUser(Long reporterId, Long reportedUserId, String reason, String detailed_reason) {
         User reporter = userService.findById(reporterId);
         User reportedUser = userService.findById(reportedUserId);
 
@@ -26,7 +26,8 @@ public class UserReportService {
         UserReport report = UserReport.builder()
                 .reporter(reporter)
                 .reportedUser(reportedUser)
-                .reason(dto.getReason())
+                .reason(reason)
+                .detailed_reason(detailed_reason)
                 .build();
 
         userReportRepository.save(report);

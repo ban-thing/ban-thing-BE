@@ -117,7 +117,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long userId, String reason) {
+    public void deleteUser(Long userId, String memo, String reason) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다: " + userId));
 
@@ -129,6 +129,7 @@ public class UserService {
                 .joinedAt(user.getCreatedAt())
                 .deletedAt(LocalDateTime.now())
                 .lastLoginAt(user.getLastLoginAt())
+                .memo(memo)
                 .reason(reason)
                 .build();
         userDeletionReasonService.save(deletionReason);

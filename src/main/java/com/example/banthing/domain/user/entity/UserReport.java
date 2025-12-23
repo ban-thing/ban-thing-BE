@@ -29,4 +29,8 @@ public class UserReport extends Timestamped {
 
     @Column(nullable = false)
     private String reason;
+
+    @Column(nullable = true)
+    private String detailed_reason;
+
 }
