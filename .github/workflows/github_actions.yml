@@ -3,7 +3,7 @@ name: Execute python, Spring, MySQL server
 on: 
   push:
     branches:
-      - 112-fix-신고-내역-유통기한-지역-추가
+      - main
 
 jobs:
   build:
