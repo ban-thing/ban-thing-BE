@@ -1,5 +1,5 @@
 name: Execute python, Spring, MySQL server
- 
+  
 on: 
   push:
     branches:
